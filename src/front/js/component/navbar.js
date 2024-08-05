@@ -1,44 +1,49 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
+import React from "react";
+import { Link } from "react-router-dom";
 import splitpay from "../../img/splitpay.jpeg"; // Ajusta la ruta a tu logo
 import "../../styles/home.css"; // Asegúrate de importar el archivo CSS
 
 const Navbar = () => {
-    return (
-        <nav className="navbar navbar-expand-lg custom-navbar" style={{backgroundColor: "#274d95", fontFamily: 'Trebuchet MS' }}>
-            <div className="container-fluid d-flex align-items-center">
-                {/* Logo */}
-                <Link to="/" className="navbar-brand d-flex align-items-center me-auto">
-                   <h1 style={{color:'white'}}>
-                    AppSplitPay
-                   </h1>
-                </Link>
+  return (
+    <nav
+      className="navbar navbar-expand-lg custom-navbar"
+      style={{ backgroundColor: "#274d95", fontFamily: "Trebuchet MS" }}
+    >
+      <div className="container-fluid d-flex align-items-center">
+        {/* Logo */}
+        <Link to="/" className="navbar-brand d-flex align-items-center me-auto">
+          <h1 style={{ color: "white" }}>AppSplitPay</h1>
+        </Link>
 
-                {/* Toggler button */}
-                <button 
-                    className="navbar-toggler ms-auto" 
-                    type="button" 
-                    data-bs-toggle="collapse" 
-                    data-bs-target="#navbarTogglerDemo01" 
-                    aria-controls="navbarTogglerDemo01" 
-                    aria-expanded="false" 
-                    aria-label="Toggle navigation"
-                >
-                    <span className="navbar-toggler-icon"></span>
-                </button>
+        {/* Toggler button */}
+        <button
+          className="navbar-toggler ms-auto"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarTogglerDemo01"
+          aria-controls="navbarTogglerDemo01"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+        >
+          <span className="navbar-toggler-icon"></span>
+        </button>
 
-                {/* Collapsible items */}
-                <div className="collapse navbar-collapse" id="navbarTogglerDemo01">
-                    <div className="navbar-nav ms-auto">
-                        <Link className="btn me-2 text-white" to="/login">iniciar sesion</Link>
-                        <Link className="btn btn-light" to="/signup">crea una cuenta</Link>
-                    </div>
-                </div>
-            </div>
+        {/* Collapsible items */}
+        <div className="collapse navbar-collapse" id="navbarTogglerDemo01">
+          <div className="navbar-nav ms-auto">
+            <Link className="btn me-2 text-white" to="/login">
+              iniciar sesion
+            </Link>
+            <Link className="btn btn-light" to="/signup">
+              crea una cuenta
+            </Link>
+          </div>
+        </div>
+      </div>
 
-            {/* Custom styles */}
-            <style>
-                {`
+      {/* Custom styles */}
+      <style>
+        {`
                     .custom-navbar {
                         background-color: #003459;
                         padding: 0 2rem;
@@ -52,9 +57,9 @@ const Navbar = () => {
                         height: 40px;
                     }
                 `}
-            </style>
-        </nav>
-    );
+      </style>
+    </nav>
+  );
 };
 
 export default Navbar;
