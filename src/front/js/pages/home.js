@@ -14,7 +14,7 @@ function Home() {
                     </h3>
                     <Link
                         className="btn text-white"
-                        style={{ backgroundColor: '#003459',fontFamily: 'Trebuchet MS' }}
+                        style={{ backgroundColor: "#274d95",fontFamily: 'Trebuchet MS' }}
                         type="button"
                         to= "/signup"
                     >
