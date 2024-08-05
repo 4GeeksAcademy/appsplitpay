@@ -11,12 +11,14 @@ class User(db.Model):
 
     __tablename__ = 'users'
     id = db.Column(db.Integer, primary_key=True)
-    first_name = db.Column(db.String(60), unique=False)
-    last_name = db.Column(db.String(60), unique=False)
-    age = db.Column(db.String(60), unique=False)
-    address = db.Column(db.String(180), unique=False)
-    email = db.Column(db.String(120), unique=True)
-    password = db.Column(db.String(120), unique=False)
+    username = db.Column(db.String(120), unique=True, nullable=False)
+    first_name = db.Column(db.String(60), unique=False, nullable=False)
+    last_name = db.Column(db.String(60), unique=False, nullable=False)
+    age = db.Column(db.String(60), unique=False, nullable=False)
+    address = db.Column(db.String(180), unique=False, nullable=False)
+    email = db.Column(db.String(120), unique=True, nullable=False)
+    password = db.Column(db.String(120), unique=False, nullable=False)
+    is_active = db.Column(db.Boolean(), unique=False, nullable=False)
 
     def __repr__(self):
         return f'<User {self.first_name}>'
@@ -24,11 +26,13 @@ class User(db.Model):
     def serialize(self):
         return {
             "id": self.id,
+            "username": self.username,
             "first_name": self.first_name,            
             "last_name": self.last_name,
             "age": self.age,
             "address": self.address,            
             "email": self.email,
+            "is_active":self.is_active
             # do not serialize the password, its a security breach
         }
     
@@ -37,6 +41,35 @@ class User(db.Model):
 
     def check_password(self, password):
         return bcrypt.check_password_hash(self.password,password)
+    
+
+class TokenBlockedList(db.Model):
+    id = db.Column(db.Integer, primary_key = True)
+    jti = db.Column(db.String(100), nullable = False)
+
+
+class Contacts(db.Model):
+    __tablename__ = 'contacts'
+    id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(180), unique=True, nullable=False)
+    fullname = db.Column(db.String(180), unique=True, nullable=False)
+    email = db.Column(db.String(180), unique=True, nullable=False)
+    address = db.Column(db.String(180))
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+    user = db.relationship('User', backref='contacts')
+
+    def __repr__(self):
+        return f'<Contacts {self.fullname}>'
+
+    def serialize(self):
+        return {
+            "id": self.id,
+            "username": self.username,
+            "fullname": self.fullname,            
+            "email": self.email,
+            "address": self.address,            
+            # do not serialize the password, its a security breach
+        }
 
 class Payment(db.Model):
 
