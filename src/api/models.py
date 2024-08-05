@@ -21,7 +21,8 @@ class User(db.Model):
     is_active = db.Column(db.Boolean(), unique=False, nullable=False)
 
     def __repr__(self):
-        return f'<User {self.first_name}>'
+        return f'<User {self.id} - {self.first_name} {self.last_name}>'
+
 
     def serialize(self):
         return {
@@ -59,7 +60,7 @@ class Contacts(db.Model):
     user = db.relationship('User', backref='contacts')
 
     def __repr__(self):
-        return f'<Contacts {self.fullname}>'
+        return f'<Contacts {self.fullname} ({self.username}) - {self.email}>'
 
     def serialize(self):
         return {
@@ -67,8 +68,8 @@ class Contacts(db.Model):
             "username": self.username,
             "fullname": self.fullname,            
             "email": self.email,
-            "address": self.address,            
-            # do not serialize the password, its a security breach
+            "address": self.address,
+
         }
 
 class Payment(db.Model):
@@ -83,7 +84,16 @@ class Payment(db.Model):
     group = db.relationship('Group', backref='payments')
 
     def __repr__(self):
-        return f'<Payment {self.id}>'
+        return f'<Payment {self.id} - {self.date} - {self.amount}>'
+
+    def serialize(self):
+        return {
+            "id": self.id,
+            "date": self.date,
+            "amount": self.amount,
+            "user_id": self.user_id,
+            "group_id": self.group_id,
+        }
 
 class Group(db.Model):
 
@@ -93,7 +103,14 @@ class Group(db.Model):
     users = db.relationship('User', secondary='group_users', backref='groups')
 
     def __repr__(self):
-        return f'<Group {self.name}>'
+        return f'<Group {self.id} - {self.name}>'
+
+    def serialize(self):
+        return {
+            "id": self.id,
+            "name": self.name,
+            "users": [user.serialize() for user in self.users],
+        }
 
 class GroupUser(db.Model):
 
@@ -164,7 +181,16 @@ class Event(db.Model):
     group = db.relationship('Group', backref='events')
 
     def __repr__(self):
-        return f'<Event {self.type}>'
+        return f'<Event {self.id} - {self.type} - {self.payment_id}>'
+
+    def serialize(self):
+        return {
+            "id": self.id,
+            "type": self.type,
+            "payment_id": self.payment_id,
+            "user_id": self.user_id,
+            "group_id": self.group_id,
+        }
 
 class Comment(db.Model):
 
@@ -190,4 +216,4 @@ class Tag(db.Model):
     group = db.relationship('Group', backref='tags')
 
     def __repr__(self):
-        return f'<Tag {self.id}>'
+        return f'<Tag {self.id} - {self.name}>'
