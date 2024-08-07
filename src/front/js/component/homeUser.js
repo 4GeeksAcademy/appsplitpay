@@ -2,8 +2,9 @@ import { useEffect } from "react";
 import React, { useContext } from "react";
 import { Context } from "../store/appContext";
 import "../styles/homeUser.css";
+import { defaults } from "gh-pages";
 
-export const homeUser = () => {
+export const HomeUser = () => {
   const { store, actions } = useContext(Context);
 
   return (
@@ -134,3 +135,4 @@ export const homeUser = () => {
     </div>
   );
 };
+export default HomeUser;
