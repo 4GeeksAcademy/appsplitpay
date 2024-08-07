@@ -146,7 +146,7 @@ class Transactions(db.Model):
     def __repr__(self):
         return f'<Transactions {self.id}>'
 
-class PaymentStatus(db.Model):
+class PaymentStatus(db.Model): #se puede simplificar en una tabla mas para transactions
 
     __tablename__ = 'payment_statuses'
     id = db.Column(db.Integer, primary_key=True)
@@ -160,7 +160,7 @@ class PaymentStatus(db.Model):
 class Notification(db.Model):
     __tablename__ = 'notifications'
     id = db.Column(db.Integer, primary_key=True)
-    type = db.Column(db.String(200))  # (email, text message, etc.)
+    type = db.Column(db.String(200))  # (email) (revisar tutoriales, con tiempo menores a 3 meses, si no hay eliminar esta opcion)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     user = db.relationship('User', backref='notifications')
     event_id = db.Column(db.Integer, db.ForeignKey('events.id'))
@@ -192,7 +192,7 @@ class Event(db.Model):
             "group_id": self.group_id,
         }
 
-class Comment(db.Model):
+class Comment(db.Model): # revisar posibilidad de agregar a Payment.
 
     __tablename__ = 'comments'
     id = db.Column(db.Integer, primary_key=True)

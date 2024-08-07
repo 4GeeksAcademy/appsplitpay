@@ -3,7 +3,7 @@ This module takes care of starting the API Server, Loading the DB and Adding the
 """
 from flask import Flask, request, jsonify, url_for, Blueprint
 from flask_jwt_extended import create_access_token, get_jwt_identity, get_jwt, jwt_required
-from api.models import db, User, TokenBlockedList, Contacts
+from api.models import db, User, TokenBlockedList, Contacts, Payment
 from api.utils import generate_sitemap, APIException
 from flask_cors import CORS
 from flask_bcrypt import Bcrypt
@@ -146,7 +146,7 @@ def edit_user():
 
 #--------------------------DELETE_USER--------------------------------------------------------------------
 
-@app.route('/delete', methods=['DELETE'])
+@api.route('/delete', methods=['DELETE'])
 @jwt_required()
 def delete_user():
 
@@ -159,3 +159,58 @@ def delete_user():
     db.session.delete(user_db)
     db.session.commit()
     return jsonify({"info":"User deleted"}), 200
+
+#--------------------------PAYMENT--------------------------------------------------------------------
+
+@api.route('/payments', methods=['GET'])
+@jwt_required()
+def get_payments():
+
+    payments = Payment.query.all()
+    return jsonify([payment.serialize() for payment in payments])
+
+@api.route('/payments/<int:payment_id>', methods=['GET'])
+@jwt_required()
+def get_payment(payment_id):
+    
+    payment = Payment.query.get(payment_id)
+    if payment is None:
+        return jsonify({'error': 'Payment not found'}), 404
+    return jsonify(payment.serialize())
+
+@api.route('/payments', methods=['POST'])
+@jwt_required()
+def create_payment():
+    user_id = get_jwt_identity()
+    data = request.get_json()
+    payment = Payment(date=data['date'], amount=data['amount'], user_id=user_id, group_id=data['group_id'])
+    db.session.add(payment)
+    db.session.commit()
+    return jsonify(payment.serialize()), 201
+
+@api.route('/payments/<int:payment_id>', methods=['PUT'])
+@jwt_required()
+def update_payment(payment_id):
+    user_id = get_jwt_identity()
+    payment = Payment.query.get(payment_id)
+    if payment is None:
+        return jsonify({'error': 'Payment not found'}), 404
+    data = request.get_json()
+    payment.date = data['date']
+    payment.amount = data['amount']
+    payment.user_id = user_id
+    payment.group_id = data['group_id']
+    db.session.commit()
+    return jsonify(payment.serialize())
+
+@api.route('/payments/<int:payment_id>', methods=['DELETE'])
+@jwt_required()
+def delete_payment(payment_id):
+    payment = Payment.query.get(payment_id)
+    if payment is None:
+        return jsonify({'error': 'Payment not found'}), 404
+    db.session.delete(payment)
+    db.session.commit()
+    return jsonify({'message': 'Payment deleted'})
+
+#--------------------------PAYMENT--------------------------------------------------------------------
