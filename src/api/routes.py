@@ -16,6 +16,10 @@ api = Blueprint('api', __name__)
 # Allow CORS requests to this API
 CORS(api)
 
+#********************************************************************************************************
+#********************************************USERS*******************************************************
+#********************************************************************************************************
+
 #--------------------------SIGNUP-OR-CREATE-USER--------------------------------------------------------
 
 @api.route('/signup', methods=['POST'])
@@ -108,16 +112,17 @@ def user_logout():
 
 #--------------------------USER_INFO--------------------------------------------------------------------
 
-@api.route('/userinfo', methods=['GET'])
+@api.route('/user', methods=['GET'])
 @jwt_required()
 def user_info():
     user = get_jwt_identity()
     payload = get_jwt()
     return jsonify({"user": user, "role":payload["role"]})
 
+
 #--------------------------EDIT_USER--------------------------------------------------------------------
 
-@api.route('/edit', methods=['PATCH'])
+@api.route('/user', methods=['PATCH'])
 @jwt_required()
 def edit_user():
     user_id = get_jwt_identity()
@@ -146,11 +151,13 @@ def edit_user():
 
 #--------------------------DELETE_USER--------------------------------------------------------------------
 
-@app.route('/delete', methods=['DELETE'])
+@api.route('/user', methods=['DELETE'])
 @jwt_required()
 def delete_user():
 
     user_id = get_jwt_identity()
+
+    print(user_id)
 
     user_db = User.query.filter_by(id=user_id).first()
     if user_db is None:
@@ -159,3 +166,115 @@ def delete_user():
     db.session.delete(user_db)
     db.session.commit()
     return jsonify({"info":"User deleted"}), 200
+
+
+#********************************************************************************************************
+#*****************************************CONTACTS*******************************************************
+#********************************************************************************************************
+
+#--------------------------ADD_CONTACT--------------------------------------------------------------------
+
+@api.route('/contact', methods=['POST'])
+@jwt_required()
+def add_contact():
+
+    user_id = get_jwt_identity()
+    print(user_id)
+
+    body = request.get_json()
+
+    if "username" not in body:
+        return jsonify({"msg":"Username is required"}), 400
+    
+    contact = Contacts(username=body["username"], user_id = user_id)
+
+    if "fullname" in body:
+        contact.fullname = body["fullname"]
+    else:
+        contact.fullname = ""
+
+    if "email" in body:
+        contact.email = body["email"]
+    else:
+        contact.email = ""
+
+    if "address" in body:
+        contact.address = body["address"]
+    else:
+        contact.address = ""
+
+    db.session.add(contact)
+    db.session.commit()
+    return jsonify({"msg":"contact added correctly"}), 200
+
+
+#--------------------------GET_CONTACTS--------------------------------------------------------------------
+
+@api.route('/contact', methods=['GET'])
+@jwt_required()
+def get_contacts():
+
+    user_id = get_jwt_identity()
+    
+    contacts = Contacts.query.filter_by(user_id=user_id)
+    contact_list = list(map(lambda contact: contact.serialize(), contacts))
+
+    return jsonify(contact_list), 200
+
+
+#--------------------------GET_SINGLE_CONTACT--------------------------------------------------------------------
+
+@api.route('/contact/<int:contactId>', methods=['GET'])
+@jwt_required()
+def get_single_contact(contactId):
+
+    contact = Contacts.query.get(contactId)
+
+    if contact is None:
+        return jsonify({"error":"User not found"}),404
+    
+    return jsonify({"Contact": contact.serialize()}),200
+
+
+#--------------------------EDIT_USER--------------------------------------------------------------------
+
+@api.route('/contact/<int:contactId>', methods=['PATCH'])
+@jwt_required()
+def edit_contact(contactId):
+    
+    contact_db = Contacts.query.filter_by(id=contactId).first()
+    if contact_db is None:
+        return jsonify({"info":"Not Found"}), 404
+    
+    contact_body = request.get_json()
+    
+    if "fullname" in contact_body:
+        contact_db.fullname = contact_body["fullname"]
+    if "email" in contact_body:
+        contact_db.email = contact_body["email"]
+    if "address" in contact_body:
+        contact_db.address = contact_body["address"]
+
+    db.session.add(contact_db)
+    db.session.commit()
+    return jsonify(contact_db.serialize()), 200
+
+
+#--------------------------DELETE_USER--------------------------------------------------------------------
+
+@api.route('/contact/<int:contactId>', methods=['DELETE'])
+@jwt_required()
+def delete_contact(contactId):
+
+    contact_db = Contacts.query.filter_by(id=contactId).first()
+    if contact_db is None:
+        return jsonify({"info":"Not Found"}), 404
+    
+    db.session.delete(contact_db)
+    db.session.commit()
+    return jsonify({"info":"User deleted"}), 200
+
+#********************************************************************************************************
+#*******************************************GROUPS*******************************************************
+#********************************************************************************************************
+
