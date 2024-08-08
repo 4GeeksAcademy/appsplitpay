@@ -4,6 +4,7 @@ import splitpay from "../../img/splitpay.jpeg"; // Ajusta la ruta a tu logo
 import "../../styles/home.css"; // Asegúrate de importar el archivo CSS
 
 const Navbar = () => {
+
   return (
     <nav
       className="navbar navbar-expand-lg custom-navbar"
@@ -37,6 +38,12 @@ const Navbar = () => {
             <Link className="btn btn-light" to="/signup">
               crea una cuenta
             </Link>
+            <div className="ml-auto">
+              <button className="btn btn-light" onClick={() => actions.logout()}>Logout</button>
+            </div>
+
+
+
           </div>
         </div>
       </div>

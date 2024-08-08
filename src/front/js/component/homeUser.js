@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import React, { useContext } from "react";
-import { Context } from "../store/appContext";
+import { Context } from '../store/appContext';
 import "../styles/homeUser.css";
 import { defaults } from "gh-pages";
 
