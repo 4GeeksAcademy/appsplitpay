@@ -7,6 +7,7 @@ import BackendURL from "./component/backendURL"; // Verifica esta ruta
 import Navbar from "./component/navbar"; // Verifica esta ruta
 import Footer from "../js/component/footer";
 
+
 const Layout = () => {
     // Condición para mostrar BackendURL si la variable de entorno BACKEND_URL no está configurada
     if (!process.env.BACKEND_URL || process.env.BACKEND_URL === "") {
