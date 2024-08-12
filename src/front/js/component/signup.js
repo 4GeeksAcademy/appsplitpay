@@ -9,7 +9,7 @@ const SignUp = () => {
   const [firstName, setFirstName] = useState("")
   const [lastName, setLastName] = useState("")
   const [age, setAge] = useState("")
-  const [addres, setAddres] = useState("")
+  const [address, setAddress] = useState("")
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
 
@@ -91,7 +91,7 @@ const SignUp = () => {
         </div>
         {/* <!-- Addres input --> */}
         <div data-mdb-input-init className="form-outline mb-4">
-          <input onChange={(e) => setAddres(e.target.value)} type="text" id="registerAddres" className="form-control" />
+          <input onChange={(e) => setAddress(e.target.value)} type="text" id="registerAddres" className="form-control" />
           <label className="form-label" htmlFor="registerEmail">Addres</label>
         </div>
 
