@@ -3,7 +3,7 @@ This module takes care of starting the API Server, Loading the DB and Adding the
 """
 from flask import Flask, request, jsonify, url_for, Blueprint
 from flask_jwt_extended import create_access_token, get_jwt_identity, get_jwt, jwt_required
-from api.models import db, User, TokenBlockedList, Contacts
+from api.models import db, User, TokenBlockedList, Contact, Group, GroupMember
 from api.utils import generate_sitemap, APIException
 from flask_cors import CORS
 from flask_bcrypt import Bcrypt
@@ -186,7 +186,7 @@ def add_contact():
     if "username" not in body:
         return jsonify({"msg":"Username is required"}), 400
     
-    contact = Contacts(username=body["username"], user_id = user_id)
+    contact = Contact(username=body["username"], user_id = user_id)
 
     if "fullname" in body:
         contact.fullname = body["fullname"]
@@ -216,7 +216,7 @@ def get_contacts():
 
     user_id = get_jwt_identity()
     
-    contacts = Contacts.query.filter_by(user_id=user_id)
+    contacts = Contact.query.filter_by(user_id=user_id)
     contact_list = list(map(lambda contact: contact.serialize(), contacts))
 
     return jsonify(contact_list), 200
@@ -228,21 +228,21 @@ def get_contacts():
 @jwt_required()
 def get_single_contact(contactId):
 
-    contact = Contacts.query.get(contactId)
+    contact = Contact.query.get(contactId)
 
     if contact is None:
-        return jsonify({"error":"User not found"}),404
+        return jsonify({"error":"Contact not found"}),404
     
     return jsonify({"Contact": contact.serialize()}),200
 
 
-#--------------------------EDIT_USER--------------------------------------------------------------------
+#--------------------------EDIT_CONTACT--------------------------------------------------------------------
 
 @api.route('/contact/<int:contactId>', methods=['PATCH'])
 @jwt_required()
 def edit_contact(contactId):
     
-    contact_db = Contacts.query.filter_by(id=contactId).first()
+    contact_db = Contact.query.filter_by(id=contactId).first()
     if contact_db is None:
         return jsonify({"info":"Not Found"}), 404
     
@@ -260,13 +260,13 @@ def edit_contact(contactId):
     return jsonify(contact_db.serialize()), 200
 
 
-#--------------------------DELETE_USER--------------------------------------------------------------------
+#--------------------------DELETE_CONTACT--------------------------------------------------------------------
 
 @api.route('/contact/<int:contactId>', methods=['DELETE'])
 @jwt_required()
 def delete_contact(contactId):
 
-    contact_db = Contacts.query.filter_by(id=contactId).first()
+    contact_db = Contact.query.filter_by(id=contactId).first()
     if contact_db is None:
         return jsonify({"info":"Not Found"}), 404
     
@@ -277,4 +277,135 @@ def delete_contact(contactId):
 #********************************************************************************************************
 #*******************************************GROUPS*******************************************************
 #********************************************************************************************************
+
+#--------------------------CREATE_GROUP--------------------------------------------------------------------
+
+@api.route('/group', methods=['POST'])
+@jwt_required()
+def create_group():
+    user_id = get_jwt_identity()
+    body = request.get_json()
+
+    if "name" not in body:
+        return jsonify({"msg": "Group name is required"}), 400
+    
+    if "member_ids" not in body or not body["member_ids"]:
+        return jsonify({"msg": "At least one member is required"}), 400
+
+    new_group = Group(name=body["name"], creator_id=user_id)
+    db.session.add(new_group)
+    db.session.flush()  # This assigns an ID to the new group
+
+    # Add the creator as a member
+    creator_member = GroupMember(group_id=new_group.id, user_id=user_id)
+    db.session.add(creator_member)
+
+    # Add other members
+    for member_id in body["member_ids"]:
+        if member_id != user_id:  # Avoid adding the creator twice
+            member = GroupMember(group_id=new_group.id, user_id=member_id)
+            db.session.add(member)
+
+    db.session.commit()
+    return jsonify({"msg": "Group created successfully", "group": new_group.serialize()}), 201
+
+#--------------------------GET_GROUP--------------------------------------------------------------------
+
+@api.route('/group/<int:group_id>', methods=['GET'])
+@jwt_required()
+def get_group(group_id):
+    user_id = get_jwt_identity()
+    group = Group.query.get(group_id)
+
+    if not group:
+        return jsonify({"msg": "Group not found"}), 404
+
+    if user_id not in [member.id for member in group.members]:
+        return jsonify({"msg": "You are not a member of this group"}), 403
+
+    return jsonify(group.serialize()), 200
+    
+#--------------------------DELETE_GROUP--------------------------------------------------------------------
+
+@api.route('/group/<int:group_id>', methods=['DELETE'])
+@jwt_required()
+def delete_group(group_id):
+    user_id = get_jwt_identity()
+    group = Group.query.get(group_id)
+
+    if not group:
+        return jsonify({"msg": "Group not found"}), 404
+
+    if group.creator_id != user_id:
+        return jsonify({"msg": "Only the group creator can delete the group"}), 403
+
+    db.session.delete(group)
+    db.session.commit()
+
+    return jsonify({"msg": "Group deleted successfully"}), 200
+
+
+#--------------------------GET_MEMBERS_GROUP--------------------------------------------------------------------
+
+@api.route('/groups', methods=['GET'])
+@jwt_required()
+def get_user_groups():
+    user_id = get_jwt_identity()
+    user = User.query.get(user_id)
+
+    if not user:
+        return jsonify({"msg": "User not found"}), 404
+
+    groups = [group.serialize() for group in user.groups]
+    return jsonify(groups), 200
+
+#--------------------------ADD_GROUP_MEMBER---------------------------------------------------------------
+
+@api.route('/group/<int:group_id>/members', methods=['POST'])
+@jwt_required()
+def add_group_member(group_id):
+    user_id = get_jwt_identity()
+    body = request.get_json()
+
+    if "member_id" not in body:
+        return jsonify({"msg": "Member ID is required"}), 400
+
+    group = Group.query.get(group_id)
+    if not group:
+        return jsonify({"msg": "Group not found"}), 404
+
+    if group.creator_id != user_id:
+        return jsonify({"msg": "Only the group creator can add members"}), 403
+
+    new_member = User.query.get(body["member_id"])
+    if not new_member:
+        return jsonify({"msg": "User not found"}), 404
+
+    if new_member in group.members:
+        return jsonify({"msg": "User is already a member of this group"}), 400
+
+    group_member = GroupMember(group_id=group_id, user_id=body["member_id"])
+    db.session.add(group_member)
+    db.session.commit()
+
+    return jsonify({"msg": "Member added successfully"}), 200
+
+#--------------------------DELETE_GROUP_MEMBER---------------------------------------------------------------
+
+@api.route('/group/<int:group_id>/members', methods=['DELETE'])
+@jwt_required()
+def delete_group_member(group_id):
+    
+    body = request.get_json()
+
+    if "member_id" not in body:
+        return jsonify({"msg": "Member ID is required"}), 400
+    
+    group_member = GroupMember(group_id=group_id, user_id=body["member_id"])
+
+    db.session.delete(group_member)
+    db.session.commit()
+
+    return jsonify({"msg": "Member deleted successfully"}), 200
+
 

@@ -8,7 +8,6 @@ bcrypt = Bcrypt(app)
 db = SQLAlchemy()
 
 class User(db.Model):
-
     __tablename__ = 'users'
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(120), unique=True, nullable=False)
@@ -19,10 +18,11 @@ class User(db.Model):
     email = db.Column(db.String(120), unique=True, nullable=False)
     password = db.Column(db.String(120), unique=False, nullable=False)
     is_active = db.Column(db.Boolean(), unique=False, nullable=False)
+    contacts = db.relationship('Contact', backref='user', lazy=True)
+    groups = db.relationship('Group', secondary='group_members', back_populates='members')
 
     def __repr__(self):
         return f'<User {self.id} - {self.first_name} {self.last_name}>'
-
 
     def serialize(self):
         return {
@@ -33,34 +33,30 @@ class User(db.Model):
             "age": self.age,
             "address": self.address,            
             "email": self.email,
-            "is_active":self.is_active
-            # do not serialize the password, its a security breach
+            "is_active": self.is_active
         }
     
     def set_password(self, password):
         self.password = bcrypt.generate_password_hash(password).decode('utf-8')
 
     def check_password(self, password):
-        return bcrypt.check_password_hash(self.password,password)
-    
+        return bcrypt.check_password_hash(self.password, password)
 
 class TokenBlockedList(db.Model):
-    id = db.Column(db.Integer, primary_key = True)
-    jti = db.Column(db.String(100), nullable = False)
+    id = db.Column(db.Integer, primary_key=True)
+    jti = db.Column(db.String(100), nullable=False)
 
-
-class Contacts(db.Model):
+class Contact(db.Model):
     __tablename__ = 'contacts'
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(180), unique=True, nullable=False)
     fullname = db.Column(db.String(180), unique=False, nullable=False)
     email = db.Column(db.String(180), unique=False, nullable=False)
     address = db.Column(db.String(180))
-    user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
-    user = db.relationship('User', backref='contacts')
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
 
     def __repr__(self):
-        return f'<Contacts {self.fullname} ({self.username}) - {self.email}>'
+        return f'<Contact {self.fullname} ({self.username}) - {self.email}>'
 
     def serialize(self):
         return {
@@ -69,8 +65,34 @@ class Contacts(db.Model):
             "fullname": self.fullname,            
             "email": self.email,
             "address": self.address,
-
         }
+
+class Group(db.Model):
+    __tablename__ = 'groups'
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(60), nullable=False)
+    creator_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    creator = db.relationship('User', backref='created_groups')
+    members = db.relationship('User', secondary='group_members', back_populates='groups')
+
+    def __repr__(self):
+        return f'<Group {self.id} - {self.name}>'
+
+    def serialize(self):
+        return {
+            "id": self.id,
+            "name": self.name,
+            "creator_id": self.creator_id,
+            "members": [member.serialize() for member in self.members],
+        }
+
+class GroupMember(db.Model):
+    __tablename__ = 'group_members'
+    group_id = db.Column(db.Integer, db.ForeignKey('groups.id'), primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), primary_key=True)
+
+    def __repr__(self):
+        return f'<GroupMember {self.group_id} - {self.user_id}>'
 
 class Payment(db.Model):
 
@@ -94,32 +116,6 @@ class Payment(db.Model):
             "user_id": self.user_id,
             "group_id": self.group_id,
         }
-
-class Group(db.Model):
-
-    __tablename__ = 'groups'
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(60))
-    users = db.relationship('User', secondary='group_users', backref='groups')
-
-    def __repr__(self):
-        return f'<Group {self.id} - {self.name}>'
-
-    def serialize(self):
-        return {
-            "id": self.id,
-            "name": self.name,
-            "users": [user.serialize() for user in self.users],
-        }
-
-class GroupUser(db.Model):
-
-    __tablename__ = 'group_users'
-    group_id = db.Column(db.Integer, db.ForeignKey('groups.id'), primary_key=True)
-    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), primary_key=True)
-
-    def __repr__(self):
-        return f'<GroupUser {self.group_id}>'
 
 class Account(db.Model):
 
