@@ -278,7 +278,7 @@ def delete_contact(contactId):
 #*******************************************GROUPS*******************************************************
 #********************************************************************************************************
 
-#--------------------------ADD_GROUP--------------------------------------------------------------------
+#--------------------------CREATE_GROUP--------------------------------------------------------------------
 
 @api.route('/group', methods=['POST'])
 @jwt_required()
@@ -324,8 +324,28 @@ def get_group(group_id):
         return jsonify({"msg": "You are not a member of this group"}), 403
 
     return jsonify(group.serialize()), 200
+    
+#--------------------------DELETE_GROUP--------------------------------------------------------------------
 
-#--------------------------GET_USERS_GROUP--------------------------------------------------------------------
+@api.route('/group/<int:group_id>', methods=['DELETE'])
+@jwt_required()
+def delete_group(group_id):
+    user_id = get_jwt_identity()
+    group = Group.query.get(group_id)
+
+    if not group:
+        return jsonify({"msg": "Group not found"}), 404
+
+    if group.creator_id != user_id:
+        return jsonify({"msg": "Only the group creator can delete the group"}), 403
+
+    db.session.delete(group)
+    db.session.commit()
+
+    return jsonify({"msg": "Group deleted successfully"}), 200
+
+
+#--------------------------GET_MEMBERS_GROUP--------------------------------------------------------------------
 
 @api.route('/groups', methods=['GET'])
 @jwt_required()
@@ -370,22 +390,22 @@ def add_group_member(group_id):
 
     return jsonify({"msg": "Member added successfully"}), 200
 
-#--------------------------DELETE_GROUP--------------------------------------------------------------------
+#--------------------------DELETE_GROUP_MEMBER---------------------------------------------------------------
 
-@api.route('/group/<int:group_id>', methods=['DELETE'])
+@api.route('/group/<int:group_id>/members', methods=['DELETE'])
 @jwt_required()
-def delete_group(group_id):
-    user_id = get_jwt_identity()
-    group = Group.query.get(group_id)
+def delete_group_member(group_id):
+    
+    body = request.get_json()
 
-    if not group:
-        return jsonify({"msg": "Group not found"}), 404
+    if "member_id" not in body:
+        return jsonify({"msg": "Member ID is required"}), 400
+    
+    group_member = GroupMember(group_id=group_id, user_id=body["member_id"])
 
-    if group.creator_id != user_id:
-        return jsonify({"msg": "Only the group creator can delete the group"}), 403
-
-    db.session.delete(group)
+    db.session.delete(group_member)
     db.session.commit()
 
-    return jsonify({"msg": "Group deleted successfully"}), 200
+    return jsonify({"msg": "Member deleted successfully"}), 200
+
 
