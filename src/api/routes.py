@@ -7,6 +7,9 @@ from api.models import db, User, TokenBlockedList, Contacts, Payment
 from api.utils import generate_sitemap, APIException
 from flask_cors import CORS
 from flask_bcrypt import Bcrypt
+from datetime import datetime
+from pytz import timezone
+import stripe
 
 app = Flask(__name__)
 bcrypt = Bcrypt(app)
@@ -15,6 +18,10 @@ api = Blueprint('api', __name__)
 
 # Allow CORS requests to this API
 CORS(api)
+
+#********************************************************************************************************
+#********************************************USERS*******************************************************
+#********************************************************************************************************
 
 #--------------------------SIGNUP-OR-CREATE-USER--------------------------------------------------------
 
@@ -108,16 +115,17 @@ def user_logout():
 
 #--------------------------USER_INFO--------------------------------------------------------------------
 
-@api.route('/userinfo', methods=['GET'])
+@api.route('/user', methods=['GET'])
 @jwt_required()
 def user_info():
     user = get_jwt_identity()
     payload = get_jwt()
     return jsonify({"user": user, "role":payload["role"]})
 
+
 #--------------------------EDIT_USER--------------------------------------------------------------------
 
-@api.route('/edit', methods=['PATCH'])
+@api.route('/user', methods=['PATCH'])
 @jwt_required()
 def edit_user():
     user_id = get_jwt_identity()
@@ -146,11 +154,13 @@ def edit_user():
 
 #--------------------------DELETE_USER--------------------------------------------------------------------
 
-@api.route('/delete', methods=['DELETE'])
+@api.route('/user', methods=['DELETE'])
 @jwt_required()
 def delete_user():
 
     user_id = get_jwt_identity()
+
+    print(user_id)
 
     user_db = User.query.filter_by(id=user_id).first()
     if user_db is None:
@@ -162,12 +172,26 @@ def delete_user():
 
 #--------------------------PAYMENT--------------------------------------------------------------------
 
+#--------------------------PAYMENT GET-----------------------------------------------------------------
+
 @api.route('/payments', methods=['GET'])
 @jwt_required()
 def get_payments():
-
     payments = Payment.query.all()
-    return jsonify([payment.serialize() for payment in payments])
+    payments_list = []
+    for payment in payments:
+        payment_date = payment.date.astimezone(timezone('UTC'))  # Convertir a la zona horaria neutra
+        payments_list.append({
+            'id': payment.id,
+            'date': payment_date.strftime('%d-%m-%Y %H:%M:%S'),
+            'amount': payment.amount,
+            'user_id': payment.user_id,
+            'group_id': payment.group_id
+        })
+    return jsonify(payments_list), 200
+
+#--------------------------PAYMENT GET BY ID-----------------------------------------------------------------
+    
 
 @api.route('/payments/<int:payment_id>', methods=['GET'])
 @jwt_required()
@@ -176,32 +200,81 @@ def get_payment(payment_id):
     payment = Payment.query.get(payment_id)
     if payment is None:
         return jsonify({'error': 'Payment not found'}), 404
-    return jsonify(payment.serialize())
+    payment_date = payment.date.astimezone(timezone('UTC'))  # Convertir a la zona horaria neutra
+    return jsonify({
+        'id': payment.id,
+        'date': payment_date.strftime('%d-%m-%Y %H:%M:%S'),
+        'amount': payment.amount,
+        'user_id': payment.user_id,
+        'group_id': payment.group_id
+    }), 200
+
+#--------------------------PAYMENT POST----------------------------------------------------------------
 
 @api.route('/payments', methods=['POST'])
 @jwt_required()
 def create_payment():
     user_id = get_jwt_identity()
     data = request.get_json()
-    payment = Payment(date=data['date'], amount=data['amount'], user_id=user_id, group_id=data['group_id'])
+    if 'group_id' in data:
+        group_id = data['group_id']
+    else:
+        group_id = None
+    payment_date = datetime.strptime(data['date'], '%d-%m-%Y %H:%M:%S')
+    # comment = data.get('comment')
+    # user_comment_id = data.get('user_comment_id')
+    payment = Payment(date=payment_date,
+                        amount=data['amount'],
+                        user_id=user_id,
+                        group_id=group_id
+                        # comment=comment,
+                        # user_comment_id=user_comment_id
+                    )
     db.session.add(payment)
     db.session.commit()
     return jsonify(payment.serialize()), 201
+
+#--------------------------PAYMENT PUT-----------------------------------------------------------------
 
 @api.route('/payments/<int:payment_id>', methods=['PUT'])
 @jwt_required()
 def update_payment(payment_id):
     user_id = get_jwt_identity()
     payment = Payment.query.get(payment_id)
+    
     if payment is None:
         return jsonify({'error': 'Payment not found'}), 404
+    
+    # Verifica que el pago no tenga más de 10 minutos de antigüedad, pasado este tiempo no debe permitir modificar
+    if (datetime.utcnow() - payment.created_at).total_seconds() > 600:
+        return jsonify({'error': 'Payment is too old to be updated'}), 403
+    
     data = request.get_json()
-    payment.date = data['date']
+    print("esta es la data", data)
+    print("payment antes de actualizar", payment.serialize())
+    
+    if 'date' not in data or 'amount' not in data:
+        return jsonify({'error': 'Date and amount are required'}), 400
+    
+    payment_date = datetime.strptime(data['date'], '%d-%m-%Y %H:%M:%S')
+    payment.date = payment_date
     payment.amount = data['amount']
     payment.user_id = user_id
-    payment.group_id = data['group_id']
+    
+    # No permitimos la actualización del grupo
+    if 'group_id' in data:
+        return jsonify({'error': 'Cannot update group_id'}), 400
+    
+     # Actualizamos el comentario si se proporciona
+    # if 'comment' in data:
+    #     payment.comment = data['comment']
+    # if 'user_comment_id' in data:
+    #     payment.user_comment_id = data['user_comment_id']
+    
     db.session.commit()
-    return jsonify(payment.serialize())
+    return jsonify(payment.serialize()), 200
+
+#------------------------PAYMENT DELETE------------------------------------
 
 @api.route('/payments/<int:payment_id>', methods=['DELETE'])
 @jwt_required()
@@ -213,4 +286,148 @@ def delete_payment(payment_id):
     db.session.commit()
     return jsonify({'message': 'Payment deleted'})
 
-#--------------------------PAYMENT--------------------------------------------------------------------
+#-------------------------- PAYMENT STRIPE --------------------------------------------------------------------
+
+@api.route('/create-checkout-session', methods=['POST'])
+@jwt_required()
+def create_checkout_session():
+    user_id = get_jwt_identity()
+    # Obtener el usuario y sus datos de pago
+    user = User.query.get(user_id)
+    # Crear un objeto de pago con los datos del usuario
+    payment = Payment(user_id=user_id, amount=1000, currency='eur')
+    # Crear un checkout session con Stripe
+    checkout_session = stripe.checkout.Session.create(
+        payment_method_types=['card'],
+        line_items=[{
+            'price_data': {
+                'currency': 'eur',
+                'unit_amount': 1000,
+                'product_data': {
+                    'name': 'Pago de prueba'
+                }
+            },
+            'quantity': 1
+        }],
+        mode='payment',
+        success_url='https://example.com/success',
+        cancel_url='https://example.com/cancel'
+    )
+    # Guardar el ID de la sesión de checkout en la base de datos
+    payment.checkout_session_id = checkout_session.id
+    db.session.commit()
+    # Retornar el ID de la sesión de checkout
+    return jsonify({'checkout_session_id': checkout_session.id})
+
+
+
+#********************************************************************************************************
+#*****************************************CONTACTS*******************************************************
+#********************************************************************************************************
+
+#--------------------------ADD_CONTACT--------------------------------------------------------------------
+
+@api.route('/contact', methods=['POST'])
+@jwt_required()
+def add_contact():
+
+    user_id = get_jwt_identity()
+    print(user_id)
+
+    body = request.get_json()
+
+    if "username" not in body:
+        return jsonify({"msg":"Username is required"}), 400
+    
+    contact = Contacts(username=body["username"], user_id = user_id)
+
+    if "fullname" in body:
+        contact.fullname = body["fullname"]
+    else:
+        contact.fullname = ""
+
+    if "email" in body:
+        contact.email = body["email"]
+    else:
+        contact.email = ""
+
+    if "address" in body:
+        contact.address = body["address"]
+    else:
+        contact.address = ""
+
+    db.session.add(contact)
+    db.session.commit()
+    return jsonify({"msg":"contact added correctly"}), 200
+
+
+#--------------------------GET_CONTACTS--------------------------------------------------------------------
+
+@api.route('/contact', methods=['GET'])
+@jwt_required()
+def get_contacts():
+
+    user_id = get_jwt_identity()
+    
+    contacts = Contacts.query.filter_by(user_id=user_id)
+    contact_list = list(map(lambda contact: contact.serialize(), contacts))
+
+    return jsonify(contact_list), 200
+
+
+#--------------------------GET_SINGLE_CONTACT--------------------------------------------------------------------
+
+@api.route('/contact/<int:contactId>', methods=['GET'])
+@jwt_required()
+def get_single_contact(contactId):
+
+    contact = Contacts.query.get(contactId)
+
+    if contact is None:
+        return jsonify({"error":"User not found"}),404
+    
+    return jsonify({"Contact": contact.serialize()}),200
+
+
+#--------------------------EDIT_USER--------------------------------------------------------------------
+
+@api.route('/contact/<int:contactId>', methods=['PATCH'])
+@jwt_required()
+def edit_contact(contactId):
+    
+    contact_db = Contacts.query.filter_by(id=contactId).first()
+    if contact_db is None:
+        return jsonify({"info":"Not Found"}), 404
+    
+    contact_body = request.get_json()
+    
+    if "fullname" in contact_body:
+        contact_db.fullname = contact_body["fullname"]
+    if "email" in contact_body:
+        contact_db.email = contact_body["email"]
+    if "address" in contact_body:
+        contact_db.address = contact_body["address"]
+
+    db.session.add(contact_db)
+    db.session.commit()
+    return jsonify(contact_db.serialize()), 200
+
+
+#--------------------------DELETE_USER--------------------------------------------------------------------
+
+@api.route('/contact/<int:contactId>', methods=['DELETE'])
+@jwt_required()
+def delete_contact(contactId):
+
+    contact_db = Contacts.query.filter_by(id=contactId).first()
+    if contact_db is None:
+        return jsonify({"info":"Not Found"}), 404
+    
+    db.session.delete(contact_db)
+    db.session.commit()
+    return jsonify({"info":"User deleted"}), 200
+
+#********************************************************************************************************
+#*******************************************GROUPS*******************************************************
+#********************************************************************************************************
+

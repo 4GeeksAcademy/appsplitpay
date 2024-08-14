@@ -1,6 +1,7 @@
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_bcrypt import Bcrypt
+from datetime import datetime
 
 app = Flask(__name__)
 bcrypt = Bcrypt(app)
@@ -53,8 +54,8 @@ class Contacts(db.Model):
     __tablename__ = 'contacts'
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(180), unique=True, nullable=False)
-    fullname = db.Column(db.String(180), unique=True, nullable=False)
-    email = db.Column(db.String(180), unique=True, nullable=False)
+    fullname = db.Column(db.String(180), unique=False, nullable=False)
+    email = db.Column(db.String(180), unique=False, nullable=False)
     address = db.Column(db.String(180))
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     user = db.relationship('User', backref='contacts')
@@ -76,12 +77,17 @@ class Payment(db.Model):
 
     __tablename__ = 'payments'
     id = db.Column(db.Integer, primary_key=True)
-    date = db.Column(db.DateTime)
+    date = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
     amount = db.Column(db.Float)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     user = db.relationship('User', backref='payments')
     group_id = db.Column(db.Integer, db.ForeignKey('groups.id'))
     group = db.relationship('Group', backref='payments')
+    created_at = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
+    # comment = db.Column(db.String(300))
+    # user_comment_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+    # user_comment = db.relationship('User', backref='payment_comments')
+    
 
     def __repr__(self):
         return f'<Payment {self.id} - {self.date} - {self.amount}>'
@@ -89,12 +95,28 @@ class Payment(db.Model):
     def serialize(self):
         return {
             "id": self.id,
-            "date": self.date,
+            "date": self.date.strftime('%d-%m-%Y %H:%M:%S'),
             "amount": self.amount,
             "user_id": self.user_id,
             "group_id": self.group_id,
+            # "comment": self.comment,
+            # "user_comment_id": self.user_comment_id
         }
+    
+class StripePayment(db.Model):
+    __tablename__ = 'stripe_payments'
 
+    id = db.Column(db.Integer, primary_key=True)
+    payment_id = db.Column(db.Integer, db.ForeignKey('payments.id'))
+    payment = db.relationship('Payment', backref='stripe_payment')
+    stripe_checkout_session_id = db.Column(db.String(255), nullable=True)
+    stripe_payment_intent_id = db.Column(db.String(255), nullable=True)
+    # ... (other Stripe-related fields) ¿¿¿¿¿????? en caso de ser necesario se deberan agregar mas relaciones
+
+    def __repr__(self):
+        return f'<StripePayment {self.id} - {self.payment_id}>'
+    
+# Los usurios podran crear grupos sin limite de personas para realizar pago de sus eventos
 class Group(db.Model):
 
     __tablename__ = 'groups'
@@ -169,6 +191,7 @@ class Notification(db.Model):
     def __repr__(self):
         return f'<Notification {self.type}>'
 
+# el evento es el producto
 class Event(db.Model):
     __tablename__ = 'events'
     id = db.Column(db.Integer, primary_key=True)
