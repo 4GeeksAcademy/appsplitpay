@@ -2,7 +2,7 @@ import React, { useContext } from "react";
 import { Link } from "react-router-dom";
 import splitpay from "../../img/splitpay.jpeg"; // Ajusta la ruta a tu logo
 import "../../styles/home.css"; // Asegúrate de importar el archivo CSS
-import { Context } from '../store/appContext'
+import { Context } from '../store/appContext.js'
 
 
 const Navbar = () => {

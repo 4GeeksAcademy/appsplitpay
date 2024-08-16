@@ -1,11 +1,16 @@
 import { useEffect } from "react";
 import React, { useContext } from "react";
-import { Context } from '../store/appContext';
-import "../styles/homeUser.css";
-import { defaults } from "gh-pages";
+import { Context } from "../store/appContext.js";
+import "../../styles/homeUser.css";
+import { useNavigate } from "react-router-dom";
 
 export const HomeUser = () => {
   const { store, actions } = useContext(Context);
+  const navigate = useNavigate();
+
+  const handleNavigateToEvento = () => {
+    navigate("/evento");
+  };
 
   return (
     <div className="container">
@@ -15,7 +20,7 @@ export const HomeUser = () => {
             <ul>
               <li className="active">
                 {" "}
-                <i class="fa-solid fa-house"></i> Inicio
+                <i className="fa-solid fa-house"></i> Inicio
               </li>
               <li>
                 <i className="fa-regular fa-credit-card"></i> Tarjeta
@@ -23,7 +28,7 @@ export const HomeUser = () => {
               <li>
                 <i className="fa-solid fa-people-arrows"></i> Destinatarios
               </li>
-              <li>
+              <li onClick={handleNavigateToEvento}>
                 <i className="fa-solid fa-file-invoice-dollar"></i> Pagos
               </li>
             </ul>

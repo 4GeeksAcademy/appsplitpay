@@ -1,12 +1,14 @@
 import React from "react";
 import { BrowserRouter, Route, Routes, useLocation } from "react-router-dom";
 import Home from "./pages/home";
-import Login from "./component/login"; // Verifica esta ruta
-import SignUp from "./component/signup"; // Verifica esta ruta
-import BackendURL from "./component/backendURL"; // Verifica esta ruta
-import Navbar from "./component/navbar"; // Verifica esta ruta
+import Login from "./component/login";
+import SignUp from "./component/signup";
+import BackendURL from "./component/backendURL";
+import Navbar from "./component/navbar";
 import Footer from "../js/component/footer";
-
+import HomeUser from "../js/component/homeUser";
+import Evento from "../js/component/evento";
+import injectContext from "./store/appContext"; // Importa injectContext
 
 const Layout = () => {
     // Condición para mostrar BackendURL si la variable de entorno BACKEND_URL no está configurada
@@ -23,7 +25,6 @@ const Layout = () => {
     );
 };
 
-// Componente para manejar la visualización condicional de Navbar y Footer
 const Content = () => {
     const location = useLocation();
 
@@ -40,6 +41,8 @@ const Content = () => {
                 <Route path="/" element={<Home />} />
                 <Route path="/login" element={<Login />} />
                 <Route path="/signup" element={<SignUp />} />
+                <Route path="/home-user" element={<HomeUser />} />
+                <Route path="/evento" element={<Evento />} />
                 {/* Aquí puedes añadir más rutas según sea necesario */}
             </Routes>
             {!shouldHideNavbarAndFooter && <Footer />}
@@ -47,4 +50,4 @@ const Content = () => {
     );
 };
 
-export default Layout;
+export default injectContext(Layout); // Envuelve Layout con injectContext
