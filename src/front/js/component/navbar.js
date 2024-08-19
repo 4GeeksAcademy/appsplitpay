@@ -1,12 +1,16 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import splitpay from "../../img/splitpay.jpeg"; // Ajusta la ruta a tu logo
-import "../../styles/home.css"; // Asegúrate de importar el archivo CSS
-import { Context } from '../store/appContext.js'
+import "../../styles/home.css";
+import { Context } from '../store/appContext.js';
 
 const Navbar = () => {
   const { store, actions } = useContext(Context);
   const navigate = useNavigate();
+
+  // Verifica la autenticación cuando se monta el componente
+  useEffect(() => {
+    actions.checkAuthentication();
+  }, [actions]);
 
   const handleLogout = async () => {
     const success = await actions.logout();
@@ -46,8 +50,6 @@ const Navbar = () => {
         </div>
       </div>
 
-
-      {/* Custom styles */}
       <style>
         {`
           .custom-navbar {
