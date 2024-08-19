@@ -62,7 +62,7 @@ def user_signup():
 
     db.session.add(new_user)
     db.session.commit()
-    return jsonify({"msg":"user added correctly"})
+    return jsonify({"msg":"user added correctly"}), 201
 
 
 #--------------------------LOGIN------------------------------------------------------------------------

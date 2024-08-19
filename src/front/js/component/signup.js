@@ -8,8 +8,8 @@ import { useNavigate } from "react-router-dom";
 const SignUp = () => {
   const { store, actions } = useContext(Context); // Obtener el contexto
   const [username, setUsername] = useState("");
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
+  const [first_name, setFirstName] = useState("");
+  const [last_name, setLastName] = useState("");
   const [age, setAge] = useState("");
   const [address, setAddress] = useState("");
   const [email, setEmail] = useState("");
@@ -39,11 +39,17 @@ const SignUp = () => {
       return;
     }
 
+    // Verificar que la edad esté definida
+    if (!age) {
+      setErrorMessage("Age is required");
+      return;
+    }
+
     // Llamar a la acción signup
-    const success = await actions.signup(username, email, password, firstName, lastName, age, address);
+    const success = await actions.signup(username, email, password, first_name, last_name, age, address);
 
     if (success) {
-      navigate("/home"); // Redirigir a la página de inicio o a otra página después del registro exitoso
+      navigate("/homeUser"); // Redirigir a la página de inicio o a otra página después del registro exitoso
     } else {
       setErrorMessage(store.errorMessage || "An error occurred during signup.");
     }
@@ -132,9 +138,20 @@ const SignUp = () => {
             showYearDropdown
             scrollableYearDropdown
             yearDropdownItemNumber={100}
-            placeholderText="Select your date of birth"
-            required
+            placeholderText="Selecciona tu fecha de nacimiento"
           />
+          {age !== null && (
+            <div>
+              <input
+                type="number"
+                value={age}
+                onChange={(e) => setAge(e.target.value)}
+                placeholder="Introduce tu edad"
+                required
+              />
+              <p>Tu edad es: {age} años</p>
+            </div>
+          )}
         </div>
 
         {/* Address input */}

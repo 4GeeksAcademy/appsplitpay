@@ -1,28 +1,38 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
-
+import { Context } from "../store/appContext"; // Importa el contexto para acceder a actions y store
 
 const Login = () => {
+  const { store, actions } = useContext(Context); // Acceder a store y actions desde el contexto
   const navigate = useNavigate();
-  const [username, setUsername] = useState("")
-  const [password, setPassword] = useState("")
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Aquí puedes agregar la lógica de autenticación
-    // Una vez autenticado, redirigir a la ruta deseada
-    navigate("/HomeUser");
+    // Llamada a la acción de login
+    const success = await actions.login(username, password);
+
+    if (success) {
+      navigate("/homeUser"); // Redirige a la página homeUser si el login es exitoso
+    } else {
+      setErrorMessage(store.errorMessage || "An error occurred during login.");
+    }
   };
 
   return (
     <div className="card d-flex justify-content-center my-5 p-5 mx-auto" style={{ maxWidth: '600px', fontFamily: 'Trebuchet MS' }}>
       <form onSubmit={handleSubmit}>
+        {/* Mostrar mensaje de error si existe */}
+        {errorMessage && <div className="alert alert-danger">{errorMessage}</div>}
+
         {/* Email input */}
         <div className="form-outline mb-4">
-          <input onChange={(e) => setUsername(e.target.value)} type="email" id="form2Example1" className="form-control" required />
+          <input onChange={(e) => setUsername(e.target.value)} type="text" id="form2Example1" className="form-control" required />
           <label className="form-label" htmlFor="form2Example1">
-            Email address
+            Username
           </label>
         </div>
 
