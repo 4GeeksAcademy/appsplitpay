@@ -6,6 +6,7 @@ import SignUp from "./component/signup"; // Verifica esta ruta
 import BackendURL from "./component/backendURL"; // Verifica esta ruta
 import Navbar from "./component/navbar"; // Verifica esta ruta
 import Footer from "../js/component/footer";
+import injectContext from "./store/appContext";
 
 
 const Layout = () => {
@@ -47,4 +48,4 @@ const Content = () => {
     );
 };
 
-export default Layout;
+export default injectContext(Layout);
