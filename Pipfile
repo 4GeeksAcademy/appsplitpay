@@ -21,7 +21,7 @@ typing-extensions = "*"
 flask-bcrypt = "*"
 flask-jwt-extended = "*"
 pytz = "*"
-stripe = "*"
+paypalrestsdk = "*"
 
 [requires]
 python_version = "3.10"

@@ -39,7 +39,7 @@ else:
     app.config['SQLALCHEMY_DATABASE_URI'] = "sqlite:////tmp/test.db"
 
 # acceso clave stripe
-PASSSTRIPE=os.getenv("STRIPE.API_KEY")
+PASSPAYPAL=os.getenv("PAYPAL.API_KEY")
 
 
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False

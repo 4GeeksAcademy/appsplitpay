@@ -9,7 +9,7 @@ from flask_cors import CORS
 from flask_bcrypt import Bcrypt
 from datetime import datetime
 from pytz import timezone
-import stripe
+from paypal_funciones import paypal_Login, create_order, transfer_money
 
 app = Flask(__name__)
 bcrypt = Bcrypt(app)
@@ -170,7 +170,9 @@ def delete_user():
     db.session.commit()
     return jsonify({"info":"User deleted"}), 200
 
-#--------------------------PAYMENT--------------------------------------------------------------------
+#-----------------------------------------------------------------------------------------------------
+#---------------------------------PAYMENT-------------------------------------------------------------
+#-----------------------------------------------------------------------------------------------------
 
 #--------------------------PAYMENT GET-----------------------------------------------------------------
 
@@ -286,38 +288,25 @@ def delete_payment(payment_id):
     db.session.commit()
     return jsonify({'message': 'Payment deleted'})
 
-#-------------------------- PAYMENT STRIPE --------------------------------------------------------------------
+#----------------------------------------------------------------------------------------------------------
+#-------------------------- PAYMENT PAYPAL ----------------------------------------------------------------
+#----------------------------------------------------------------------------------------------------------
 
-@api.route('/create-checkout-session', methods=['POST'])
-@jwt_required()
-def create_checkout_session():
-    user_id = get_jwt_identity()
-    # Obtener el usuario y sus datos de pago
-    user = User.query.get(user_id)
-    # Crear un objeto de pago con los datos del usuario
-    payment = Payment(user_id=user_id, amount=1000, currency='eur')
-    # Crear un checkout session con Stripe
-    checkout_session = stripe.checkout.Session.create(
-        payment_method_types=['card'],
-        line_items=[{
-            'price_data': {
-                'currency': 'eur',
-                'unit_amount': 1000,
-                'product_data': {
-                    'name': 'Pago de prueba'
-                }
-            },
-            'quantity': 1
-        }],
-        mode='payment',
-        success_url='https://example.com/success',
-        cancel_url='https://example.com/cancel'
-    )
-    # Guardar el ID de la sesión de checkout en la base de datos
-    payment.checkout_session_id = checkout_session.id
-    db.session.commit()
-    # Retornar el ID de la sesión de checkout
-    return jsonify({'checkout_session_id': checkout_session.id})
+#ruta para solicitar pago entre usuarios
+@api.route('/transfer_money', methods=['POST'])
+def transfer_money_route():
+    
+    sender_id = request.form['sender_id']
+    recipient_id = request.form['recipient_id']
+    
+    # monto a transferir, convertimos en "float" para que se puedan agregar numeros decimales
+    amount = float(request.form['amount'])
+
+    # Llamamos a la funcion
+    if transfer_money(sender_id, recipient_id, amount):
+        return jsonify({"message": "Transferencia realizada con éxito"}), 200
+    else:
+        return jsonify({"message": "Error al realizar la transferencia"}), 400
 
 
 
