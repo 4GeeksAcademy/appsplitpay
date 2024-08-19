@@ -51,4 +51,8 @@ const Content = () => {
     );
 };
 
+<<<<<<< HEAD
 export default injectContext(Layout);
+=======
+export default injectContext(Layout);
+>>>>>>> 3cc82db3c433dbeeb3e40d5d0adda3d79e1d5b60
