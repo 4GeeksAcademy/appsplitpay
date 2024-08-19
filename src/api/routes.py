@@ -32,6 +32,31 @@ def user_signup():
         if field not in body:
             return jsonify({"error": f"{field.capitalize()} is required"}), 400
 
+<<<<<<< HEAD
+    if "first_name" in body:
+        new_user.first_name = body["first_name"]
+    else:
+        new_user.first_name = ""
+
+    if "last_name" in body:
+        new_user.last_name = body["last_name"]
+    else:
+        new_user.last_name = ""
+
+    if "age" in body:
+        new_user.age = body["age"]
+    else:
+        new_user.age = ""
+
+    if "address" in body:
+        new_user.address = body["address"]
+    else:
+        new_user.address = ""
+
+    db.session.add(new_user)
+    db.session.commit()
+    return jsonify({"msg":"user added correctly"}), 201
+=======
     try:
         encrypted_password = bcrypt.generate_password_hash(body["password"]).decode('utf-8')
         new_user = User(
@@ -44,6 +69,7 @@ def user_signup():
             age=body.get("age", ""),
             address=body.get("address", "")
         )
+>>>>>>> 3cc82db3c433dbeeb3e40d5d0adda3d79e1d5b60
 
         db.session.add(new_user)
         db.session.commit()
