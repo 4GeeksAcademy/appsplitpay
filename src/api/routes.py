@@ -274,37 +274,41 @@ def update_payment(payment_id):
     return jsonify(payment.serialize()), 200
 
 #------------------------PAYMENT DELETE------------------------------------
+#--------------------------IMPORTANTE----------------------------------------
+#los usuarios no deberian poder borrar los pagos de la base de datos.
 
-@api.route('/payments/<int:payment_id>', methods=['DELETE'])
-@jwt_required()
-def delete_payment(payment_id):
-    payment = Payment.query.get(payment_id)
-    if payment is None:
-        return jsonify({'error': 'Payment not found'}), 404
-    db.session.delete(payment)
-    db.session.commit()
-    return jsonify({'message': 'Payment deleted'})
+#@api.route('/payments/<int:payment_id>', methods=['DELETE'])
+#@jwt_required()
+#def delete_payment(payment_id):
+#    payment = Payment.query.get(payment_id)
+#    if payment is None:
+#        return jsonify({'error': 'Payment not found'}), 404
+#    db.session.delete(payment)
+#    db.session.commit()
+#    return jsonify({'message': 'Payment deleted'})
 
 #----------------------------------------------------------------------------------------------------------
 #-------------------------- PAYMENT PAYPAL ----------------------------------------------------------------
 #----------------------------------------------------------------------------------------------------------
 
 #ruta para solicitar pago entre usuarios
-@api.route('/transfer_money', methods=['POST'])
-def transfer_money_route():
-    
-    sender_id = request.form['sender_id']
-    recipient_id = request.form['recipient_id']
-    
-    # monto a transferir, convertimos en "float" para que se puedan agregar numeros decimales
-    amount = float(request.form['amount'])
+@api.route('/transfer', methods=['POST'])
+def transfer():
+    data = request.get_json()
 
-    # Llamamos a la funcion
-    if transfer_money(sender_id, recipient_id, amount):
-        return jsonify({"message": "Transferencia realizada con éxito"}), 200
+    sender_id = data.get('sender_id')
+    recipient_id = data.get('recipient_id')
+    amount = data.get('amount')
+
+    if not sender_id or not recipient_id or not amount:
+        return jsonify({'error': 'Faltan datos'}), 400
+
+    success = transfer_money(sender_id, recipient_id, amount)
+
+    if success:
+        return jsonify({'message': 'Transferencia exitosa'}), 201
     else:
-        return jsonify({"message": "Error al realizar la transferencia"}), 400
-
+        return jsonify({'error': 'Fallo en la transferencia'}), 500
 
 #********************************************************************************************************
 #*****************************************CONTACTS*******************************************************
