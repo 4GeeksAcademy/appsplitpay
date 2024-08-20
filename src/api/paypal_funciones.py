@@ -123,7 +123,7 @@ def transfer_money(sender_id, recipient_id, amount):
       },
       "transactions": [{
         "amount": {
-          "currency": "USD",
+          "currency": "EUR",
           "total": amount
         },
         "payee": {
@@ -144,4 +144,57 @@ def get_payment_info(user_id):
     return {
       "email": "user@example.com",
       "payment_method": "paypal"
+    }
+
+#---------------------------------------------------------------------------------------
+
+# Crea una orden para poder enviar dinero de un usuario a otro
+
+def transfer_money(sender_id, recipient_id, amount):
+    # Obtener la información de pago del remitente y del destinatario
+    sender_payment_info = get_payment_info(sender_id)
+    recipient_payment_info = get_payment_info(recipient_id)
+
+    # Crear la solicitud de pago
+    payload = {
+        "intent": "transfer",
+        "payer": {
+            "payment_method": "paypal",
+            "payer_info": {
+                "email": sender_payment_info["email"]
+            }
+        },
+        "transactions": [{
+            "amount": {
+                "currency": "EUR",
+                "total": amount
+            },
+            "payee": {
+                "email": recipient_payment_info["email"]
+            }
+        }]
+    }
+
+    # Realizar la solicitud de pago a la API de PayPal
+    response = requests.post(
+        "https://api.paypal.com/v1/payments/payment",
+        json=payload,
+        headers={
+            "Content-Type": "application/json",
+            "Authorization": "Bearer YOUR_PAYPAL_API_TOKEN"
+        }
+    )
+
+    # Verificar si la solicitud fue exitosa
+    if response.status_code == 201:
+        return True
+    else:
+        return False
+
+def get_payment_info(user_id):
+    # Obtener la información de pago del usuario desde la base de datos
+    # ...
+    return {
+        "email": "user@example.com",
+        "payment_method": "paypal"
     }
