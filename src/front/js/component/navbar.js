@@ -10,7 +10,7 @@ const Navbar = () => {
   // Verifica la autenticación cuando se monta el componente
   useEffect(() => {
     actions.checkAuthentication();
-  }, [actions]);
+  }, [store.token]);
 
   const handleLogout = async () => {
     const success = await actions.logout();
