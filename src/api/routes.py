@@ -264,7 +264,7 @@ def update_payment(payment_id):
     if 'group_id' in data:
         return jsonify({'error': 'Cannot update group_id'}), 400
     
-     # Actualizamos el comentario si se proporciona
+    # Actualizamos el comentario si se proporciona
     # if 'comment' in data:
     #     payment.comment = data['comment']
     # if 'user_comment_id' in data:
