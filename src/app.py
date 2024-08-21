@@ -18,6 +18,7 @@ ENV = "development" if os.getenv("FLASK_DEBUG") == "1" else "production"
 static_file_dir = os.path.join(os.path.dirname(
     os.path.realpath(__file__)), '../public/')
 app = Flask(__name__)
+app.config['TIMEZONE'] = 'UTC'
 app.url_map.strict_slashes = False
 
 app.config["JWT_SECRET_KEY"] = os.getenv("JWT_SECRET")  # ¡Cambia las palabras "super-secret" por otra cosa!
@@ -29,13 +30,17 @@ def check_if_token_revoked(jwt_header, jwt_payload: dict) -> bool:
     token = TokenBlockedList.query.filter_by(jti=jti).first()
     return token is not None
 
-# database condiguration
+# database configuration
 db_url = os.getenv("DATABASE_URL")
 if db_url is not None:
     app.config['SQLALCHEMY_DATABASE_URI'] = db_url.replace(
         "postgres://", "postgresql://")
 else:
     app.config['SQLALCHEMY_DATABASE_URI'] = "sqlite:////tmp/test.db"
+
+# acceso clave stripe
+PAYPAL_SECRET_KEY=os.getenv("PAYPAL_SECRET_KEY")
+
 
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 MIGRATE = Migrate(app, db, compare_type=True)
