@@ -19,12 +19,20 @@ const Navbar = () => {
     }
   };
 
+  const handleLogoClick = () => {
+    if (store.isAuthenticated) {
+      navigate("/");  // Redirige a HomeUser si está autenticado
+    } else {
+      navigate("/login");  // Redirige a la página de login si no está autenticado
+    }
+  };
+
   return (
     <nav className="navbar navbar-expand-lg custom-navbar" style={{ backgroundColor: "#274d95", fontFamily: "Trebuchet MS" }}>
       <div className="container-fluid d-flex align-items-center">
-        <Link to="/" className="navbar-brand d-flex align-items-center me-auto">
+        <div onClick={handleLogoClick} className="navbar-brand d-flex align-items-center me-auto" style={{ cursor: "pointer" }}>
           <h1 style={{ color: "white" }}>AppSplitPay</h1>
-        </Link>
+        </div>
 
         <button className="navbar-toggler ms-auto" type="button" data-bs-toggle="collapse" data-bs-target="#navbarTogglerDemo01" aria-controls="navbarTogglerDemo01" aria-expanded="false" aria-label="Toggle navigation">
           <span className="navbar-toggler-icon"></span>

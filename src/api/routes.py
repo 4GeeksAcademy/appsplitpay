@@ -235,43 +235,43 @@ def create_payment():
 
 #--------------------------PAYMENT PUT-----------------------------------------------------------------
 
-@api.route('/payments/<int:payment_id>', methods=['PUT'])
-@jwt_required()
-def update_payment(payment_id):
-    user_id = get_jwt_identity()
-    payment = Payment.query.get(payment_id)
+# @api.route('/payments/<int:payment_id>', methods=['PUT'])
+# @jwt_required()
+# def update_payment(payment_id):
+#     user_id = get_jwt_identity()
+#     payment = Payment.query.get(payment_id)
     
-    if payment is None:
-        return jsonify({'error': 'Payment not found'}), 404
+#     if payment is None:
+#         return jsonify({'error': 'Payment not found'}), 404
     
-    # Verifica que el pago no tenga más de 10 minutos de antigüedad, pasado este tiempo no debe permitir modificar
-    if (datetime.utcnow() - payment.created_at).total_seconds() > 600:
-        return jsonify({'error': 'Payment is too old to be updated'}), 403
+#     # Verifica que el pago no tenga más de 10 minutos de antigüedad, pasado este tiempo no debe permitir modificar
+#     if (datetime.utcnow() - payment.created_at).total_seconds() > 600:
+#         return jsonify({'error': 'Payment is too old to be updated'}), 403
     
-    data = request.get_json()
-    print("esta es la data", data)
-    print("payment antes de actualizar", payment.serialize())
+#     data = request.get_json()
+#     print("esta es la data", data)
+#     print("payment antes de actualizar", payment.serialize())
     
-    if 'date' not in data or 'amount' not in data:
-        return jsonify({'error': 'Date and amount are required'}), 400
+#     if 'date' not in data or 'amount' not in data:
+#         return jsonify({'error': 'Date and amount are required'}), 400
     
-    payment_date = datetime.strptime(data['date'], '%d-%m-%Y %H:%M:%S')
-    payment.date = payment_date
-    payment.amount = data['amount']
-    payment.user_id = user_id
+#     payment_date = datetime.strptime(data['date'], '%d-%m-%Y %H:%M:%S')
+#     payment.date = payment_date
+#     payment.amount = data['amount']
+#     payment.user_id = user_id
     
-    # No permitimos la actualización del grupo
-    if 'group_id' in data:
-        return jsonify({'error': 'Cannot update group_id'}), 400
+#     # No permitimos la actualización del grupo
+#     if 'group_id' in data:
+#         return jsonify({'error': 'Cannot update group_id'}), 400
     
-    # Actualizamos el comentario si se proporciona
-    # if 'comment' in data:
-    #     payment.comment = data['comment']
-    # if 'user_comment_id' in data:
-    #     payment.user_comment_id = data['user_comment_id']
+#     # Actualizamos el comentario si se proporciona
+#     # if 'comment' in data:
+#     #     payment.comment = data['comment']
+#     # if 'user_comment_id' in data:
+#     #     payment.user_comment_id = data['user_comment_id']
     
-    db.session.commit()
-    return jsonify(payment.serialize()), 200
+#     db.session.commit()
+#     return jsonify(payment.serialize()), 200
 
 #------------------------PAYMENT DELETE------------------------------------
 #--------------------------IMPORTANTE----------------------------------------
