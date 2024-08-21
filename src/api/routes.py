@@ -3,10 +3,13 @@ This module takes care of starting the API Server, Loading the DB and Adding the
 """
 from flask import Flask, request, jsonify, url_for, Blueprint
 from flask_jwt_extended import create_access_token, get_jwt_identity, get_jwt, jwt_required
-from api.models import db, User, TokenBlockedList, Contact, Group, GroupMember, Event, Account
+from api.models import db, User, TokenBlockedList, Contact, Group, GroupMember, Event, Account, Payment
 from api.utils import generate_sitemap, APIException
 from flask_cors import CORS
 from flask_bcrypt import Bcrypt
+from datetime import datetime
+from pytz import timezone
+from api.paypal_funciones import paypal_Login, create_order, transfer_money
 from sqlalchemy.exc import IntegrityError
 
 app = Flask(__name__)
@@ -162,6 +165,150 @@ def delete_user():
     except Exception as e:
         db.session.rollback()
         return jsonify({"error": "An unexpected error occurred while deleting user", "details": str(e)}), 500
+
+
+#-----------------------------------------------------------------------------------------------------
+#---------------------------------PAYMENT-------------------------------------------------------------
+#-----------------------------------------------------------------------------------------------------
+
+#--------------------------PAYMENT GET-----------------------------------------------------------------
+
+@api.route('/payments', methods=['GET'])
+@jwt_required()
+def get_payments():
+    payments = Payment.query.all()
+    payments_list = []
+    for payment in payments:
+        payment_date = payment.date.astimezone(timezone('UTC'))  # Convertir a la zona horaria neutra
+        payments_list.append({
+            'id': payment.id,
+            'date': payment_date.strftime('%d-%m-%Y %H:%M:%S'),
+            'amount': payment.amount,
+            'user_id': payment.user_id,
+            'group_id': payment.group_id
+        })
+    return jsonify(payments_list), 200
+
+#--------------------------PAYMENT GET BY ID-----------------------------------------------------------------
+    
+
+@api.route('/payments/<int:payment_id>', methods=['GET'])
+@jwt_required()
+def get_payment(payment_id):
+    
+    payment = Payment.query.get(payment_id)
+    if payment is None:
+        return jsonify({'error': 'Payment not found'}), 404
+    payment_date = payment.date.astimezone(timezone('UTC'))  # Convertir a la zona horaria neutra
+    return jsonify({
+        'id': payment.id,
+        'date': payment_date.strftime('%d-%m-%Y %H:%M:%S'),
+        'amount': payment.amount,
+        'user_id': payment.user_id,
+        'group_id': payment.group_id
+    }), 200
+
+#--------------------------PAYMENT POST----------------------------------------------------------------
+
+@api.route('/payments', methods=['POST'])
+@jwt_required()
+def create_payment():
+    user_id = get_jwt_identity()
+    data = request.get_json()
+    if 'group_id' in data:
+        group_id = data['group_id']
+    else:
+        group_id = None
+    payment_date = datetime.strptime(data['date'], '%d-%m-%Y %H:%M:%S')
+    # comment = data.get('comment')
+    # user_comment_id = data.get('user_comment_id')
+    payment = Payment(date=payment_date,
+                        amount=data['amount'],
+                        user_id=user_id,
+                        group_id=group_id
+                        # comment=comment,
+                        # user_comment_id=user_comment_id
+                    )
+    db.session.add(payment)
+    db.session.commit()
+    return jsonify(payment.serialize()), 201
+
+#--------------------------PAYMENT PUT-----------------------------------------------------------------
+
+@api.route('/payments/<int:payment_id>', methods=['PUT'])
+@jwt_required()
+def update_payment(payment_id):
+    user_id = get_jwt_identity()
+    payment = Payment.query.get(payment_id)
+    
+    if payment is None:
+        return jsonify({'error': 'Payment not found'}), 404
+    
+    # Verifica que el pago no tenga más de 10 minutos de antigüedad, pasado este tiempo no debe permitir modificar
+    if (datetime.utcnow() - payment.created_at).total_seconds() > 600:
+        return jsonify({'error': 'Payment is too old to be updated'}), 403
+    
+    data = request.get_json()
+    print("esta es la data", data)
+    print("payment antes de actualizar", payment.serialize())
+    
+    if 'date' not in data or 'amount' not in data:
+        return jsonify({'error': 'Date and amount are required'}), 400
+    
+    payment_date = datetime.strptime(data['date'], '%d-%m-%Y %H:%M:%S')
+    payment.date = payment_date
+    payment.amount = data['amount']
+    payment.user_id = user_id
+    
+    # No permitimos la actualización del grupo
+    if 'group_id' in data:
+        return jsonify({'error': 'Cannot update group_id'}), 400
+    
+    # Actualizamos el comentario si se proporciona
+    # if 'comment' in data:
+    #     payment.comment = data['comment']
+    # if 'user_comment_id' in data:
+    #     payment.user_comment_id = data['user_comment_id']
+    
+    db.session.commit()
+    return jsonify(payment.serialize()), 200
+
+#------------------------PAYMENT DELETE------------------------------------
+#--------------------------IMPORTANTE----------------------------------------
+#los usuarios no deberian poder borrar los pagos de la base de datos.
+
+#@api.route('/payments/<int:payment_id>', methods=['DELETE'])
+#@jwt_required()
+#def delete_payment(payment_id):
+#    payment = Payment.query.get(payment_id)
+#    if payment is None:
+#        return jsonify({'error': 'Payment not found'}), 404
+#    db.session.delete(payment)
+#    db.session.commit()
+#    return jsonify({'message': 'Payment deleted'})
+
+#----------------------------------------------------------------------------------------------------------
+#-------------------------- PAYMENT PAYPAL ----------------------------------------------------------------
+#----------------------------------------------------------------------------------------------------------
+
+#ruta para solicitar pago entre usuarios
+@api.route('/transfer', methods=['POST'])
+def transfer():
+    data = request.get_json()
+
+    sender_id = data.get('sender_id')
+    recipient_id = data.get('recipient_id')
+    amount = data.get('amount')
+
+    if not sender_id or not recipient_id or not amount:
+        return jsonify({'error': 'Faltan datos'}), 400
+
+    success = transfer_money(sender_id, recipient_id, amount)
+
+    if success:
+        return jsonify({'message': 'Transferencia exitosa'}), 201
+    else:
+        return jsonify({'error': 'Fallo en la transferencia'}), 500
 
 #********************************************************************************************************
 #*****************************************CONTACTS*******************************************************
