@@ -788,6 +788,22 @@ def delete_account(account_id):
 #********************************************************************************************************
 
 
+@api.route('/changepassword'methods= ['Patch'])
+@jwt_required()
+def user_change_password():
+    user_id= get_jwt_identity()
+    user = User.query.filter_by(id=user_id).first()
+     
+    if user is None:
+        return jsonify({"msg: usuario no encontrado"}), 404
+
+    body=request.get_json()
+    new_password = bcrypt.generate_password_hash(body["password"]).decode('utf-8')
+    user_password=new_password
+    db.session.add(user)
+    db.session.commit()
+    return jsonify("clave actualizada")
+
 
 
 """ @api.route('/', methods=['GET'])
