@@ -1,9 +1,9 @@
 import React, { useState, useContext } from "react";
-import { useNavigate } from "react-router-dom";
-import { Context } from "../store/appContext"; // Importa el contexto para acceder a actions y store
+import { useNavigate, Link } from "react-router-dom";
+import { Context } from "../store/appContext";
 
 const Login = () => {
-  const { store, actions } = useContext(Context); // Acceder a store y actions desde el contexto
+  const { store, actions } = useContext(Context);
   const navigate = useNavigate();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -30,18 +30,26 @@ const Login = () => {
 
         {/* Email input */}
         <div className="form-outline mb-4">
-          <input onChange={(e) => setUsername(e.target.value)} type="text" id="form2Example1" className="form-control" required />
-          <label className="form-label" htmlFor="form2Example1">
-            Username
-          </label>
+          <input 
+            onChange={(e) => setUsername(e.target.value)} 
+            type="text" 
+            id="form2Example1" 
+            className="form-control" 
+            required 
+          />
+          <label className="form-label" htmlFor="form2Example1">Username</label>
         </div>
 
         {/* Password input */}
         <div className="form-outline mb-4">
-          <input onChange={(e) => setPassword(e.target.value)} type="password" id="form2Example2" className="form-control" required />
-          <label className="form-label" htmlFor="form2Example2">
-            Password
-          </label>
+          <input 
+            onChange={(e) => setPassword(e.target.value)} 
+            type="password" 
+            id="form2Example2" 
+            className="form-control" 
+            required 
+          />
+          <label className="form-label" htmlFor="form2Example2">Password</label>
         </div>
 
         {/* 2 column grid layout for inline styling */}
@@ -63,7 +71,8 @@ const Login = () => {
 
           <div className="col">
             {/* Simple link */}
-            <a href="#!">Forgot password?</a>
+            {/* Redirigir a la página de recuperación de contraseña */}
+            <Link to="/request-password-recovery">Forgot password?</Link>
           </div>
         </div>
 
@@ -75,7 +84,7 @@ const Login = () => {
         {/* Register buttons */}
         <div className="text-center">
           <p>
-            Not a member? <a href="/signup">Register</a>
+            Not a member? <Link to="/signup">Register</Link>
           </p>
           <p>or sign up with:</p>
           <button type="button" className="btn btn-secondary btn-floating mx-1">

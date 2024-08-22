@@ -5,21 +5,22 @@ import Login from "./component/login";
 import SignUp from "./component/signup";
 import BackendURL from "./component/backendURL";
 import Navbar from "./component/navbar";
-import Footer from "../js/component/footer";
-import HomeUser from "../js/component/homeUser";
-import Evento from "../js/component/evento";
+import Footer from "./component/footer";
+import HomeUser from "./component/homeUser";
+import Evento from "./component/evento";
+import ChangePassword from "./component/changepassword";
+import RequestPasswordRecovery from "./component/request_password_recovery"; // Importar el componente
 import injectContext, { Context } from "./store/appContext";
 
 const Layout = () => {
     const { actions } = useContext(Context);
 
-
     useEffect(() => {
         actions.checkAuthentication();
-    }, []);
+    }, [actions]);
 
     if (!process.env.BACKEND_URL || process.env.BACKEND_URL === "") {
-        return <BackendURL/>;
+        return <BackendURL />;
     }
 
     const basename = process.env.BASENAME || "";
@@ -45,6 +46,8 @@ const Content = () => {
                 <Route path="/signup" element={<SignUp />} />
                 <Route path="/homeUser" element={<HomeUser />} />
                 <Route path="/evento" element={<Evento />} />
+                <Route path="/changepassword" element={<ChangePassword />} />
+                <Route path="/request-password-recovery" element={<RequestPasswordRecovery />} /> {/* Nueva ruta */}
             </Routes>
             {!shouldHideNavbarAndFooter && <Footer />}
         </>

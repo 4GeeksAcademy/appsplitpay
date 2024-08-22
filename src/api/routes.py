@@ -787,22 +787,82 @@ def delete_account(account_id):
 #*******************************************COMMENTS*******************************************************
 #********************************************************************************************************
 
-
-@api.route('/changepassword'methods= ['Patch'])
+@api.route('/changepassword', methods=['PATCH'])
 @jwt_required()
 def user_change_password():
-    user_id= get_jwt_identity()
+    user_id = get_jwt_identity()
     user = User.query.filter_by(id=user_id).first()
-     
-    if user is None:
-        return jsonify({"msg: usuario no encontrado"}), 404
 
-    body=request.get_json()
+    if user is None:
+        return jsonify({"msg": "Usuario no encontrado"}), 404
+
+    body = request.get_json()
     new_password = bcrypt.generate_password_hash(body["password"]).decode('utf-8')
-    user_password=new_password
+    
+    # Asignar la nueva contraseña al usuario
+    user.password = new_password
     db.session.add(user)
+
+    # Verificar el tipo de token
+    if get_jwt()["type"] == "password":
+        # Bloquear el token una vez utilizado
+        jti = get_jwt()["jti"]
+        token_blocked = TokenBlockedList(jti=jti)
+        db.session.add(token_blocked)
+    
     db.session.commit()
-    return jsonify("clave actualizada")
+    return jsonify({"msg": "Contraseña actualizada con éxito"}), 200
+
+@api.route('/requestpasswordrecovery', methods=['POST'])
+def request_password_recovery():
+    email = request.get_json()['email']
+    user = User.query.filter_by(email=email).first()
+
+    if user is None:
+        return jsonify({"msg": "Usuario no encontrado"}), 404
+    
+    # Generar un token de acceso específico para la recuperación de contraseña
+    password_token = create_access_token(identity=user.id, additional_claims={"type": "password"}, expires_delta=datetime.timedelta(hours=1))
+
+    # Enviar un correo electrónico al usuario con el token de recuperación
+    recovery_url = f"http://your-frontend-url.com/change-password?token={password_token}"
+    send_email(user.email, recovery_url)
+
+    return jsonify({"msg": "Correo enviado con las instrucciones para cambiar la contraseña"}), 200
+
+def send_email():
+    url = "https://api.emailjs.com/api/v1.0/email/send"
+    
+    headers = {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer YOUR_AUTHORIZATION_TOKEN"  # Si es necesario para tu API
+    }
+
+    data = {
+        "service_id": "YOUR_SERVICE_ID",
+        "template_id": "YOUR_TEMPLATE_ID",
+        "user_id": "YOUR_PUBLIC_KEY",
+        "template_params": {
+            "username": "James",
+            "g-recaptcha-response": "03AHJ_ASjnLA214KSNKFJAK12sfKASfehbmfd..."  # Tu respuesta reCAPTCHA aquí
+        }
+    }
+
+    try:
+        response = request.post(url, headers=headers, json=data)
+        
+        if response.status_code == 200:
+            print("Correo enviado con éxito.")
+        else:
+            print(f"Error al enviar el correo: {response.status_code} - {response.text}")
+
+    except Exception as e:
+        print(f"Excepción: {str(e)}")
+
+# Llamar a la función para enviar el correo
+send_email())
+
+
 
 
 
