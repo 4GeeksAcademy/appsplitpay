@@ -1,16 +1,22 @@
-import { useEffect } from "react";
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import { Context } from "../store/appContext.js";
 import "../../styles/homeUser.css";
 import { useNavigate } from "react-router-dom";
+import Evento  from "../component/evento.js";
 
 export const HomeUser = () => {
   const { store, actions } = useContext(Context);
   const navigate = useNavigate();
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const handleNavigateToEvento = () => {
-    navigate("/evento");
+  const openModal = () => {
+    setIsModalOpen(true);
   };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+  };
+
 
   return (
     <div className="container">
@@ -28,11 +34,12 @@ export const HomeUser = () => {
               <li>
                 <i className="fa-solid fa-people-arrows"></i> Destinatarios
               </li>
-              <li onClick={handleNavigateToEvento}>
+              <li  onClick={openModal}>
                 <i className="fa-solid fa-file-invoice-dollar"></i> Pagos
               </li>
             </ul>
           </div>
+                  <Evento isOpen={isModalOpen} onClose={closeModal} />
         </div>
         <div className="col-8 .col-sm-4">
           <div className="main-content">

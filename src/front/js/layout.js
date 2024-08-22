@@ -19,7 +19,7 @@ const Layout = () => {
     }, []);
 
     if (!process.env.BACKEND_URL || process.env.BACKEND_URL === "") {
-        return <BackendURL />;
+        return <BackendURL/>;
     }
 
     const basename = process.env.BASENAME || "";
@@ -51,8 +51,4 @@ const Content = () => {
     );
 };
 
-<<<<<<< HEAD
 export default injectContext(Layout);
-=======
-export default injectContext(Layout);
->>>>>>> 3cc82db3c433dbeeb3e40d5d0adda3d79e1d5b60
