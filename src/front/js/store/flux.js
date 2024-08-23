@@ -18,6 +18,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 						method: "POST",
 						headers: {
 							"Content-Type": "application/json",
+							"Cross-Origin-Opener-Policy": "same-origin-allow-popups",
 						},
 						body: JSON.stringify({ username, password })
 					});
@@ -118,17 +119,13 @@ const getState = ({ getStore, getActions, setStore }) => {
 
 			checkAuthentication: () => {
 				const token = localStorage.getItem("token");
-				if (token) {
-					setStore({
-						token: token,
-						isAuthenticated: true,
-					});
-				} else {
-					setStore({
-						isAuthenticated: false,
-					});
+				if (token && !getStore().isAuthenticated) {
+				  setStore({
+					token: token,
+					isAuthenticated: true,
+				  });
 				}
-			},
+			  },
 			updateUserInfo: (newUserInfo) => {
 				const store = getStore();
 				setStore({

@@ -12,6 +12,7 @@ export const HomeUser = () => {
     navigate("/evento");
   };
 
+
   return (
     <div className="container">
       <div className="row">

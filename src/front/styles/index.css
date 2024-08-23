@@ -2,7 +2,7 @@
     General Styles used on every website (Don't Repeat Yourself)
 */
 .imagen {
-  border-radius: ;
+  border-radius: 1;
   height: 10 px;
   width: 10px;
   color: blueviolet;
