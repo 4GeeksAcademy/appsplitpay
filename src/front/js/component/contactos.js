@@ -30,23 +30,23 @@ export const Contactos = () => {
                         <h2>Recientes</h2>
                         <div className="recientes-lista">
                             <div className="contacto">
-                                <img src="https://via.placeholder.com/50" alt="Mery Janeth" />
+                                <img src="https://img.freepik.com/fotos-premium/primer-plano-rostro-mujer-luz-que-entra-sus-ojos-imagen-generativa-ia_97070-4802.jpg?w=360" alt="Mery Janeth" />
                                 <p>Mery Janeth</p>
                             </div>
                             <div className="contacto">
-                                <img src="https://via.placeholder.com/50" alt="Eugenio Santana" />
+                                <img src="https://img.europapress.es/fotoweb/fotonoticia_20240216125104_690.jpg" alt="Eugenio Santana" />
                                 <p>Eugenio Santana</p>
                             </div>
                             <div className="contacto">
-                                <img src="https://via.placeholder.com/50" alt="Karen Sanchez" />
+                                <img src="https://media.telefonicatech.com/telefonicatech/uploads/2023/12/hero_post_ia_generative_ai_portrait.jpg" alt="Karen Sanchez" />
                                 <p>Karen Sanchez</p>
                             </div>
                             <div className="contacto">
-                                <img src="https://via.placeholder.com/50" alt="Jhony Jose" />
+                                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQVqt_OrGMLvfDF3tz6_z3xBCD7_kP7u6bLWXE_n3sSgH5-3z4LPYUwZqbEMW_iTuPaVls&usqp=CAU" alt="Jhony Jose" />
                                 <p>Jhony Jose</p>
                             </div>
                             <div className="contacto">
-                                <img src="https://via.placeholder.com/50" alt="Jhonny Timaure" />
+                                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQVqt_OrGMLvfDF3tz6_z3xBCD7_kP7u6bLWXE_n3sSgH5-3z4LPYUwZqbEMW_iTuPaVls&usqp=CAU" alt="Jhonny Timaure" />
                                 <p>Jhonny Timaure</p>
                             </div>
                         </div>
@@ -61,7 +61,7 @@ export const Contactos = () => {
                         </div>
                         <div className="todos-contactos-lista">
                             <div className="contacto-lista-item">
-                                <img src="https://via.placeholder.com/40" alt="Alba Aguilar" />
+                                <img src="https://img.freepik.com/fotos-premium/hermosa-mujer-creada-inteligencia-artificial-elegante-sexy-hermosa-rubia_960020-630.jpg" alt="Alba Aguilar" />
                                 <div className="contacto-info">
                                     <p><strong>Alba Aguilar</strong></p>
                                     <p>Cuenta AppSplit</p>
@@ -82,7 +82,7 @@ export const Contactos = () => {
                                 </button>
                             </div>
                             <div className="contacto-lista-item">
-                                <img src="https://via.placeholder.com/40" alt="Cristian Martinez" />
+                                <img src="https://media.telefonicatech.com/telefonicatech/uploads/2023/11/prompt-ej-kodak-portra-400-exs-c.jpg" alt="Cristian Martinez" />
                                 <div className="contacto-info">
                                     <p><strong>Cristian Martinez</strong></p>
                                     <p>Cuenta AppSplit</p>
@@ -102,7 +102,7 @@ export const Contactos = () => {
                                 </button>
                             </div>
                             <div className="contacto-lista-item">
-                                <img src="https://via.placeholder.com/40" alt="Eugenio Santana" />
+                                <img src="https://img.europapress.es/fotoweb/fotonoticia_20240216125104_690.jpg" alt="Eugenio Santana" />
                                 <div className="contacto-info">
                                     <p><strong>Eugenio Santana</strong></p>
                                     <p>Cuenta AppSplit</p>
@@ -122,7 +122,7 @@ export const Contactos = () => {
                                 </button>
                             </div>
                             <div className="contacto-lista-item">
-                                <img src="https://via.placeholder.com/40" alt="fourgeeks Academy" />
+                                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR_NApT35W-2Ghuoc2INZFCREowZC7b99XBnw&s" alt="fourgeeks Academy" />
                                 <div className="contacto-info">
                                     <p><strong>4geeks Academy</strong></p>
                                     <p>Cuenta AppSplit</p>

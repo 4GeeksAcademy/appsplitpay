@@ -148,7 +148,7 @@ export const HomeUser = () => {
                 <li>
                   <img
                     className="recent-contacts-photo"
-                    src="https://via.placeholder.com/50"
+                    src="https://media.telefonicatech.com/telefonicatech/uploads/2023/12/hero_post_ia_generative_ai_portrait.jpg"
                     alt="KS"
                   />
                   <span>Karen Sanchez</span>
@@ -156,7 +156,7 @@ export const HomeUser = () => {
                 <li>
                   <img
                     className="recent-contacts-photo"
-                    src="https://via.placeholder.com/50"
+                    src="https://img.freepik.com/fotos-premium/primer-plano-rostro-mujer-luz-que-entra-sus-ojos-imagen-generativa-ia_97070-4802.jpg?w=360"
                     alt="MR"
                   />
                   <span>Mery Janeth</span>
@@ -164,7 +164,7 @@ export const HomeUser = () => {
                 <li>
                   <img
                     className="recent-contacts-photo"
-                    src="https://via.placeholder.com/50"
+                    src="https://img.freepik.com/fotos-premium/hermosa-mujer-creada-inteligencia-artificial-elegante-sexy-hermosa-rubia_960020-630.jpg"
                     alt="JP"
                   />
                   <span>Jhonny José</span>
@@ -172,7 +172,7 @@ export const HomeUser = () => {
                 <li>
                   <img
                     className="recent-contacts-photo"
-                    src="https://via.placeholder.com/50"
+                    src="https://img.freepik.com/fotos-premium/retrato-joven-bombero-parado-dentro-estacion-bomberos-creada-inteligencia-artificial-generativa_762026-1480.jpg"
                     alt="JC"
                   />
                   <span>José Miguel</span>

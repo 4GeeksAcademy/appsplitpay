@@ -278,15 +278,16 @@ body {
 .card {
   padding: 1rem;
   background-color: #fff;
-  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
+    0 4px 6px -2px rgba(0, 0, 0, 0.05);
   max-width: 320px;
   border-radius: 20px;
   width: 250px;
-  border: solid 1px lightgray; transition: background-color 0.3s ease, box-shadow 0.3s ease;
+  border: solid 1px lightgray;
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
   box-shadow: 0 4px 3px rgba(0, 0, 0, 0.1);
 }
 .card:hover {
-  
   box-shadow: 0 8px 12px rgba(0, 0, 0, 0.2);
   color: #ffffff;
   cursor: pointer;
@@ -300,7 +301,7 @@ body {
 .title span {
   position: relative;
   padding: 0.5rem;
-  background-color: #B9101E;
+  background-color: #b9101e;
   width: 1.5rem;
   height: 1.5rem;
   border-radius: 9999px;
@@ -323,7 +324,7 @@ body {
 
 .percent {
   margin-left: 0.5rem;
-  color: #B9101E;
+  color: #b9101e;
   font-weight: 600;
   display: flex;
 }
@@ -337,7 +338,7 @@ body {
 .data p {
   margin-top: 1rem;
   margin-bottom: 1rem;
-  color: #1F2937;
+  color: #1f2937;
   font-size: 2.25rem;
   line-height: 2.5rem;
   font-weight: 700;
@@ -346,7 +347,7 @@ body {
 
 .data .range {
   position: relative;
-  background-color: #E5E7EB;
+  background-color: #e5e7eb;
   width: 100%;
   height: 0.5rem;
   border-radius: 0.25rem;
@@ -356,31 +357,30 @@ body {
   position: absolute;
   top: 0;
   left: 0;
-  background-color: #B9101E;
+  background-color: #b9101e;
   width: 36%;
   height: 100%;
   border-radius: 0.25rem;
-  transition: .5s all;
+  transition: 0.5s all;
 }
 
- 
 .card2 {
   padding: 1rem;
   background-color: #fff;
-  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
+    0 4px 6px -2px rgba(0, 0, 0, 0.05);
   max-width: 320px;
   border-radius: 20px;
   width: 250px;
-  border: solid 1px lightgray; transition: background-color 0.3s ease, box-shadow 0.3s ease;
+  border: solid 1px lightgray;
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
   box-shadow: 0 4px 3px rgba(0, 0, 0, 0.1);
 }
 .card2:hover {
-  
   box-shadow: 0 8px 12px rgba(0, 0, 0, 0.2);
   color: #ffffff;
   cursor: pointer;
 }
-
 
 .title2 {
   display: flex;
@@ -390,7 +390,7 @@ body {
 .title span {
   position: relative;
   padding: 0.5rem;
-  background-color: #10B981;
+  background-color: #10b981;
   width: 1.5rem;
   height: 1.5rem;
   border-radius: 9999px;
@@ -427,7 +427,7 @@ body {
 .data p {
   margin-top: 1rem;
   margin-bottom: 1rem;
-  color: #1F2937;
+  color: #1f2937;
   font-size: 2.25rem;
   line-height: 2.5rem;
   font-weight: 700;
@@ -436,7 +436,7 @@ body {
 
 .data .range {
   position: relative;
-  background-color: #E5E7EB;
+  background-color: #e5e7eb;
   width: 100%;
   height: 0.5rem;
   border-radius: 0.25rem;
@@ -446,8 +446,19 @@ body {
   position: absolute;
   top: 0;
   left: 0;
-  background-color: #10B981;
+  background-color: #10b981;
   width: 76%;
   height: 100%;
   border-radius: 0.25rem;
+}
+
+.recent-contacts-photo {
+  width: 50px;
+  height: 50px;
+  object-fit: cover;
+  border-radius: 50%;
+  border: 2px solid #ccc;
+  display: inline-block;
+  margin-right: 10px;
+  vertical-align: middle;
 }
