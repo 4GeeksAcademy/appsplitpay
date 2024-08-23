@@ -9,17 +9,18 @@ import Footer from "../js/component/footer";
 import HomeUser from "../js/component/homeUser";
 import Evento from "../js/component/evento";
 import injectContext, { Context } from "./store/appContext";
+import Contactos from "./component/contactos";
+import ScrollToTop from "../js/component/scrollToTop";
 
 const Layout = () => {
     const { actions } = useContext(Context);
-
 
     useEffect(() => {
         actions.checkAuthentication();
     }, []);
 
     if (!process.env.BACKEND_URL || process.env.BACKEND_URL === "") {
-        return <BackendURL/>;
+        return <BackendURL />;
     }
 
     const basename = process.env.BASENAME || "";
@@ -39,13 +40,16 @@ const Content = () => {
     return (
         <>
             {!shouldHideNavbarAndFooter && <Navbar />}
-            <Routes>
-                <Route path="/" element={<Home />} />
-                <Route path="/login" element={<Login />} />
-                <Route path="/signup" element={<SignUp />} />
-                <Route path="/homeUser" element={<HomeUser />} />
-                <Route path="/evento" element={<Evento />} />
-            </Routes>
+            <ScrollToTop>
+                <Routes>
+                    <Route path="/" element={<Home />} />
+                    <Route path="/login" element={<Login />} />
+                    <Route path="/signup" element={<SignUp />} />
+                    <Route path="/homeUser" element={<HomeUser />} />
+                    <Route path="/evento" element={<Evento />} />
+                    <Route path="/contactos" element={<Contactos />} />
+                </Routes>
+            </ScrollToTop>
             {!shouldHideNavbarAndFooter && <Footer />}
         </>
     );

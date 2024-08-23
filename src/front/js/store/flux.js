@@ -95,7 +95,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 			},
 			logout: async () => {
 				try {
-					// Suponiendo que no necesitas una llamada al backend para el logout
+
 					setStore({
 						token: null,
 						userInfo: null,

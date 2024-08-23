@@ -1,0 +1,440 @@
+body {
+    display: flex;
+    flex-direction: column;
+    background-color: #ffffff;
+    margin-top: 80px;
+    padding: 0;
+    height: 100%;
+    font-family: "Trebuchet MS";
+  }
+
+
+.container {
+    max-width: 1000px; 
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #fff;
+}
+
+
+.header h1 {
+    font-size: 28px;
+    font-weight: bold;
+   margin-right: 1500px;
+    margin-bottom: 30px;
+}
+
+
+.search-bar {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+}
+
+.search-bar input {
+    width: 80%;
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 30px;
+    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.search-bar button {
+    padding: 10px 20px;
+    font-size: 16px;
+    background-color: #447de6;
+    color: #fff;
+    border: none;
+    border-radius: 30px;
+    cursor: pointer; 
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+    box-shadow: 0 4px 3px rgba(0, 0, 0, 0.1);
+}
+.search-bar button:hover {
+    background-color: #274d95;
+    box-shadow: 0 8px 12px rgba(0, 0, 0, 0.2);
+    color: #ffffff;
+  }
+  
+.recientes {
+    margin-bottom: 30px;
+   
+}
+
+
+    .contacto:hover {
+    background-color: #e1e1e1;
+   
+  }
+
+.recientes h2 {
+    font-size: 20px;
+    font-weight: bold;
+    margin-right: 1500px;
+margin-bottom: 30px;
+margin-top: 30px;
+}
+
+
+.recientes-lista {
+    display: flex;
+    gap: 15px;
+    padding: 15px 0;
+    overflow-x: auto;
+    border-bottom: 1px solid #ccc;
+}
+
+.contacto {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    margin-left: 20px;
+    font-size: 10px;
+    cursor: pointer;
+    border-radius: 15px;
+    transition: box-shadow 0.4s ease, background-color 0.4s ease;
+    padding: 10px;
+    background-color: #fff;
+}
+
+.contacto:hover {
+    background-color: #274d95;
+    box-shadow: 0 0 15px rgba(225, 225, 225, 0.8), 0 0 25px rgba(225, 225, 225, 0.6), 0 0 35px rgba(225, 225, 225, 0.4);
+    color: #ffffff;
+}
+.contacto img {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    margin-bottom: 5px;
+    border: 2px solid #ccc;
+}
+
+.contacto p {
+    font-size: 15px;
+    margin: 0;
+}
+
+.todos-contactos .filter-buttons {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.btn-filter {
+    padding: 5px 15px;
+    border: none;
+   
+    background-color: #f1f1f1;
+    
+    ;
+}
+
+.btn-filter.active {
+    background-color: #447de6;
+    color: #fff;
+    border-radius: 30px;
+    font-size: 20px;
+transition: background-color 0.3s ease, box-shadow 0.3s ease;
+    box-shadow: 0 4px 3px rgba(0, 0, 0, 0.1);
+}
+.btn-filter.active:hover {
+    background-color: #274d95;
+    box-shadow: 0 8px 12px rgba(0, 0, 0, 0.2);
+    color: #ffffff;
+  }
+
+.todos-contactos-lista .contacto-lista-item {
+    display: flex;
+    align-items: center;
+    padding: 15px;
+    background-color: #f9f9f9;
+    margin-bottom: 10px;
+    border-radius: 15px;
+    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+    box-shadow: 0 4px 3px rgba(0, 0, 0, 0.1);
+}
+.todos-contactos-lista .contacto-lista-item:hover {
+    background-color: #274d95;
+    box-shadow: 0 8px 12px rgba(0, 0, 0, 0.2);
+    color: #ffffff;
+  }
+  .contacto-info{
+    font-size: 20px;
+  }
+  .contacto-info p {
+margin: 0px;
+margin-right: 800px;
+  }
+
+.todos-contactos-lista .contacto-lista-item img {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    margin-right: 10px;
+    border: 2px solid #e1e1e1;
+}
+
+.todos-contactos-lista .contacto-info  {
+    flex: 1;
+    
+}
+
+
+.todos-contactos-lista .contacto-lista-item button {
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+    color: #000000;
+    font-size: 20px;
+}
+.btn.btn-danger.btn-cancel{
+   
+   
+    border-radius: 15px;
+    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+    box-shadow: 0 4px 3px rgba(0, 0, 0, 0.1);
+}
+.btn.btn-danger.btn-cancel:hover {
+    background-color: #274d95;
+    box-shadow: 0 8px 12px rgba(0, 0, 0, 0.2);
+    color: #ffffff;
+  }
+
+  .buttonCancel {
+    margin-bottom: 20px;
+    margin-left: 230px;
+    font-weight: bold;
+    color: white;
+    border-radius: 2rem;
+    cursor: pointer;
+    width: 95.02px;
+    height: 42.66px;
+    border: none;
+    background-color: #447de6;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  button .span-mother {
+    display: flex;
+    overflow: hidden;
+  }
+  
+  button:hover .span-mother {
+    position: absolute;
+  }
+  
+  button:hover .span-mother span {
+    transform: translateY(1.2em);
+  }
+  
+  button .span-mother span:nth-child(1) {
+    transition: 0.2s;
+  }
+  
+  button .span-mother span:nth-child(2) {
+    transition: 0.3s;
+  }
+  
+  button .span-mother span:nth-child(3) {
+    transition: 0.4s;
+  }
+  
+  button .span-mother span:nth-child(4) {
+    transition: 0.5s;
+  }
+  
+  button .span-mother span:nth-child(5) {
+    transition: 0.6s;
+  }
+  
+  button .span-mother span:nth-child(6) {
+    transition: 0.7s;
+  }
+  
+  button .span-mother2 {
+    display: flex;
+    position: absolute;
+    overflow: hidden;
+  }
+  
+  button .span-mother2 span {
+    transform: translateY(-1.2em);
+  }
+  
+  button:hover .span-mother2 span {
+    transform: translateY(0);
+  }
+  
+  button .span-mother2 span {
+    transition: 0.2s;
+  }
+  
+  button .span-mother2 span:nth-child(2) {
+    transition: 0.3s;
+  }
+  
+  button .span-mother2 span:nth-child(3) {
+    transition: 0.4s;
+  }
+  
+  button .span-mother2 span:nth-child(4) {
+    transition: 0.5s;
+  }
+  
+  button .span-mother2 span:nth-child(5) {
+    transition: 0.6s;
+  }
+  
+  button .span-mother2 span:nth-child(6) {
+    transition: 0.7s;
+  }
+  .edit-button {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: rgb(20, 20, 20);
+    border: none;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.164);
+    cursor: pointer;
+    transition-duration: 0.3s;
+    overflow: hidden;
+    position: relative;
+    text-decoration: none !important;
+  }
+  
+  .edit-svgIcon {
+    width: 17px;
+    transition-duration: 0.3s;
+  }
+  
+  .edit-svgIcon path {
+    fill: black;
+  }
+  
+  .edit-button:hover {
+    width: 120px;
+    border-radius: 50px;
+    transition-duration: 0.3s;
+    background-color: rgb(255, 69, 69);
+    align-items: center;
+  }
+  
+  .edit-button:hover .edit-svgIcon {
+    width: 20px;
+    transition-duration: 0.3s;
+    transform: translateY(60%);
+    -webkit-transform: rotate(360deg);
+    -moz-transform: rotate(360deg);
+    -o-transform: rotate(360deg);
+    -ms-transform: rotate(360deg);
+    transform: rotate(360deg);
+  }
+  
+  .edit-button::before {
+    display: none;
+    content: "Edit";
+    color: white;
+    transition-duration: 0.3s;
+    font-size: 2px;
+  }
+  
+  .edit-button:hover::before {
+    display: block;
+    padding-right: 10px;
+    font-size: 13px;
+    opacity: 1;
+    transform: translateY(0px);
+    transition-duration: 0.3s;
+  }
+
+  .btn2 {
+  cursor: pointer;
+  width: 50px;
+  height: 50px;
+  border: none;
+  position: relative;
+  border-radius: 10px;
+  -webkit-box-shadow: 1px 1px 5px .2px #00000035;
+  box-shadow: 1px 1px 5px .2px #00000035;
+  -webkit-transition: .2s linear;
+  transition: .2s linear;
+  transition-delay: .2s;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  -webkit-box-pack: center;
+  -ms-flex-pack: center;
+  justify-content: space-between;
+}
+
+.btn2:hover {
+  width: 150px;
+  transition-delay: .2s;
+}
+
+.btn2:hover > .paragraph {
+  visibility: visible;
+  opacity: 1;
+  -webkit-transition-delay: .4s;
+  transition-delay: .4s;
+}
+
+.btn2:hover > .icon-wrapper .icon {
+  transform: scale(1.1);
+}
+
+.bnt2:hover > .icon-wrapper .icon path {
+  stroke: black;
+}
+
+.paragraph {
+  color: rgb(255, 255, 255);
+  visibility: hidden;
+  opacity: 0;
+  font-size: 18px;
+  margin-right: 20px;
+  padding-left: 20px;
+  -webkit-transition: .2s linear;
+  transition: .2s linear;
+  font-weight: bold;
+  text-transform: uppercase;
+}
+
+.icon-wrapper {
+  width: 50px;
+  height: 50px;
+  position: absolute;
+  top: 0;
+  right: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.icon {
+  transform: scale(.9);
+  transition: .2s linear;
+}
+
+.icon path {
+  stroke: #000000;
+  stroke-width: 2px;
+  -webkit-transition: .2s linear;
+  transition: .2s linear;
+}
+  

@@ -21,7 +21,7 @@ const Navbar = () => {
 
   const handleLogoClick = () => {
     if (store.isAuthenticated) {
-      navigate("/");  // Redirige a HomeUser si está autenticado
+      navigate("/homeUser");  // Redirige a HomeUser si está autenticado
     } else {
       navigate("/login");  // Redirige a la página de login si no está autenticado
     }
