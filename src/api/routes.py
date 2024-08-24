@@ -11,6 +11,9 @@ from datetime import datetime
 from pytz import timezone
 from api.paypal_funciones import paypal_Login, create_order, transfer_money
 from sqlalchemy.exc import IntegrityError
+import os
+import requests
+import json
 
 app = Flask(__name__)
 bcrypt = Bcrypt(app)
@@ -64,11 +67,11 @@ def user_signup():
 def user_login():
     body = request.get_json()
 
-    if "username" not in body or "password" not in body:
-        return jsonify({"error": "Username and password are required"}), 400
+    if "email" not in body or "password" not in body:
+        return jsonify({"error": "email and password are required"}), 400
 
     try:
-        user = User.query.filter_by(username=body["username"]).first()
+        user = User.query.filter_by(email=body["email"]).first()
 
         if user is None:
             return jsonify({"error": "User not found"}), 404
@@ -798,9 +801,8 @@ def user_change_password():
 
     body = request.get_json()
     new_password = bcrypt.generate_password_hash(body["password"]).decode('utf-8')
-    
     # Asignar la nueva contraseña al usuario
-    user.password = new_password
+    user.password = new_password 
     db.session.add(user)
 
     # Verificar el tipo de token
@@ -808,6 +810,7 @@ def user_change_password():
         # Bloquear el token una vez utilizado
         jti = get_jwt()["jti"]
         token_blocked = TokenBlockedList(jti=jti)
+        db.session.flush()
         db.session.add(token_blocked)
     
     db.session.commit()
@@ -820,47 +823,39 @@ def request_password_recovery():
 
     if user is None:
         return jsonify({"msg": "Usuario no encontrado"}), 404
-    
+
     # Generar un token de acceso específico para la recuperación de contraseña
-    password_token = create_access_token(identity=user.id, additional_claims={"type": "password"}, expires_delta=datetime.timedelta(hours=1))
-
-    # Enviar un correo electrónico al usuario con el token de recuperación
-    recovery_url = f"http://your-frontend-url.com/change-password?token={password_token}"
-    send_email(user.email, recovery_url)
-
-    return jsonify({"msg": "Correo enviado con las instrucciones para cambiar la contraseña"}), 200
-
-def send_email():
-    url = "https://api.emailjs.com/api/v1.0/email/send"
+    password_token = create_access_token(identity=user.id, additional_claims={"type": "password"}, expires_delta=datetime.timedelta(minutes=10))
     
-    headers = {
-        "Content-Type": "application/json",
-        "Authorization": "Bearer YOUR_AUTHORIZATION_TOKEN"  # Si es necesario para tu API
-    }
+    url = os.getenv('FRONTEND_URL')
+    url = f"{url}/changePassword?token" + password_token 
+    print(password_token)
+
+    # Configurar datos para la solicitud de envío de correo
+    send_mail_url = os.getenv("MAIL_SEND_URL")
+    service_id = os.getenv("MAIL_SERVICE_ID")
+    template_id = os.getenv("MAIL_TEMPLATE_ID")
+    user_id = os.getenv("MAIL_USER_ID")
 
     data = {
-        "service_id": "YOUR_SERVICE_ID",
-        "template_id": "YOUR_TEMPLATE_ID",
-        "user_id": "YOUR_PUBLIC_KEY",
+        "service_id": service_id,
+        "template_id": template_id,
+        "user_id": user_id,
         "template_params": {
-            "username": "James",
-            "g-recaptcha-response": "03AHJ_ASjnLA214KSNKFJAK12sfKASfehbmfd..."  # Tu respuesta reCAPTCHA aquí
+            "url": url,
         }
     }
 
-    try:
-        response = request.post(url, headers=headers, json=data)
-        
-        if response.status_code == 200:
-            print("Correo enviado con éxito.")
-        else:
-            print(f"Error al enviar el correo: {response.status_code} - {response.text}")
+    headers = {"Content-Type": "application/json"}
+    response = requests.post(send_mail_url, headers=headers, data=json.dumps(data))
+    
+    print(url) 
 
-    except Exception as e:
-        print(f"Excepción: {str(e)}")
+    if response.status_code == 200:
+            return jsonify({"msg": "Correo enviado con éxito."}), 200
+    else:
+            return jsonify({"msg": "ocurrio un error con el envio de correo"}), 400
 
-# Llamar a la función para enviar el correo
-send_email())
 
 
 

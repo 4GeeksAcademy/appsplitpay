@@ -12,6 +12,7 @@ from api.routes import api
 from api.admin import setup_admin
 from api.commands import setup_commands
 
+
 # from models import Person
 
 ENV = "development" if os.getenv("FLASK_DEBUG") == "1" else "production"
@@ -27,7 +28,7 @@ jwt = JWTManager(app)
 @jwt.token_in_blocklist_loader
 def check_if_token_revoked(jwt_header, jwt_payload: dict) -> bool:
 
-    is_password = jwt_payload["type"] == "password" and request.path != "/api/changepassword":
+    is_password = jwt_payload["type"] == "password" and request.path != "/api/changepassword" 
     jti = jwt_payload["jti"]
     token = TokenBlockedList.query.filter_by(jti=jti).first()
     is_blocked=token is not None

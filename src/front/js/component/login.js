@@ -5,7 +5,7 @@ import { Context } from "../store/appContext";
 const Login = () => {
   const { store, actions } = useContext(Context);
   const navigate = useNavigate();
-  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
 
@@ -13,7 +13,7 @@ const Login = () => {
     e.preventDefault();
 
     // Llamada a la acción de login
-    const success = await actions.login(username, password);
+    const success = await actions.login(email, password);
 
     if (success) {
       navigate("/homeUser"); // Redirige a la página homeUser si el login es exitoso
@@ -31,13 +31,13 @@ const Login = () => {
         {/* Email input */}
         <div className="form-outline mb-4">
           <input 
-            onChange={(e) => setUsername(e.target.value)} 
-            type="text" 
+            onChange={(e) => setEmail(e.target.value)} 
+            type="email" 
             id="form2Example1" 
             className="form-control" 
             required 
           />
-          <label className="form-label" htmlFor="form2Example1">Username</label>
+          <label className="form-label" htmlFor="form2Example1" placeholder="Email">Email</label>
         </div>
 
         {/* Password input */}
@@ -72,7 +72,7 @@ const Login = () => {
           <div className="col">
             {/* Simple link */}
             {/* Redirigir a la página de recuperación de contraseña */}
-            <Link to="/request-password-recovery">Forgot password?</Link>
+            <Link to="/passwordRecovery">recupera tu contraseña</Link>
           </div>
         </div>
 

@@ -8,8 +8,7 @@ import Navbar from "./component/navbar";
 import Footer from "./component/footer";
 import HomeUser from "./component/homeUser";
 import Evento from "./component/evento";
-import ChangePassword from "./component/changepassword";
-import RequestPasswordRecovery from "./component/request_password_recovery"; // Importar el componente
+import PasswordRecovery from "./component/passwordRecovery"
 import injectContext, { Context } from "./store/appContext";
 
 const Layout = () => {
@@ -46,8 +45,8 @@ const Content = () => {
                 <Route path="/signup" element={<SignUp />} />
                 <Route path="/homeUser" element={<HomeUser />} />
                 <Route path="/evento" element={<Evento />} />
-                <Route path="/changepassword" element={<ChangePassword />} />
-                <Route path="/request-password-recovery" element={<RequestPasswordRecovery />} /> {/* Nueva ruta */}
+                <Route path="/passwordRecovery" element={<PasswordRecovery />}/>
+                 {/* Nueva ruta */}
             </Routes>
             {!shouldHideNavbarAndFooter && <Footer />}
         </>

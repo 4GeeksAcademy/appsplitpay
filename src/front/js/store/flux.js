@@ -11,7 +11,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 			loading: false,
 		},
 		actions: {
-			login: async (username, password) => {
+			login: async (email, password) => {
 				setStore({ loading: true });
 				try {
 					const response = await fetch(apiUrl + "/login", {
@@ -19,7 +19,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 						headers: {
 							"Content-Type": "application/json",
 						},
-						body: JSON.stringify({ username, password })
+						body: JSON.stringify({ email, password })
 					});
 
 					if (response.ok) {
@@ -157,8 +157,9 @@ const getState = ({ getStore, getActions, setStore }) => {
                     });
 
                     if (response.ok) {
+						print (data)
                         const data = await response.json();
-                        return data.msg || "Correo enviado con las instrucciones para cambiar la contraseña.";
+                        return ({"msg": "Correo enviado con las instrucciones para cambiar la contraseña."}) ;
                     } else {
                         const errorData = await response.json();
                         throw new Error(errorData.msg || "Error al solicitar la recuperación de contraseña.");
