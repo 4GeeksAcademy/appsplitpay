@@ -46,35 +46,35 @@ export const AddContacto = () => {
             <div className="card__form"> {/* Modificación: Usar className en lugar de class */}
                 <input
                     onChange={(e) => setUsername(e.target.value)}
-                    value={username} // Modificación: Agregar value para control del input
+                    value={username}
                     placeholder="Your username"
                     type="text"
-                    required // Modificación: Añadir required para validación básica
+                    required
                 />
                 <input
                     onChange={(e) => setFullname(e.target.value)}
-                    value={fullname} // Modificación: Agregar value para control del input
+                    value={fullname}
                     placeholder="Your fullname"
                     type="text"
-                    required // Modificación: Añadir required para validación básica
+                    required
                 />
                 <input
                     onChange={(e) => setEmail(e.target.value)}
-                    value={email} // Modificación: Agregar value para control del input
+                    value={email}
                     placeholder="Your Email"
                     type="email"
-                    required // Modificación: Añadir required para validación básica
+                    required
                 />
                 <input
                     onChange={(e) => setAddress(e.target.value)}
-                    value={address} // Modificación: Agregar value para control del input
+                    value={address}
                     placeholder="Your address"
                     type="text"
-                    required // Modificación: Añadir required para validación básica
+                    required
                 />
                 <button
                     className="sign-up"
-                    onClick={handleSubmit} // Modificación: Solo una función onClick para evitar errores
+                    onClick={handleSubmit}
                 >
                     + Agregar Contacto
                 </button>
@@ -97,7 +97,7 @@ export const AddContacto = () => {
                         <span>l</span>
                     </span>
                 </button>
-                {errorMessage && <p className="error-message">{errorMessage}</p>} {/* Modificación: Mostrar mensaje de error */}
+                {errorMessage && <p className="error-message">{errorMessage}</p>}
             </div>
         </div>
     );

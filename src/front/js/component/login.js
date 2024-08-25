@@ -1,9 +1,9 @@
 import React, { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
-import { Context } from "../store/appContext"; // Importa el contexto para acceder a actions y store
+import { Context } from "../store/appContext";
 
 const Login = () => {
-  const { store, actions } = useContext(Context); // Acceder a store y actions desde el contexto
+  const { store, actions } = useContext(Context);
   const navigate = useNavigate();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -12,11 +12,11 @@ const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Llamada a la acción de login
+
     const success = await actions.login(username, password);
 
     if (success) {
-      navigate("/homeUser"); // Redirige a la página homeUser si el login es exitoso
+      navigate("/homeUser");
     } else {
       setErrorMessage(store.errorMessage || "An error occurred during login.");
     }
@@ -25,10 +25,10 @@ const Login = () => {
   return (
     <div className="card d-flex justify-content-center my-5 p-5 mx-auto" style={{ maxWidth: '600px', fontFamily: 'Trebuchet MS', width: '100%' }}>
       <form onSubmit={handleSubmit}>
-        {/* Mostrar mensaje de error si existe */}
+
         {errorMessage && <div className="alert alert-danger">{errorMessage}</div>}
 
-        {/* Email input */}
+
         <div className="form-outline mb-4">
           <input onChange={(e) => setUsername(e.target.value)} type="text" id="form2Example1" className="form-control" required />
           <label className="form-label" htmlFor="form2Example1">
@@ -36,7 +36,7 @@ const Login = () => {
           </label>
         </div>
 
-        {/* Password input */}
+
         <div className="form-outline mb-4">
           <input onChange={(e) => setPassword(e.target.value)} type="password" id="form2Example2" className="form-control" required />
           <label className="form-label" htmlFor="form2Example2">
@@ -44,7 +44,7 @@ const Login = () => {
           </label>
         </div>
 
-        {/* 2 column grid layout for inline styling */}
+
         <div className="row mb-4">
           <div className="col d-flex justify-content-center">
             {/* Checkbox */}
@@ -62,17 +62,17 @@ const Login = () => {
           </div>
 
           <div className="col">
-            {/* Simple link */}
+
             <a href="#!">Forgot password?</a>
           </div>
         </div>
 
-        {/* Submit button */}
+
         <button type="submit" className="btn btn-primary btn-block mb-4 mt-4">
           Sign in
         </button>
 
-        {/* Register buttons */}
+
         <div className="text-center">
           <p>
             Not a member? <a href="/signup">Register</a>

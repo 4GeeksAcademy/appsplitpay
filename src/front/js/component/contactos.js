@@ -10,11 +10,16 @@ export const Contactos = () => {
 
     const [showModal, setShowModal] = useState(false);
     const [contactToDelete, setContactToDelete] = useState(null);
-
+    const [searchQuery, setSearchQuery] = useState("");
 
     useEffect(() => {
         actions.getContacts();
     }, []);
+
+    const handleSearchChange = (e) => {
+        setSearchQuery(e.target.value);
+        actions.getContacts(e.target.value);
+    };
 
     const handleCancelClick = () => {
         navigate('/homeUser');
@@ -23,6 +28,10 @@ export const Contactos = () => {
     const handleNavigateToAddContacto = () => {
         navigate('/addContacto');
     };
+    const handleNavigateTomodalContactoIndo = () => {
+        navigate('/modalContactoIndo');
+    };
+
     const handleNavigateToEditarContacto = (contactId) => {
         navigate(`/editarContacto/${contactId}`);
     };
@@ -37,7 +46,7 @@ export const Contactos = () => {
         if (contactToDelete) {
             const success = await actions.deleteContact(contactToDelete);
             if (success) {
-                actions.getContacts(); // Refresca la lista de contactos después de la eliminación
+                actions.getContacts(searchQuery); // Refrescar la lista con el filtro actual después de eliminar
             } else {
                 alert("Error al eliminar el contacto.");
             }
@@ -49,7 +58,6 @@ export const Contactos = () => {
         setContactToDelete(null);
     };
 
-
     return (
         <div className="container">
             <div className="row">
@@ -57,7 +65,23 @@ export const Contactos = () => {
                     <div className="header">
                         <h1>Destinatarios</h1>
                         <div className="search-bar">
-                            <input type="text" placeholder="Nombre, Username, correo electrónico" />
+                            <div className="container1">
+                                <div className="search-container">
+                                    <input
+                                        className="input"
+                                        placeholder="Nombre, Username, correo electrónico"
+                                        type="text"
+                                        value={searchQuery}
+                                        onChange={handleSearchChange}
+                                    />
+                                    <svg viewBox="0 0 24 24" className="search__icon">
+                                        <g>
+                                            <path d="M21.53 20.47l-3.66-3.66C19.195 15.24 20 13.214 20 11c0-4.97-4.03-9-9-9s-9 4.03-9 9 4.03 9 9 9c2.215 0 4.24-.804 5.808-2.13l3.66 3.66c.147.146.34.22.53.22s.385-.073.53-.22c.295-.293.295-.767.002-1.06zM3.5 11c0-4.135 3.365-7.5 7.5-7.5s7.5 3.365 7.5 7.5-3.365 7.5-7.5 7.5-7.5-3.365-7.5-7.5z">
+                                            </path>
+                                        </g>
+                                    </svg>
+                                </div>
+                            </div>
                             <button className="buttonaddContact" onClick={handleNavigateToAddContacto}>Añadir destinatario</button>
                         </div>
                     </div>

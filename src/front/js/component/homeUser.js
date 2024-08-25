@@ -21,8 +21,8 @@ export const HomeUser = () => {
     navigate('/contactos');
   };
   useEffect(() => {
-    actions.getContacts(); // Llama a la acción para obtener los contactos
-  }, []); // [] asegura que solo se ejecute una vez al montar
+    actions.getContacts();
+  }, []);
 
 
   return (

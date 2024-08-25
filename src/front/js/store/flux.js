@@ -9,7 +9,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 			isAuthenticated: false,
 			errorMessage: null,
 			loading: false,
-			contacts: [], // Aquí se almacenarán los contactos
+			contacts: [],
 		},
 		actions: {
 			login: async (username, password) => {
@@ -159,12 +159,12 @@ const getState = ({ getStore, getActions, setStore }) => {
 			},
 
 			// Obtener contactos
-			getContacts: async () => {
+			getContacts: async (filter = "") => {
 				const { token } = getStore();
 				setStore({ loading: true });
 
 				try {
-					const response = await fetch(`${apiUrl}/contact`, {
+					const response = await fetch(`${apiUrl}/contact?search=${encodeURIComponent(filter)}`, {
 						method: "GET",
 						headers: {
 							"Authorization": `Bearer ${token}`,
@@ -183,12 +183,12 @@ const getState = ({ getStore, getActions, setStore }) => {
 
 					const data = await response.json();
 					setStore({
-						contacts: data.contacts, // Almacena los contactos directamente en store.contacts
+						contacts: data.contacts,
 						loading: false,
 						errorMessage: null,
 					});
 
-					return data.contacts; // Retorna la lista de contactos
+					return data.contacts;
 				} catch (error) {
 					console.error("Error fetching contacts:", error);
 					setStore({
@@ -198,6 +198,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 					return [];
 				}
 			},
+
 
 			// Obtener un contacto por ID
 			getSingleContact: async (contactId) => {

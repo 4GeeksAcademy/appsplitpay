@@ -2,11 +2,11 @@ import React, { useState, useContext } from "react";
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import { differenceInYears } from 'date-fns';
-import { Context } from "../store/appContext"; // Asegúrate de que la ruta es correcta
+import { Context } from "../store/appContext";
 import { useNavigate } from "react-router-dom";
 
 const SignUp = () => {
-  const { store, actions } = useContext(Context); // Obtener el contexto
+  const { store, actions } = useContext(Context);
   const [username, setUsername] = useState("");
   const [first_name, setFirstName] = useState("");
   const [last_name, setLastName] = useState("");
