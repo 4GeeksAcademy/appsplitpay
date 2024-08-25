@@ -13,7 +13,7 @@ import Contactos from "./component/contactos";
 import ScrollToTop from "../js/component/scrollToTop";
 import AddContacto from "./component/addContacto";
 import EditarContacto from "../js/component/editarContacto";
-
+import ConfirmDeleteModal from "../js/component/confirmDeleteModal";
 
 const Layout = () => {
     const { actions } = useContext(Context);
@@ -52,7 +52,8 @@ const Content = () => {
                     <Route path="/evento" element={<Evento />} />
                     <Route path="/contactos" element={<Contactos />} />
                     <Route path="/addContacto" element={<AddContacto />} />
-                    <Route path="/editarContacto" element={<EditarContacto />} />
+                    <Route path="/editarContacto/:contactId" element={<EditarContacto />} />
+                    <Route path="/confirmDeleteModal" element={<ConfirmDeleteModal />} />
                 </Routes>
             </ScrollToTop>
             {!shouldHideNavbarAndFooter && <Footer />}

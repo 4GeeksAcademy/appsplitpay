@@ -1,16 +1,20 @@
-import React, { useContext, useEffect } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Context } from "../store/appContext.js";
 import "../../styles/contactos.css";
 import { useNavigate } from "react-router-dom";
+import ConfirmDeleteModal from "../component/confirmDeleteModal.js";
 
 export const Contactos = () => {
     const { store, actions } = useContext(Context);
     const navigate = useNavigate();
 
-    // Este useEffect asegura que los contactos se carguen cuando el componente se monta
+    const [showModal, setShowModal] = useState(false);
+    const [contactToDelete, setContactToDelete] = useState(null);
+
+
     useEffect(() => {
-        actions.getContacts(); // Llama a la acción para obtener los contactos
-    }, []); // [] asegura que solo se ejecute una vez al montar
+        actions.getContacts();
+    }, []);
 
     const handleCancelClick = () => {
         navigate('/homeUser');
@@ -19,9 +23,32 @@ export const Contactos = () => {
     const handleNavigateToAddContacto = () => {
         navigate('/addContacto');
     };
-    const handleNavigateToEditarContacto = () => {
-        navigate('/editarContacto');
+    const handleNavigateToEditarContacto = (contactId) => {
+        navigate(`/editarContacto/${contactId}`);
     };
+
+    const handleDeleteClick = (contactId) => {
+        setContactToDelete(contactId);
+        setShowModal(true);
+    };
+
+    const handleConfirmDelete = async () => {
+        setShowModal(false);
+        if (contactToDelete) {
+            const success = await actions.deleteContact(contactToDelete);
+            if (success) {
+                actions.getContacts(); // Refresca la lista de contactos después de la eliminación
+            } else {
+                alert("Error al eliminar el contacto.");
+            }
+        }
+    };
+
+    const handleCloseModal = () => {
+        setShowModal(false);
+        setContactToDelete(null);
+    };
+
 
     return (
         <div className="container">
@@ -31,7 +58,7 @@ export const Contactos = () => {
                         <h1>Destinatarios</h1>
                         <div className="search-bar">
                             <input type="text" placeholder="Nombre, Username, correo electrónico" />
-                            <button onClick={handleNavigateToAddContacto}>Añadir destinatario</button>
+                            <button className="buttonaddContact" onClick={handleNavigateToAddContacto}>Añadir destinatario</button>
                         </div>
                     </div>
                 </div>
@@ -65,12 +92,12 @@ export const Contactos = () => {
                                         <p><strong>{contact.fullname || contact.username}</strong></p>
                                         <p>Cuenta AppSplit</p>
                                     </div>
-                                    <button className="edit-button" onClick={handleNavigateToEditarContacto}>
+                                    <button className="edit-button" onClick={() => handleNavigateToEditarContacto(contact.id)}>
                                         <svg className="edit-svgIcon" viewBox="0 0 512 512">
                                             <path d="M410.3 231l11.3-11.3-33.9-33.9-62.1-62.1L291.7 89.8l-11.3 11.3-22.6 22.6L58.6 322.9c-10.4 10.4-18 23.3-22.2 37.4L1 480.7c-2.5 8.4-.2 17.5 6.1 23.7s15.3 8.5 23.7 6.1l120.3-35.4c14.1-4.2 27-11.8 37.4-22.2L387.7 253.7 410.3 231zM160 399.4l-9.1 22.7c-4 3.1-8.5 5.4-13.3 6.9L59.4 452l23-78.1c1.4-4.9 3.8-9.4 6.9-13.3l22.7-9.1v32c0 8.8 7.2 16 16 16h32zM362.7 18.7L348.3 33.2 325.7 55.8 314.3 67.1l33.9 33.9 62.1 62.1 33.9 33.9 11.3-11.3 22.6-22.6 14.5-14.5c25-25 25-65.5 0-90.5L453.3 18.7c-25-25-65.5-25-90.5 0zm-47.4 168l-144 144c-6.2 6.2-16.4 6.2-22.6 0s-6.2-16.4 0-22.6l144-144c6.2-6.2 16.4-6.2 22.6 0s6.2 16.4 0 22.6z"></path>
                                         </svg>
                                     </button>
-                                    <button className="btn2">
+                                    <button className="btn2" onClick={() => handleDeleteClick(contact.id)}>
                                         <p className="paragraph"> delete </p>
                                         <span className="icon-wrapper">
                                             <svg className="icon" width="30px" height="30px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -81,6 +108,11 @@ export const Contactos = () => {
                                 </div>
                             ))}
                         </div>
+                        <ConfirmDeleteModal
+                            show={showModal}
+                            handleClose={handleCloseModal}
+                            handleConfirm={handleConfirmDelete}
+                        />
                     </div>
                 </div>
             </div>

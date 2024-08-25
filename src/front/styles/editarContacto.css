@@ -10,6 +10,7 @@
   color: #fff;
   border: 1px solid #333;
   margin-left: 40%;
+  margin-bottom: 30px;
   background: white;
 }
 
@@ -49,7 +50,7 @@
 .message,
 .signin {
   font-size: 14.5px;
-  color: rgba(255, 255, 255, 0.7);
+  color: rgba(67, 67, 67, 0.7);
 }
 
 .signin {
@@ -75,8 +76,8 @@
 }
 
 .formEditContact label .input {
-  background-color: #333;
-  color: #fff;
+  background-color: #ffffff;
+  color: rgb(67, 67, 67);
   width: 100%;
   padding: 20px 05px 05px 10px;
   outline: 0;
@@ -119,11 +120,11 @@
   color: #fff;
   font-size: 16px;
   transform: 0.3s ease;
-  background-color: #00bfff;
+  background-color: #447de6;
 }
 
 .submit:hover {
-  background-color: #00bfff96;
+  background-color: #274d95;
 }
 
 @keyframes pulse {
@@ -136,4 +137,94 @@
     transform: scale(1.8);
     opacity: 0;
   }
+}
+
+.buttoncanceleditcontact {
+  font-weight: bold;
+  color: white;
+  border-radius: 2rem;
+  cursor: pointer;
+  width: 100.02px;
+  height: 42.66px;
+  border: none;
+  background-color: red;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-left: 100px;
+}
+
+.buttoncanceleditcontact .span-mother {
+  display: flex;
+  overflow: hidden;
+}
+
+.buttoncanceleditcontact:hover .span-mother {
+  position: absolute;
+}
+
+.buttoncanceleditcontact:hover .span-mother span {
+  transform: translateY(1.2em);
+}
+
+.buttoncanceleditcontact .span-mother span:nth-child(1) {
+  transition: 0.2s;
+}
+
+.buttoncanceleditcontact .span-mother span:nth-child(2) {
+  transition: 0.3s;
+}
+
+.buttoncanceleditcontact .span-mother span:nth-child(3) {
+  transition: 0.4s;
+}
+
+.buttoncanceleditcontact .span-mother span:nth-child(4) {
+  transition: 0.5s;
+}
+
+.buttoncanceleditcontact .span-mother span:nth-child(5) {
+  transition: 0.6s;
+}
+
+.buttoncanceleditcontact .span-mother span:nth-child(6) {
+  transition: 0.7s;
+}
+
+.buttoncanceleditcontact .span-mother2 {
+  display: flex;
+  position: absolute;
+  overflow: hidden;
+}
+
+.buttoncanceleditcontact .span-mother2 span {
+  transform: translateY(-1.2em);
+}
+
+.buttoncanceleditcontact:hover .span-mother2 span {
+  transform: translateY(0);
+}
+
+.buttoncanceleditcontact .span-mother2 span {
+  transition: 0.2s;
+}
+
+.buttoncanceleditcontact .span-mother2 span:nth-child(2) {
+  transition: 0.3s;
+}
+
+.buttoncanceleditcontact .span-mother2 span:nth-child(3) {
+  transition: 0.4s;
+}
+
+.buttoncanceleditcontact .span-mother2 span:nth-child(4) {
+  transition: 0.5s;
+}
+
+.buttoncanceleditcontact .span-mother2 span:nth-child(5) {
+  transition: 0.6s;
+}
+
+.buttoncanceleditcontact .span-mother2 span:nth-child(6) {
+  transition: 0.7s;
 }

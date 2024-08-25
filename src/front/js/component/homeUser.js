@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import { Context } from "../store/appContext.js";
 import "../../styles/homeUser.css";
 import { useNavigate } from "react-router-dom";
@@ -20,6 +20,9 @@ export const HomeUser = () => {
   const handleNavigateToContactos = () => {
     navigate('/contactos');
   };
+  useEffect(() => {
+    actions.getContacts(); // Llama a la acción para obtener los contactos
+  }, []); // [] asegura que solo se ejecute una vez al montar
 
 
   return (
@@ -147,41 +150,17 @@ export const HomeUser = () => {
               </ul>
             </div>
             <div className="recent-contacts">
-              <h3>Contactos recientes</h3>
-              <ul>
-                <li>
-                  <img
-                    className="recent-contacts-photo"
-                    src="https://media.telefonicatech.com/telefonicatech/uploads/2023/12/hero_post_ia_generative_ai_portrait.jpg"
-                    alt="KS"
-                  />
-                  <span>Karen Sanchez</span>
-                </li>
-                <li>
-                  <img
-                    className="recent-contacts-photo"
-                    src="https://img.freepik.com/fotos-premium/primer-plano-rostro-mujer-luz-que-entra-sus-ojos-imagen-generativa-ia_97070-4802.jpg?w=360"
-                    alt="MR"
-                  />
-                  <span>Mery Janeth</span>
-                </li>
-                <li>
-                  <img
-                    className="recent-contacts-photo"
-                    src="https://img.freepik.com/fotos-premium/hermosa-mujer-creada-inteligencia-artificial-elegante-sexy-hermosa-rubia_960020-630.jpg"
-                    alt="JP"
-                  />
-                  <span>Jhonny José</span>
-                </li>
-                <li>
-                  <img
-                    className="recent-contacts-photo"
-                    src="https://img.freepik.com/fotos-premium/retrato-joven-bombero-parado-dentro-estacion-bomberos-creada-inteligencia-artificial-generativa_762026-1480.jpg"
-                    alt="JC"
-                  />
-                  <span>José Miguel</span>
-                </li>
-              </ul>
+              <div className="recientes">
+                <h2>Recientes</h2>
+                <div className="recientes-lista">
+                  {store.contacts.slice(0, 5).map((contact, index) => (
+                    <div className="contacto" key={index}>
+                      <img src={contact.image || "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSI4yKnjT4EmZwDGMxrPtjt4xJChaDC79N-AzzfU0uKs8LHI43gM3imE2MA5M6WzttveH8&usqp=CAU"} alt={contact.fullname || contact.username} />
+                      <p>{contact.fullname || contact.username}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
             </div>
           </div>
         </div>
