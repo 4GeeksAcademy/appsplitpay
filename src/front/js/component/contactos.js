@@ -10,6 +10,10 @@ export const Contactos = () => {
     const handleCancelClick = () => {
         navigate('/homeUser');
     };
+    const handleNavigateToAddContacto = () => {
+        navigate('/addContacto');
+    };
+
 
     return (
         <div className="container">
@@ -19,7 +23,7 @@ export const Contactos = () => {
                         <h1>Destinatarios</h1>
                         <div className="search-bar">
                             <input type="text" placeholder="Nombre, Username, correo electrónico" />
-                            <button>Añadir destinatario</button>
+                            <button onClick={handleNavigateToAddContacto}>Añadir destinatario</button>
                         </div>
                     </div>
                 </div>

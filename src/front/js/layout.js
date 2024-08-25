@@ -11,6 +11,8 @@ import Evento from "../js/component/evento";
 import injectContext, { Context } from "./store/appContext";
 import Contactos from "./component/contactos";
 import ScrollToTop from "../js/component/scrollToTop";
+import AddContacto from "./component/addContacto";
+
 
 const Layout = () => {
     const { actions } = useContext(Context);
@@ -48,6 +50,7 @@ const Content = () => {
                     <Route path="/homeUser" element={<HomeUser />} />
                     <Route path="/evento" element={<Evento />} />
                     <Route path="/contactos" element={<Contactos />} />
+                    <Route path="/addContacto" element={<AddContacto />} />
                 </Routes>
             </ScrollToTop>
             {!shouldHideNavbarAndFooter && <Footer />}

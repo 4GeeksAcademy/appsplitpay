@@ -93,6 +93,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 					return false;
 				}
 			},
+
 			logout: async () => {
 				try {
 
@@ -115,6 +116,196 @@ const getState = ({ getStore, getActions, setStore }) => {
 					return false;
 				}
 			},
+			// Agregar un CONTACTO
+			addContact: async (contactData) => {
+				const { token } = getStore();
+				setStore({ loading: true });
+
+				try {
+					const response = await fetch(`${apiUrl}/contact`, {
+						method: "POST",
+						headers: {
+							"Content-Type": "application/json",
+							"Authorization": `Bearer ${token}`,
+						},
+						body: JSON.stringify(contactData),
+					});
+
+					if (!response.ok) {
+						const errorData = await response.json();
+						setStore({
+							errorMessage: errorData.error || "Failed to add contact",
+							loading: false,
+						});
+						return null;
+					}
+
+					const data = await response.json();
+					setStore({
+						loading: false,
+						errorMessage: null,
+					});
+
+					return data.contact; // Devuelve el contacto recién agregado
+				} catch (error) {
+					console.error("Error adding contact:", error);
+					setStore({
+						errorMessage: "An error occurred while adding contact.",
+						loading: false,
+					});
+					return null;
+				}
+			},
+
+
+			//obtener contacto 
+			getContacts: async () => {
+				const { token } = getStore();
+				setStore({ loading: true });
+
+				try {
+					const response = await fetch(`${apiUrl}/contact`, {
+						method: "GET",
+						headers: {
+							"Authorization": `Bearer ${token}`,
+						},
+					});
+
+					if (!response.ok) {
+						const errorData = await response.json();
+						setStore({
+							errorMessage: errorData.error || "Failed to fetch contacts",
+							loading: false,
+						});
+						return [];
+					}
+
+					const data = await response.json();
+					setStore({
+						userInfo: { ...getStore().userInfo, contacts: data.contacts },
+						loading: false,
+						errorMessage: null,
+					});
+
+					return data.contacts; // Retorna la lista de contactos
+				} catch (error) {
+					console.error("Error fetching contacts:", error);
+					setStore({
+						errorMessage: "An error occurred while fetching contacts.",
+						loading: false,
+					});
+					return [];
+				}
+			},
+			//obtener un copntacto por ID
+
+			getSingleContact: async (contactId) => {
+				const { token } = getStore();
+				setStore({ loading: true });
+
+				try {
+					const response = await fetch(`${apiUrl}/contact/${contactId}`, {
+						method: "GET",
+						headers: {
+							"Authorization": `Bearer ${token}`,
+						},
+					});
+
+					if (!response.ok) {
+						const errorData = await response.json();
+						setStore({
+							errorMessage: errorData.error || "Failed to fetch contact",
+							loading: false,
+						});
+						return null;
+					}
+
+					const data = await response.json();
+					setStore({ loading: false, errorMessage: null });
+
+					return data.contact; // Retorna el contacto solicitado
+				} catch (error) {
+					console.error("Error fetching contact:", error);
+					setStore({
+						errorMessage: "An error occurred while fetching contact.",
+						loading: false,
+					});
+					return null;
+				}
+			},
+			// Editar un contacto 
+
+			editContact: async (contactId, updatedContactData) => {
+				const { token } = getStore();
+				setStore({ loading: true });
+
+				try {
+					const response = await fetch(`${apiUrl}/contact/${contactId}`, {
+						method: "PATCH",
+						headers: {
+							"Content-Type": "application/json",
+							"Authorization": `Bearer ${token}`,
+						},
+						body: JSON.stringify(updatedContactData),
+					});
+
+					if (!response.ok) {
+						const errorData = await response.json();
+						setStore({
+							errorMessage: errorData.error || "Failed to edit contact",
+							loading: false,
+						});
+						return null;
+					}
+
+					const data = await response.json();
+					setStore({ loading: false, errorMessage: null });
+
+					return data; // Retorna el contacto actualizado
+				} catch (error) {
+					console.error("Error editing contact:", error);
+					setStore({
+						errorMessage: "An error occurred while editing contact.",
+						loading: false,
+					});
+					return null;
+				}
+			},
+			// Eliminar un CONTACTO 
+
+			deleteContact: async (contactId) => {
+				const { token } = getStore();
+				setStore({ loading: true });
+
+				try {
+					const response = await fetch(`${apiUrl}/contact/${contactId}`, {
+						method: "DELETE",
+						headers: {
+							"Authorization": `Bearer ${token}`,
+						},
+					});
+
+					if (!response.ok) {
+						const errorData = await response.json();
+						setStore({
+							errorMessage: errorData.error || "Failed to delete contact",
+							loading: false,
+						});
+						return false;
+					}
+
+					setStore({ loading: false, errorMessage: null });
+					return true; // Confirma que el contacto fue eliminado
+				} catch (error) {
+					console.error("Error deleting contact:", error);
+					setStore({
+						errorMessage: "An error occurred while deleting contact.",
+						loading: false,
+					});
+					return false;
+				}
+			},
+
 
 			checkAuthentication: () => {
 				const token = localStorage.getItem("token");

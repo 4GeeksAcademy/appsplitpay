@@ -21,6 +21,7 @@ export const HomeUser = () => {
     navigate('/contactos');
   };
 
+
   return (
     <div className="container">
       <div className="row">
@@ -62,7 +63,7 @@ export const HomeUser = () => {
             </div>
 
             <div className="currency-cards">
-              <div class="card">
+              <div class="card1">
                 <div class="title">
                   <span>
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1792 1792" height="20" fill="currentColor" width="20">

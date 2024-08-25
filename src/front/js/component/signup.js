@@ -56,7 +56,7 @@ const SignUp = () => {
   };
 
   return (
-    <div className="card d-flex justify-content-center my-5 p-5 mx-auto" style={{ maxWidth: '600px' }}>
+    <div className="card d-flex justify-content-center my-5 p-5 mx-auto" style={{ maxWidth: '600px', width: '100%' }}>
       <form onSubmit={handleSubmit}>
         <div className="text-center mb-3">
           <p>Sign up with:</p>
