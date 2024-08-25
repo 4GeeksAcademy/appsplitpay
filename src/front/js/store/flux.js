@@ -9,6 +9,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 			isAuthenticated: false,
 			errorMessage: null,
 			loading: false,
+			contacts: [], // Aquí se almacenarán los contactos
 		},
 		actions: {
 			login: async (username, password) => {
@@ -96,7 +97,6 @@ const getState = ({ getStore, getActions, setStore }) => {
 
 			logout: async () => {
 				try {
-
 					setStore({
 						token: null,
 						userInfo: null,
@@ -116,6 +116,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 					return false;
 				}
 			},
+
 			// Agregar un CONTACTO
 			addContact: async (contactData) => {
 				const { token } = getStore();
@@ -157,8 +158,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 				}
 			},
 
-
-			//obtener contacto 
+			// Obtener contactos
 			getContacts: async () => {
 				const { token } = getStore();
 				setStore({ loading: true });
@@ -168,6 +168,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 						method: "GET",
 						headers: {
 							"Authorization": `Bearer ${token}`,
+							"Content-Type": "application/json",
 						},
 					});
 
@@ -182,7 +183,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 
 					const data = await response.json();
 					setStore({
-						userInfo: { ...getStore().userInfo, contacts: data.contacts },
+						contacts: data.contacts, // Almacena los contactos directamente en store.contacts
 						loading: false,
 						errorMessage: null,
 					});
@@ -197,8 +198,8 @@ const getState = ({ getStore, getActions, setStore }) => {
 					return [];
 				}
 			},
-			//obtener un copntacto por ID
 
+			// Obtener un contacto por ID
 			getSingleContact: async (contactId) => {
 				const { token } = getStore();
 				setStore({ loading: true });
@@ -233,8 +234,8 @@ const getState = ({ getStore, getActions, setStore }) => {
 					return null;
 				}
 			},
-			// Editar un contacto 
 
+			// Editar un contacto
 			editContact: async (contactId, updatedContactData) => {
 				const { token } = getStore();
 				setStore({ loading: true });
@@ -271,8 +272,8 @@ const getState = ({ getStore, getActions, setStore }) => {
 					return null;
 				}
 			},
-			// Eliminar un CONTACTO 
 
+			// Eliminar un CONTACTO
 			deleteContact: async (contactId) => {
 				const { token } = getStore();
 				setStore({ loading: true });
@@ -306,7 +307,6 @@ const getState = ({ getStore, getActions, setStore }) => {
 				}
 			},
 
-
 			checkAuthentication: () => {
 				const token = localStorage.getItem("token");
 				if (token) {
@@ -320,16 +320,19 @@ const getState = ({ getStore, getActions, setStore }) => {
 					});
 				}
 			},
+
 			updateUserInfo: (newUserInfo) => {
 				const store = getStore();
 				setStore({
 					userInfo: { ...store.userInfo, ...newUserInfo }
 				});
 			},
+
 			getMessage: () => {
 				const store = getStore();
 				return store.message;
 			},
+
 			setMessage: (msg) => {
 				setStore({ message: msg });
 			}

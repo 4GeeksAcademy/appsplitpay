@@ -78,6 +78,25 @@ export const AddContacto = () => {
                 >
                     + Agregar Contacto
                 </button>
+
+                <button className="buttonCancel1" onClick={handleNavigateTocontacto}>
+                    <span className="span-mother">
+                        <span>C</span>
+                        <span>a</span>
+                        <span>n</span>
+                        <span>c</span>
+                        <span>e</span>
+                        <span>l</span>
+                    </span>
+                    <span className="span-mother2">
+                        <span>C</span>
+                        <span>a</span>
+                        <span>n</span>
+                        <span>c</span>
+                        <span>e</span>
+                        <span>l</span>
+                    </span>
+                </button>
                 {errorMessage && <p className="error-message">{errorMessage}</p>} {/* Modificación: Mostrar mensaje de error */}
             </div>
         </div>

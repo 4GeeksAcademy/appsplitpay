@@ -12,6 +12,7 @@ import injectContext, { Context } from "./store/appContext";
 import Contactos from "./component/contactos";
 import ScrollToTop from "../js/component/scrollToTop";
 import AddContacto from "./component/addContacto";
+import EditarContacto from "../js/component/editarContacto";
 
 
 const Layout = () => {
@@ -51,6 +52,7 @@ const Content = () => {
                     <Route path="/evento" element={<Evento />} />
                     <Route path="/contactos" element={<Contactos />} />
                     <Route path="/addContacto" element={<AddContacto />} />
+                    <Route path="/editarContacto" element={<EditarContacto />} />
                 </Routes>
             </ScrollToTop>
             {!shouldHideNavbarAndFooter && <Footer />}

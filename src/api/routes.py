@@ -322,6 +322,8 @@ def add_contact():
     user_id = get_jwt_identity()
     body = request.get_json()
 
+    print(body)
+ 
     if "username" not in body:
         return jsonify({"error": "Username is required"}), 400
     
