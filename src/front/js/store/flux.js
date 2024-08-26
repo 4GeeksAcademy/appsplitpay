@@ -189,29 +189,29 @@ const getState = ({ getStore, getActions, setStore }) => {
 			
 			
 			// Función para cambiar la contraseña
-			changePassword: async (token, password) => {
-				try {
-					const response = await fetch(`${apiUrl}/changepassword`, {
-						method: "PATCH",
-						headers: {
-							"Content-Type": "application/json",
-							"Authorization": `Bearer ${token}`
-						},
-						body: JSON.stringify({ password })
-					});
+			// changePassword: async (token, password) => {
+			// 	try {
+			// 		const response = await fetch(`${apiUrl}/changepassword`, {
+			// 			method: "PATCH",
+			// 			headers: {
+			// 				"Content-Type": "application/json",
+			// 				"Authorization": `Bearer ${token}`
+			// 			},
+			// 			body: JSON.stringify({ password })
+			// 		});
 			
-					if (!response.ok) {
-						const result = await response.json();
-						throw new Error(result.msg || "Error al cambiar la contraseña.");
-					}
+			// 		if (!response.ok) {
+			// 			const result = await response.json();
+			// 			throw new Error(result.msg || "Error al cambiar la contraseña.");
+			// 		}
 			
-					const result = await response.json();
-					return result.msg;
-				} catch (error) {
-					console.error("Error al cambiar la contraseña:", error);
-					throw new Error(error.message || "Error al cambiar la contraseña.");
-				}
-			},
+			// 		const result = await response.json();
+			// 		return result.msg;
+			// 	} catch (error) {
+			// 		console.error("Error al cambiar la contraseña:", error);
+			// 		throw new Error(error.message || "Error al cambiar la contraseña.");
+			// 	}
+			// },
 			
 		}
 	};

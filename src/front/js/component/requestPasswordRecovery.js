@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import { Context } from '../store/appContext';
 
 const RequestPasswordRecovery = () => {
@@ -16,6 +16,17 @@ const RequestPasswordRecovery = () => {
       setError(err.message || 'Error al solicitar la recuperación de contraseña.');
     }
   };
+
+  useEffect(() => {
+    if (message || error) {
+      const timer = setTimeout(() => {
+        setMessage("");
+        setError("");
+      }, 6000); // 6 segundos
+
+      return () => clearTimeout(timer); // Limpiar el temporizador en desmontaje
+    }
+  }, [message, error]);
 
   return (
     <div className="card d-flex justify-content-center my-5 p-5 mx-auto" style={{ maxWidth: '600px', fontFamily: 'Trebuchet MS' }}>

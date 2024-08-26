@@ -6,12 +6,14 @@ const PasswordRecovery = () => {
   const { store, actions } = useContext(Context);
   const [params] = useSearchParams();
   const [errorMessage, setErrorMessage] = useState("");
-  const [password, setPassword] = useState("");
-  const [passwordConfirm, setPasswordConfirm] = useState("");
   const navigate = useNavigate();
 
   async function submitForm(e) {
     e.preventDefault();
+
+    let formData = new FormData(e.target);
+    let password = formData.get("password");
+    let passwordConfirm = formData.get("passwordConfirm");
 
     if (password !== passwordConfirm) {
       setErrorMessage("Las contraseñas no coinciden.");
@@ -20,29 +22,36 @@ const PasswordRecovery = () => {
 
     try {
       let baseURL = process.env.BACKEND_URL;
-      console.log(baseURL)
       let resp = await fetch(baseURL + "/api/changepassword", {
-        method: 'PATCH',
+        method: "PATCH",
         headers: {
           "Content-Type": "application/json",
-          "Authorization": "Bearer " + params.get("token")
+          "Authorization": "Bearer " + params.get("token"),
         },
-        body: JSON.stringify({ password })
+        body: JSON.stringify({ password }),
       });
-      console.log("Response status:", resp.status);
-      console.log("Response:", resp);
 
       if (resp.ok) {
-        console.log("Contraseña cambiada exitosamente");
-        navigate("/");
+        console.log("Clave cambiada");
+        navigate("/"); // Redirecciona a la vista de inicio
       } else {
+        console.log("No es posible cambiar contraseña");
         setErrorMessage("Ocurrió un error al cambiar la contraseña.");
       }
     } catch (error) {
-      setErrorMessage("Error al conectar con el servidor.");
       console.error("Error:", error);
+      setErrorMessage("Error al conectar con el servidor.");
     }
   }
+
+  useEffect(() => {
+    if (errorMessage) {
+      const timer = setTimeout(() => {
+        setErrorMessage("");
+      }, 6000);
+      return () => clearTimeout(timer);
+    }
+  }, [errorMessage]);
 
   return (
     <div className="card d-flex justify-content-center my-5 p-5 mx-auto" style={{ maxWidth: '600px', fontFamily: 'Trebuchet MS' }}>
@@ -52,10 +61,9 @@ const PasswordRecovery = () => {
           <input
             type="password"
             id="form2Example1"
+            name="password"
             className="form-control"
             placeholder="Nueva contraseña"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
             required
           />
           <label className="form-label" htmlFor="form2Example1"></label>
@@ -64,10 +72,9 @@ const PasswordRecovery = () => {
           <input
             type="password"
             id="form2Example2"
+            name="passwordConfirm"
             className="form-control"
             placeholder="Repita su contraseña"
-            value={passwordConfirm}
-            onChange={(e) => setPasswordConfirm(e.target.value)}
             required
           />
           <label className="form-label" htmlFor="form2Example2"></label>

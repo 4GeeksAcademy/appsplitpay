@@ -32,6 +32,9 @@ def check_if_token_revoked(jwt_header, jwt_payload: dict) -> bool:
     jti = jwt_payload["jti"]
     token = TokenBlockedList.query.filter_by(jti=jti).first()
     is_blocked=token is not None
+    print(is_password)
+    print(is_blocked)
+    print(request.path)
 
     if jwt_payload["type"] == "password":
         return is_blocked and not is_password

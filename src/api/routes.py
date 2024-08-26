@@ -801,14 +801,13 @@ def user_change_password():
         return jsonify({"msg": "Usuario no encontrado"}), 404
 
     body = request.get_json()
-    new_password = body.get("password")
+    new_password = bcrypt.generate_password_hash(
+        body["password"]).decode('utf-8')
+    user.password = new_password
+    db.session.add(user)
 
     if not new_password:
         return jsonify({"msg": "La contraseña no puede estar vacía."}), 400
-
-    hashed_password = bcrypt.generate_password_hash(new_password).decode('utf-8')
-    user.password = hashed_password
-    db.session.add(user)
 
     if get_jwt()["type"] == "password":
         jti = get_jwt()["jti"]
@@ -823,7 +822,6 @@ def user_change_password():
 @api.route('/requestpasswordrecovery', methods=['POST'])
 def request_password_recovery():
     try:
-        #Cuerpo de la solicitud
         email = request.get_json().get('email')
         if not email:
             return jsonify({"msg": "Email es requerido"}), 400
@@ -834,12 +832,12 @@ def request_password_recovery():
             return jsonify({"msg": "Usuario no encontrado"}), 404
 
         #Token de acceso para la recuperación de contraseña
-        password_token = create_access_token(identity=user.email, additional_claims={"type": "password"})
+        password_token = create_access_token(identity=user.id, additional_claims={"type": "password"})
         
         #URL al FRONTEND
         url = os.getenv('FRONTEND_URL') 
         url = url + "/changepassword?token=" + password_token
-        
+        print (url)
         # Datos para la solicitud de envío de correo
         send_mail_url = os.getenv("MAIL_SEND_URL")
         service_id = os.getenv("MAIL_SERVICE_ID")
@@ -861,13 +859,10 @@ def request_password_recovery():
         print("Response content:", response.text)
         print("Data sent:", json.dumps(data, indent=4))
 
-        # Verificar si el correo se envió correctamente
+        # Verificacion envio de correo
         if response.status_code == 200:
-            # Retornar el token además del mensaje de éxito
             return jsonify({
-                "msg": "Correo enviado con éxito.",
-                # "token": password_token
-
+                "msg": "Correo enviado con éxito."
 
             }), 200
         else:
