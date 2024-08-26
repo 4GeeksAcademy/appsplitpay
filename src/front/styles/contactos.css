@@ -18,27 +18,48 @@ body {
 .header h1 {
   font-size: 28px;
   font-weight: bold;
-  margin-right: 1500px;
   margin-bottom: 30px;
+  text-align: center;
 }
 
 .search-bar {
   display: flex;
+  justify-content: space-between;
   align-items: center;
-  gap: 10px;
-  width: 100%;
+  margin-bottom: 20px;
 }
 
-.search-bar input {
-  width: 80%;
+.search-container {
+  position: relative;
+  flex-grow: 1;
+  display: flex;
+  align-items: center;
   padding: 10px;
-  font-size: 16px;
-  border: 1px solid #ccc;
+  background: linear-gradient(
+    135deg,
+    rgb(218, 232, 247) 0%,
+    rgb(214, 229, 247) 100%
+  );
   border-radius: 30px;
   box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-.search-bar .buttonaddContact {
+.search-container input {
+  flex-grow: 1;
+  padding: 10px;
+  border: none;
+  border-radius: 20px;
+  font-size: 16px;
+  outline: none;
+}
+
+.search-container svg {
+  width: 24px;
+  height: 24px;
+  margin-left: 10px;
+}
+
+.buttonaddContact {
   padding: 10px 20px;
   font-size: 16px;
   background-color: #447de6;
@@ -47,12 +68,11 @@ body {
   border-radius: 30px;
   cursor: pointer;
   transition: background-color 0.3s ease, box-shadow 0.3s ease;
-  box-shadow: 0 4px 3px rgba(0, 0, 0, 0.1);
 }
-.search-bar .buttonaddContact:hover {
+
+.buttonaddContact:hover {
   background-color: #274d95;
   box-shadow: 0 8px 12px rgba(0, 0, 0, 0.2);
-  color: #ffffff;
 }
 
 .recientes {

@@ -63,6 +63,7 @@ const Navbar = () => {
           .custom-navbar {
               background-color: #003459;
               padding: 0 2rem;
+            
           }
 
           .navbar-toggler-icon {

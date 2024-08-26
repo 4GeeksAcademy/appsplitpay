@@ -8,14 +8,14 @@
   padding: 1rem;
 }
 
-.header {
+.header1 {
   display: flex;
   align-items: center;
   grid-gap: 1rem;
   gap: 1rem;
 }
 
-.icon {
+.icon1 {
   flex-shrink: 0;
   display: flex;
   align-items: center;
@@ -41,11 +41,11 @@
   color: rgba(107, 114, 128, 1);
 }
 
-.actions {
+.actions1 {
   margin-top: 1.5rem;
 }
 
-.actions a {
+.actions1 a {
   text-decoration: none;
 }
 

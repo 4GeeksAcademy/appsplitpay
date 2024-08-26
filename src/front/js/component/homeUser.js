@@ -20,6 +20,11 @@ export const HomeUser = () => {
   const handleNavigateToContactos = () => {
     navigate('/contactos');
   };
+
+  const handleNavigateToGrupos = () => {
+    navigate('/grupos');
+  };
+
   useEffect(() => {
     actions.getContacts();
   }, []);
@@ -41,8 +46,8 @@ export const HomeUser = () => {
               <li onClick={handleNavigateToContactos}>
                 <i className="fa-solid fa-people-arrows"></i> Destinatarios
               </li>
-              <li>
-                <i className="fa-solid fa-people-arrows"></i> Grupos
+              <li onClick={handleNavigateToGrupos}>
+                <i className="fa-solid fa-people-arrows" ></i> Grupos
               </li>
               <li onClick={openModal}>
                 <i className="fa-solid fa-file-invoice-dollar"></i> Pagos
@@ -155,7 +160,7 @@ export const HomeUser = () => {
                 <div className="recientes-lista">
                   {store.contacts.slice(0, 5).map((contact, index) => (
                     <div className="contacto" key={index}>
-                      <img src={contact.image || "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSI4yKnjT4EmZwDGMxrPtjt4xJChaDC79N-AzzfU0uKs8LHI43gM3imE2MA5M6WzttveH8&usqp=CAU"} alt={contact.fullname || contact.username} />
+                      <img src={contact.image || "https://img.freepik.com/fotos-premium/boton-perfil-cuenta-azul-sobre-fondo-azul_509562-71.jpg"} alt={contact.fullname || contact.username} />
                       <p>{contact.fullname || contact.username}</p>
                     </div>
                   ))}

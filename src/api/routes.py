@@ -353,14 +353,31 @@ def add_contact():
 @jwt_required()
 def get_contacts():
     user_id = get_jwt_identity()
-    
+    search_query = request.args.get('search', '')
+
+    print(f"User ID: {user_id}, Search Query: {search_query}")  # Agrega esto para depurar
+
     try:
-        contacts = Contact.query.filter_by(user_id=user_id).all()
+        query = Contact.query.filter_by(user_id=user_id)
+
+        if search_query:
+            query = query.filter(
+                (Contact.fullname.ilike(f"%{search_query}%")) |
+                (Contact.username.ilike(f"%{search_query}%")) |
+                (Contact.email.ilike(f"%{search_query}%"))
+            )
+
+        contacts = query.all()
+
+        print(f"Contacts found: {contacts}")  # Agrega esto para depurar
+
         contact_list = [contact.serialize() for contact in contacts]
 
         return jsonify({"contacts": contact_list}), 200
     except Exception as e:
+        print(f"Error: {str(e)}")  # Agrega esto para depurar
         return jsonify({"error": "An unexpected error occurred while fetching contacts", "details": str(e)}), 500
+
 
 #--------------------------GET_SINGLE_CONTACT--------------------------------------------------------------------
 
