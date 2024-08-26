@@ -23,6 +23,7 @@ api = Blueprint('api', __name__)
 # Allow CORS requests to this API
 CORS(api)
 
+
 #********************************************************************************************************
 #********************************************USERS*******************************************************
 #********************************************************************************************************
@@ -800,61 +801,82 @@ def user_change_password():
         return jsonify({"msg": "Usuario no encontrado"}), 404
 
     body = request.get_json()
-    new_password = bcrypt.generate_password_hash(body["password"]).decode('utf-8')
-    # Asignar la nueva contraseña al usuario
-    user.password = new_password 
+    new_password = body.get("password")
+
+    if not new_password:
+        return jsonify({"msg": "La contraseña no puede estar vacía."}), 400
+
+    hashed_password = bcrypt.generate_password_hash(new_password).decode('utf-8')
+    user.password = hashed_password
     db.session.add(user)
 
-    # Verificar el tipo de token
     if get_jwt()["type"] == "password":
-        # Bloquear el token una vez utilizado
         jti = get_jwt()["jti"]
         token_blocked = TokenBlockedList(jti=jti)
         db.session.flush()
         db.session.add(token_blocked)
-    
+
     db.session.commit()
     return jsonify({"msg": "Contraseña actualizada con éxito"}), 200
 
+
 @api.route('/requestpasswordrecovery', methods=['POST'])
 def request_password_recovery():
-    email = request.get_json()['email']
-    user = User.query.filter_by(email=email).first()
+    try:
+        #Cuerpo de la solicitud
+        email = request.get_json().get('email')
+        if not email:
+            return jsonify({"msg": "Email es requerido"}), 400
 
-    if user is None:
-        return jsonify({"msg": "Usuario no encontrado"}), 404
+        user = User.query.filter_by(email=email).first()
 
-    # Generar un token de acceso específico para la recuperación de contraseña
-    password_token = create_access_token(identity=user.id, additional_claims={"type": "password"}, expires_delta=datetime.timedelta(minutes=10))
-    
-    url = os.getenv('FRONTEND_URL')
-    url = f"{url}/changePassword?token" + password_token 
-    print(password_token)
+        if not user:
+            return jsonify({"msg": "Usuario no encontrado"}), 404
 
-    # Configurar datos para la solicitud de envío de correo
-    send_mail_url = os.getenv("MAIL_SEND_URL")
-    service_id = os.getenv("MAIL_SERVICE_ID")
-    template_id = os.getenv("MAIL_TEMPLATE_ID")
-    user_id = os.getenv("MAIL_USER_ID")
+        #Token de acceso para la recuperación de contraseña
+        password_token = create_access_token(identity=user.email, additional_claims={"type": "password"})
+        
+        #URL al FRONTEND
+        url = os.getenv('FRONTEND_URL') 
+        url = url + "/changepassword?token=" + password_token
+        
+        # Datos para la solicitud de envío de correo
+        send_mail_url = os.getenv("MAIL_SEND_URL")
+        service_id = os.getenv("MAIL_SERVICE_ID")
+        template_id = os.getenv("MAIL_TEMPLATE_ID")
+        user_id = os.getenv("MAIL_USER_ID")
 
-    data = {
-        "service_id": service_id,
-        "template_id": template_id,
-        "user_id": user_id,
-        "template_params": {
-            "url": url,
+        data = {
+            "service_id": service_id,
+            "template_id": template_id,
+            "user_id": user_id,
+            "template_params": {
+                "url": url,
+            }
         }
-    }
 
-    headers = {"Content-Type": "application/json"}
-    response = requests.post(send_mail_url, headers=headers, data=json.dumps(data))
-    
-    print(url) 
+        headers = {"Content-Type": "application/json"}
+        response = requests.post(send_mail_url, headers=headers, data=json.dumps(data))
+        print("Response status code:", response.status_code)
+        print("Response content:", response.text)
+        print("Data sent:", json.dumps(data, indent=4))
 
-    if response.status_code == 200:
-            return jsonify({"msg": "Correo enviado con éxito."}), 200
-    else:
-            return jsonify({"msg": "ocurrio un error con el envio de correo"}), 400
+        # Verificar si el correo se envió correctamente
+        if response.status_code == 200:
+            # Retornar el token además del mensaje de éxito
+            return jsonify({
+                "msg": "Correo enviado con éxito.",
+                # "token": password_token
+
+
+            }), 200
+        else:
+            return jsonify({"msg": "Ocurrió un error con el envío de correo"}), 400
+
+    except Exception as e:
+        print("Error:", e)
+        return jsonify({"msg": "Error interno del servidor"}), 500
+
 
 
 

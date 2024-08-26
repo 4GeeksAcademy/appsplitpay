@@ -72,7 +72,7 @@ const Login = () => {
           <div className="col">
             {/* Simple link */}
             {/* Redirigir a la página de recuperación de contraseña */}
-            <Link to="/passwordRecovery">recupera tu contraseña</Link>
+            <Link to="/requestPasswordRecovery">recupera tu contraseña</Link>
           </div>
         </div>
 
