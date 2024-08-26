@@ -214,9 +214,9 @@ body {
   color: #ffffff;
 }
 
-.buttonCancel {
+.buttonCancel2 {
   margin-bottom: 20px;
-  margin-left: 230px;
+  margin-left: 300px;
   font-weight: bold;
   color: white;
   border-radius: 2rem;
@@ -226,8 +226,6 @@ body {
   border: none;
   background-color: #447de6;
   display: flex;
-  justify-content: center;
-  align-items: center;
 }
 
 button .span-mother {

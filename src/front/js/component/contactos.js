@@ -182,7 +182,7 @@ export const Contactos = () => {
             </div>
             <div className="row justify-content-center">
                 <div className="col-md-4">
-                    <button className="buttonCancel" onClick={handleCancelClick}>
+                    <button className="buttonCancel2" onClick={handleCancelClick}>
                         <span className="span-mother">
                             <span>C</span>
                             <span>a</span>

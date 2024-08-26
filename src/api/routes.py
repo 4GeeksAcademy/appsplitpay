@@ -473,7 +473,7 @@ def create_group():
 
         for member_id in body["member_ids"]:
             if member_id != user_id:
-                member = User.query.get(member_id)
+                member = user_id
                 if not member:
                     return jsonify({"error": f"User with id {member_id} not found"}), 404
                 member = GroupMember(group_id=new_group.id, user_id=member_id)

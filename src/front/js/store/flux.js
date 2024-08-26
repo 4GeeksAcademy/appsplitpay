@@ -27,20 +27,36 @@ const getState = ({ getStore, getActions, setStore }) => {
 
 					if (response.ok) {
 						const data = await response.json();
-						setStore({
-							token: data.token,
-							isAuthenticated: true,
-							loading: false,
-							errorMessage: null
-						});
 
-						localStorage.setItem("token", data.token);
-						return true;
+						// Asegúrate de que 'data.user' contiene la información del usuario
+						if (data.token && data.user) {
+							setStore({
+								token: data.token,
+								isAuthenticated: true,
+								userInfo: data.user,  // Guardar la información del usuario en el store
+								loading: false,
+								errorMessage: null
+							});
+
+							// Guardar token e información del usuario en el localStorage
+							localStorage.setItem("token", data.token);
+							localStorage.setItem("userInfo", JSON.stringify(data.user));
+							return true;
+						} else {
+							// Manejar el caso en que el token o la información del usuario no se devuelvan correctamente
+							setStore({
+								errorMessage: "Login successful but user data is missing.",
+								loading: false,
+								isAuthenticated: false,
+							});
+							return false;
+						}
 					} else {
 						const errorData = await response.json();
 						setStore({
 							errorMessage: errorData.msg || "Login failed",
-							loading: false
+							loading: false,
+							isAuthenticated: false,
 						});
 						return false;
 					}
@@ -48,11 +64,13 @@ const getState = ({ getStore, getActions, setStore }) => {
 					console.error("There was an error logging in:", error);
 					setStore({
 						errorMessage: "An error occurred during login.",
-						loading: false
+						loading: false,
+						isAuthenticated: false,
 					});
 					return false;
 				}
 			},
+
 
 			signup: async (username, email, password, first_name, last_name, age, address) => {
 				setStore({ loading: true });
@@ -201,9 +219,6 @@ const getState = ({ getStore, getActions, setStore }) => {
 				}
 			},
 
-
-
-
 			getSingleContact: async (contactId) => {
 				const { token } = getStore();
 				setStore({ loading: true });
@@ -238,9 +253,46 @@ const getState = ({ getStore, getActions, setStore }) => {
 					return null;
 				}
 			},
-
-
-			// Editar un contacto
+			//--------------------------------------------------BUSCAR CONTACTO---------------------------------------resuelve luego 
+			/*
+			@api.route('/search', methods = ['GET'])
+			def get_single_user():
+				body = request.get_json()
+			
+				if "username" not in body:
+				return jsonify({ "error": "Username is required" }), 400
+			
+				try:
+				user = User.query.filter_by(username = body["username"]).first()
+			
+				if user is None:
+				return jsonify({ "error": "User not found" }), 404
+			
+				return jsonify({ "user": user.serialize() })
+				except Exception as e:
+				return jsonify({
+					"error": "An unexpected error occu
+			red", "details": str(e)}), 500
+				},
+			
+					getSingleUser: async (username) => {
+						const store = getStore();
+						try {
+							const response = await fetch(`${apiUrl}/search`, {
+								method: 'GET',
+								headers: {
+									'Authorization': `Bearer ${store.token}`
+								},
+								body: JSON.stringify(username)
+							});
+							if (!response.ok) throw new Error('Error al obtener el usua)
+					},
+			
+			
+			Esto es un comentario de múltiples líneas.
+			Puede abarcar varias líneas de código.
+			*/
+			// Editar un contacto---------------------------------------------------------------------
 			editContact: async (contactId, updatedContactData) => {
 				const { token } = getStore();
 				setStore({ loading: true });
@@ -314,9 +366,12 @@ const getState = ({ getStore, getActions, setStore }) => {
 
 			checkAuthentication: () => {
 				const token = localStorage.getItem("token");
-				if (token) {
+				const userInfo = localStorage.getItem("userInfo");
+
+				if (token && userInfo) {
 					setStore({
 						token: token,
+						userInfo: JSON.parse(userInfo),  // Carga la información del usuario desde el localStorage
 						isAuthenticated: true,
 					});
 				} else {
@@ -331,8 +386,13 @@ const getState = ({ getStore, getActions, setStore }) => {
 
 			// Crear un grupo
 			createGroup: async (groupData) => {
-				const { token } = getStore();
+				const { token, userInfo } = getStore();
 				setStore({ loading: true });
+
+				const groupPayload = {
+					...groupData,
+					creator_id: userInfo.id  // Asegúrate de incluir el ID del creador
+				};
 
 				try {
 					const response = await fetch(`${apiUrl}/group`, {
@@ -341,7 +401,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 							"Content-Type": "application/json",
 							"Authorization": `Bearer ${token}`,
 						},
-						body: JSON.stringify(groupData),
+						body: JSON.stringify(groupPayload),
 					});
 
 					if (!response.ok) {
@@ -369,6 +429,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 					return null;
 				}
 			},
+
 
 			// Obtener detalles de un grupo por ID
 			getGroupDetails: async (groupId) => {
