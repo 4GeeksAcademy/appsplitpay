@@ -11,6 +11,9 @@ from datetime import datetime
 from pytz import timezone
 from api.paypal_funciones import paypal_Login, create_order, transfer_money
 from sqlalchemy.exc import IntegrityError
+import os
+import requests
+import json
 
 app = Flask(__name__)
 bcrypt = Bcrypt(app)
@@ -19,6 +22,7 @@ api = Blueprint('api', __name__)
 
 # Allow CORS requests to this API
 CORS(api)
+
 
 #********************************************************************************************************
 #********************************************USERS*******************************************************
@@ -64,11 +68,11 @@ def user_signup():
 def user_login():
     body = request.get_json()
 
-    if "username" not in body or "password" not in body:
-        return jsonify({"error": "Username and password are required"}), 400
+    if "email" not in body or "password" not in body:
+        return jsonify({"error": "email and password are required"}), 400
 
     try:
-        user = User.query.filter_by(username=body["username"]).first()
+        user = User.query.filter_by(email=body["email"]).first()
 
         if user is None:
             return jsonify({"error": "User not found"}), 404
@@ -786,6 +790,90 @@ def delete_account(account_id):
 #********************************************************************************************************
 #*******************************************COMMENTS*******************************************************
 #********************************************************************************************************
+
+@api.route('/changepassword', methods=['PATCH'])
+@jwt_required()
+def user_change_password():
+    user_id = get_jwt_identity()
+    user = User.query.filter_by(id=user_id).first()
+
+    if user is None:
+        return jsonify({"msg": "Usuario no encontrado"}), 404
+
+    body = request.get_json()
+    new_password = bcrypt.generate_password_hash(
+        body["password"]).decode('utf-8')
+    user.password = new_password
+    db.session.add(user)
+
+    if not new_password:
+        return jsonify({"msg": "La contraseña no puede estar vacía."}), 400
+
+    if get_jwt()["type"] == "password":
+        jti = get_jwt()["jti"]
+        token_blocked = TokenBlockedList(jti=jti)
+        db.session.flush()
+        db.session.add(token_blocked)
+
+    db.session.commit()
+    return jsonify({"msg": "Contraseña actualizada con éxito"}), 200
+
+
+@api.route('/requestpasswordrecovery', methods=['POST'])
+def request_password_recovery():
+    try:
+        email = request.get_json().get('email')
+        if not email:
+            return jsonify({"msg": "Email es requerido"}), 400
+
+        user = User.query.filter_by(email=email).first()
+
+        if not user:
+            return jsonify({"msg": "Usuario no encontrado"}), 404
+
+        #Token de acceso para la recuperación de contraseña
+        password_token = create_access_token(identity=user.id, additional_claims={"type": "password"})
+        
+        #URL al FRONTEND
+        url = os.getenv('FRONTEND_URL') 
+        url = url + "/changepassword?token=" + password_token
+        print (url)
+        # Datos para la solicitud de envío de correo
+        send_mail_url = os.getenv("MAIL_SEND_URL")
+        service_id = os.getenv("MAIL_SERVICE_ID")
+        template_id = os.getenv("MAIL_TEMPLATE_ID")
+        user_id = os.getenv("MAIL_USER_ID")
+
+        data = {
+            "service_id": service_id,
+            "template_id": template_id,
+            "user_id": user_id,
+            "template_params": {
+                "url": url,
+            }
+        }
+
+        headers = {"Content-Type": "application/json"}
+        response = requests.post(send_mail_url, headers=headers, data=json.dumps(data))
+        print("Response status code:", response.status_code)
+        print("Response content:", response.text)
+        print("Data sent:", json.dumps(data, indent=4))
+
+        # Verificacion envio de correo
+        if response.status_code == 200:
+            return jsonify({
+                "msg": "Correo enviado con éxito."
+
+            }), 200
+        else:
+            return jsonify({"msg": "Ocurrió un error con el envío de correo"}), 400
+
+    except Exception as e:
+        print("Error:", e)
+        return jsonify({"msg": "Error interno del servidor"}), 500
+
+
+
 
 
 
