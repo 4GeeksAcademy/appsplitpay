@@ -16,7 +16,7 @@ const Login = () => {
     const success = await actions.login(email, password);
 
     if (success) {
-      navigate("/homeUser"); // Redirige a la página homeUser si el login es exitoso
+      navigate("/homeUser");
     } else {
       setErrorMessage(store.errorMessage || "An error occurred during login.");
     }
@@ -33,36 +33,36 @@ const Login = () => {
   
 
   return (
-    <div className="card d-flex justify-content-center my-5 p-5 mx-auto" style={{ maxWidth: '600px', fontFamily: 'Trebuchet MS' }}>
+    <div className="card d-flex justify-content-center my-5 p-5 mx-auto" style={{ maxWidth: '600px', fontFamily: 'Trebuchet MS', width: '100%' }}>
       <form onSubmit={handleSubmit}>
-        {/* Mostrar mensaje de error si existe */}
+
         {errorMessage && <div className="alert alert-danger">{errorMessage}</div>}
 
-        {/* Email input */}
+
         <div className="form-outline mb-4">
-          <input 
-            onChange={(e) => setEmail(e.target.value)} 
-            type="email" 
-            id="form2Example1" 
-            className="form-control" 
-            required 
+          <input
+            onChange={(e) => setEmail(e.target.value)}
+            type="email"
+            id="form2Example1"
+            className="form-control"
+            required
           />
           <label className="form-label" htmlFor="form2Example1" placeholder="Email">Email</label>
         </div>
 
-        {/* Password input */}
+
         <div className="form-outline mb-4">
-          <input 
-            onChange={(e) => setPassword(e.target.value)} 
-            type="password" 
-            id="form2Example2" 
-            className="form-control" 
-            required 
+          <input
+            onChange={(e) => setPassword(e.target.value)}
+            type="password"
+            id="form2Example2"
+            className="form-control"
+            required
           />
           <label className="form-label" htmlFor="form2Example2">Password</label>
         </div>
 
-        {/* 2 column grid layout for inline styling */}
+
         <div className="row mb-4">
           <div className="col d-flex justify-content-center">
             {/* Checkbox */}
@@ -83,11 +83,12 @@ const Login = () => {
             <Link to="/requestPasswordRecovery">recupera tu contraseña</Link>
           </div>
         </div>
+
         <button type="submit" className="btn btn-primary btn-block mb-4 mt-4">
           Sign in
         </button>
 
-        {/* Register buttons */}
+
         <div className="text-center">
           <p>
             Not a member? <Link to="/signup">Register</Link>

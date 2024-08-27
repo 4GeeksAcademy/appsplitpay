@@ -1,7 +1,8 @@
 .social-icon {
-    width: 24px;
-    height: 24px;
-    fill: currentColor;
+  width: 24px;
+  height: 24px;
+  fill: currentColor;
 }
 
-@media (max-width: 545px) {}
+@media (max-width: 645px) {
+}
