@@ -2,11 +2,11 @@ import React, { useState, useContext } from "react";
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import { differenceInYears } from 'date-fns';
-import { Context } from "../store/appContext"; // Asegúrate de que la ruta es correcta
+import { Context } from "../store/appContext";
 import { useNavigate } from "react-router-dom";
 
 const SignUp = () => {
-  const { store, actions } = useContext(Context); // Obtener el contexto
+  const { store, actions } = useContext(Context);
   const [username, setUsername] = useState("");
   const [first_name, setFirstName] = useState("");
   const [last_name, setLastName] = useState("");
@@ -56,7 +56,7 @@ const SignUp = () => {
   };
 
   return (
-    <div className="card d-flex justify-content-center my-5 p-5 mx-auto" style={{ maxWidth: '600px' }}>
+    <div className="card d-flex justify-content-center my-5 p-5 mx-auto" style={{ maxWidth: '600px', width: '100%' }}>
       <form onSubmit={handleSubmit}>
         <div className="text-center mb-3">
           <p>Sign up with:</p>

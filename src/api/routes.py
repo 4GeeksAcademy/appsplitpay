@@ -81,7 +81,7 @@ def user_login():
             return jsonify({"error": "Invalid password"}), 401
 
         token = create_access_token(identity=user.id, additional_claims={"role": "admin"})
-        return jsonify({"token": token}), 200
+        return jsonify({"token": token, "user":user.serialize()}), 200
     except Exception as e:
         return jsonify({"error": "An unexpected error occurred", "details": str(e)}), 500
 
@@ -326,6 +326,8 @@ def add_contact():
     user_id = get_jwt_identity()
     body = request.get_json()
 
+    print(body)
+ 
     if "username" not in body:
         return jsonify({"error": "Username is required"}), 400
     
@@ -355,14 +357,31 @@ def add_contact():
 @jwt_required()
 def get_contacts():
     user_id = get_jwt_identity()
-    
+    search_query = request.args.get('search', '')
+
+    print(f"User ID: {user_id}, Search Query: {search_query}")  # Agrega esto para depurar
+
     try:
-        contacts = Contact.query.filter_by(user_id=user_id).all()
+        query = Contact.query.filter_by(user_id=user_id)
+
+        if search_query:
+            query = query.filter(
+                (Contact.fullname.ilike(f"%{search_query}%")) |
+                (Contact.username.ilike(f"%{search_query}%")) |
+                (Contact.email.ilike(f"%{search_query}%"))
+            )
+
+        contacts = query.all()
+
+        print(f"Contacts found: {contacts}")  # Agrega esto para depurar
+
         contact_list = [contact.serialize() for contact in contacts]
 
         return jsonify({"contacts": contact_list}), 200
     except Exception as e:
+        print(f"Error: {str(e)}")  # Agrega esto para depurar
         return jsonify({"error": "An unexpected error occurred while fetching contacts", "details": str(e)}), 500
+
 
 #--------------------------GET_SINGLE_CONTACT--------------------------------------------------------------------
 
@@ -458,7 +477,7 @@ def create_group():
 
         for member_id in body["member_ids"]:
             if member_id != user_id:
-                member = User.query.get(member_id)
+                member = user_id
                 if not member:
                     return jsonify({"error": f"User with id {member_id} not found"}), 404
                 member = GroupMember(group_id=new_group.id, user_id=member_id)

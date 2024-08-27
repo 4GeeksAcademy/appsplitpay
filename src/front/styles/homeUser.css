@@ -89,6 +89,7 @@ body {
 .sidebar ul li:hover {
   background-color: #4078e1;
   border-radius: 5px;
+  color: #ffffff;
 }
 
 .sidebar ul li.active {
@@ -140,6 +141,7 @@ body {
 .main-content .balance .actions button.send:hover {
   background-color: #274d95;
   box-shadow: 0 8px 12px rgba(0, 0, 0, 0.2);
+  color: #ffffff;
 }
 
 .main-content .balance .actions button.add {
@@ -157,6 +159,7 @@ body {
 .main-content .balance .actions button.add:hover {
   background-color: #274d95;
   box-shadow: 0 8px 12px rgba(0, 0, 0, 0.2);
+  color: #ffffff;
 }
 
 .main-content .balance .actions button.request {
@@ -174,6 +177,7 @@ body {
 .main-content .balance .actions button.request:hover {
   background-color: #274d95;
   box-shadow: 0 8px 12px rgba(0, 0, 0, 0.2);
+  color: #ffffff;
 }
 
 .currency-cards {
@@ -195,6 +199,7 @@ body {
 .currency-card:hover {
   background-color: #274d95;
   box-shadow: 0 8px 12px rgba(0, 0, 0, 0.2);
+  color: #ffffff;
 }
 
 .transactions,
@@ -212,12 +217,14 @@ body {
   box-shadow: 0 8px 12px rgba(0, 0, 0, 0.2);
   transition: background-color 0.3s ease, box-shadow 0.3s ease;
   box-shadow: 0 4px 3px rgba(0, 0, 0, 0.1);
+  color: #ffffff;
 }
 .recent-contacts ul li:hover {
   background-color: #4078e1;
   box-shadow: 0 8px 12px rgba(0, 0, 0, 0.2);
   transition: background-color 0.3s ease, box-shadow 0.3s ease;
   box-shadow: 0 4px 3px rgba(0, 0, 0, 0.1);
+  color: #ffffff;
 }
 
 .transactions ul,
@@ -266,4 +273,192 @@ body {
   border-radius: 50%;
   width: 40px;
   height: 40px;
+}
+
+.card1 {
+  padding: 1rem;
+  background-color: #fff;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
+    0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  max-width: 320px;
+  border-radius: 20px;
+  width: 250px;
+  border: solid 1px lightgray;
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+  box-shadow: 0 4px 3px rgba(0, 0, 0, 0.1);
+}
+.card1:hover {
+  box-shadow: 0 8px 12px rgba(0, 0, 0, 0.2);
+  color: #ffffff;
+  cursor: pointer;
+}
+
+.title {
+  display: flex;
+  align-items: center;
+}
+
+.title span {
+  position: relative;
+  padding: 0.5rem;
+  background-color: #b9101e;
+  width: 1.5rem;
+  height: 1.5rem;
+  border-radius: 9999px;
+}
+
+.title span svg {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: #ffffff;
+  height: 1rem;
+}
+
+.title-text {
+  margin-left: 0.5rem;
+  color: #374151;
+  font-size: 18px;
+}
+
+.percent {
+  margin-left: 0.5rem;
+  color: #b9101e;
+  font-weight: 600;
+  display: flex;
+}
+
+.data {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+}
+
+.data p {
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+  color: #1f2937;
+  font-size: 2.25rem;
+  line-height: 2.5rem;
+  font-weight: 700;
+  text-align: left;
+}
+
+.data .range {
+  position: relative;
+  background-color: #e5e7eb;
+  width: 100%;
+  height: 0.5rem;
+  border-radius: 0.25rem;
+}
+
+.data .range .fill {
+  position: absolute;
+  top: 0;
+  left: 0;
+  background-color: #b9101e;
+  width: 36%;
+  height: 100%;
+  border-radius: 0.25rem;
+  transition: 0.5s all;
+}
+
+.card2 {
+  padding: 1rem;
+  background-color: #fff;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
+    0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  max-width: 320px;
+  border-radius: 20px;
+  width: 250px;
+  border: solid 1px lightgray;
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+  box-shadow: 0 4px 3px rgba(0, 0, 0, 0.1);
+}
+.card2:hover {
+  box-shadow: 0 8px 12px rgba(0, 0, 0, 0.2);
+  color: #ffffff;
+  cursor: pointer;
+}
+
+.title2 {
+  display: flex;
+  align-items: center;
+}
+
+.title span {
+  position: relative;
+  padding: 0.5rem;
+  background-color: #10b981;
+  width: 1.5rem;
+  height: 1.5rem;
+  border-radius: 9999px;
+}
+
+.title span svg {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: #ffffff;
+  height: 1rem;
+}
+
+.title-text {
+  margin-left: 0.5rem;
+  color: #374151;
+  font-size: 18px;
+}
+
+.percent {
+  margin-left: 0.5rem;
+  color: #02972f;
+  font-weight: 600;
+  display: flex;
+}
+
+.data {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+}
+
+.data p {
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+  color: #1f2937;
+  font-size: 2.25rem;
+  line-height: 2.5rem;
+  font-weight: 700;
+  text-align: left;
+}
+
+.data .range {
+  position: relative;
+  background-color: #e5e7eb;
+  width: 100%;
+  height: 0.5rem;
+  border-radius: 0.25rem;
+}
+
+.data .range .fill {
+  position: absolute;
+  top: 0;
+  left: 0;
+  background-color: #10b981;
+  width: 76%;
+  height: 100%;
+  border-radius: 0.25rem;
+}
+
+.recent-contacts-photo {
+  width: 50px;
+  height: 50px;
+  object-fit: cover;
+  border-radius: 50%;
+  border: 2px solid #ccc;
+  display: inline-block;
+  margin-right: 10px;
+  vertical-align: middle;
 }
