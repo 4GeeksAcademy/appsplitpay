@@ -1,12 +1,20 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { Link } from "react-router-dom";
 import { PayPalScriptProvider, PayPalButtons } from "@paypal/react-paypal-js";
 import { useNavigate } from 'react-router-dom';
-import PayPalLogin from "../component/loginPaypal";
+import HandlePayPalLogin from "../component/handlePayPalLogin";
+import { Context } from "../store/appContext";
 
 function Home() {
   const navigate = useNavigate();
   const [token, setToken] = useState(null); // Estado para almacenar el token de autorización
+
+  const {store, actions} = useContext(Context)
+
+  // useEffect(() =>{
+  // actions.loginPaypal()
+  // },[]);
+    
   
   const handleSignUp = () => {
     navigate('/signup');
@@ -22,7 +30,7 @@ function Home() {
           {/* div creado para hacer test con el boton de paypal */}
       <div className="container">
       
-      <PayPalLogin />
+      <HandlePayPalLogin />
 
       </div>
       {/* cierra el div */}
