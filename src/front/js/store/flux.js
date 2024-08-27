@@ -14,7 +14,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 			groupDetails: null,
 		},
 		actions: {
-			login: async (username, password) => {
+			login: async (email, password) => {
 				setStore({ loading: true });
 				try {
 					const response = await fetch(apiUrl + "/login", {
@@ -22,7 +22,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 						headers: {
 							"Content-Type": "application/json",
 						},
-						body: JSON.stringify({ username, password })
+						body: JSON.stringify({ email, password })
 					});
 
 					if (response.ok) {
@@ -634,7 +634,76 @@ const getState = ({ getStore, getActions, setStore }) => {
 
 			setMessage: (msg) => {
 				setStore({ message: msg });
-			}
+			},
+
+			// Función para solicitar un enlace de recuperación de contraseña
+			requestPasswordRecovery: async (email) => {
+				try {
+					// Realiza la solicitud POST al servidor
+					const response = await fetch(apiUrl + "/requestpasswordrecovery", {
+						method: "POST",
+						headers: {
+							"Content-Type": "application/json",
+						},
+						body: JSON.stringify({ email })
+					});
+					// Verifica si la respuesta del servidor es exitosa
+					if (response.ok) {
+						const data = await response.json();
+
+						// Verifica si el servidor ha enviado un token en la respuesta
+						if (data.token) {
+							// Si hay un token, lo podemos registrar y devolverlo junto con el mensaje
+							console.log("Token recibido:", data.token);
+							return {
+								msg: "Correo enviado con las instrucciones para cambiar la contraseña.",
+								token: data.token
+							};
+						} else {
+							// Si no hay token, solo devolvemos el mensaje
+							return {
+								msg: "Correo enviado con las instrucciones para cambiar la contraseña."
+							};
+						}
+					} else {
+						// Maneja el caso en que la respuesta del servidor no es exitosa
+						const errorData = await response.json();
+						throw new Error(errorData.msg || "Error al solicitar la recuperación de contraseña.");
+					}
+				} catch (error) {
+					// Maneja cualquier error que pueda ocurrir durante la solicitud
+					console.error("Error:", error);
+					throw error;
+				}
+			},
+
+
+
+			// Función para cambiar la contraseña
+			// changePassword: async (token, password) => {
+			// 	try {
+			// 		const response = await fetch(`${apiUrl}/changepassword`, {
+			// 			method: "PATCH",
+			// 			headers: {
+			// 				"Content-Type": "application/json",
+			// 				"Authorization": `Bearer ${token}`
+			// 			},
+			// 			body: JSON.stringify({ password })
+			// 		});
+
+			// 		if (!response.ok) {
+			// 			const result = await response.json();
+			// 			throw new Error(result.msg || "Error al cambiar la contraseña.");
+			// 		}
+
+			// 		const result = await response.json();
+			// 		return result.msg;
+			// 	} catch (error) {
+			// 		console.error("Error al cambiar la contraseña:", error);
+			// 		throw new Error(error.message || "Error al cambiar la contraseña.");
+			// 	}
+			// },
+
 		}
 	};
 };
