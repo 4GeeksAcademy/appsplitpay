@@ -1,7 +1,7 @@
 import React, { useState, useContext } from "react";
-// import DatePicker from 'react-datepicker';
-// import 'react-datepicker/dist/react-datepicker.css';
-// import { differenceInYears } from 'date-fns';
+import DatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
+import { differenceInYears } from 'date-fns';
 import { Context } from "../store/appContext"; // Asegúrate de que la ruta es correcta
 import { useNavigate } from "react-router-dom";
 

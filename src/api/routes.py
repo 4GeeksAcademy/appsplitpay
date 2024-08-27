@@ -1,7 +1,7 @@
 """
 This module takes care of starting the API Server, Loading the DB and Adding the endpoints
 """
-from flask import Flask, request, jsonify, url_for, Blueprint
+from flask import Flask, request, jsonify, url_for, Blueprint, send_from_directory, redirect, render_template, session
 from flask_jwt_extended import create_access_token, get_jwt_identity, get_jwt, jwt_required
 from api.models import db, User, TokenBlockedList, Contact, Group, GroupMember, Event, Account, Payment
 from api.utils import generate_sitemap, APIException
@@ -11,6 +11,9 @@ from datetime import datetime
 from pytz import timezone
 from api.paypal_funciones import paypal_Login, create_order, transfer_money
 from sqlalchemy.exc import IntegrityError
+import requests
+import urllib.parse
+import os
 
 app = Flask(__name__)
 bcrypt = Bcrypt(app)
@@ -19,6 +22,10 @@ api = Blueprint('api', __name__)
 
 # Allow CORS requests to this API
 CORS(api)
+
+PAYPAL_SECRET_KEY=os.getenv("PAYPAL_SECRET_KEY")
+PAYPAL_CLIENT_ID=os.getenv("PAYPAL_CLIENT_ID")
+PAYPAL_REDIRECT_URI='https://ominous-space-telegram-x5rp6rgqvv9pfvp9x-3000.app.github.dev/homeUser/callback'
 
 #********************************************************************************************************
 #********************************************USERS*******************************************************
@@ -290,6 +297,73 @@ def create_payment():
 #----------------------------------------------------------------------------------------------------------
 #-------------------------- PAYMENT PAYPAL ----------------------------------------------------------------
 #----------------------------------------------------------------------------------------------------------
+
+
+# Ruta para la página de autenticación con PayPal
+@api.route('/paypal/login', methods=['POST'])
+def paypal_login():
+    # Redirige al usuario a la página de autenticación de PayPal
+    auth_url = 'https://sandbox.paypal.com'
+    params = {
+        'client_id': PAYPAL_CLIENT_ID,
+        'response_type': 'code',
+        'redirect_uri': PAYPAL_REDIRECT_URI,
+        'scope': 'openid profile email'
+    }
+    return redirect(auth_url + '?' + urllib.parse.urlencode(params))
+
+
+@api.route('/paypal/callback', methods=['POST'])
+def paypal_callback():
+    # Obtener el token de acceso desde la solicitud
+    token = request.args.get('token')
+
+    # Utilizar el token de acceso para obtener la información del usuario
+    headers = {
+        'Authorization': f'Bearer {token}',
+        'Content-Type': 'application/json'
+    }
+    response = requests.get('https://api-m.sandbox.paypal.com/v1/identity/openidconnect/userinfo', headers=headers)
+
+    if response.status_code == 200:
+        user_info = response.json()
+        user_name = user_info.get('name')
+        user_email = user_info.get('email')
+
+        # Renderizar el template con la información del usuario
+        return render_template('paypal_inicio.html', user_name=user_name, user_email=user_email)
+    else:
+        # Manejar errores
+        return 'Error obteniendo información del usuario', 500
+
+
+# Ruta para la página de inicio con la información del usuario
+@api.route('/paypal/inicio')
+def paypal_inicio():
+    # Obtener el token de acceso desde la sesión o desde una base de datos
+    access_token = session.get('access_token')
+
+    # Utilizar el token de acceso para obtener la información del usuario
+    headers = {
+        'Authorization': f'Bearer {access_token}',
+        'Content-Type': 'application/json'
+    }
+    response = requests.get('https://api-m.sandbox.paypal.com/v1/identity/openidconnect/userinfo', headers=headers)
+
+    if response.status_code == 200:
+        user_info = response.json()
+        user_name = user_info.get('name')
+        user_email = user_info.get('email')
+
+        # Renderizar el template con la información del usuario
+        return render_template('paypal_inicio.html', user_name=user_name, user_email=user_email)
+    else:
+        # Manejar errores
+        return 'Error obteniendo información del usuario', 500
+
+
+
+
 
 #ruta para solicitar pago entre usuarios
 @api.route('/transfer', methods=['POST'])

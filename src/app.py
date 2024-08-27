@@ -2,7 +2,7 @@
 This module takes care of starting the API Server, Loading the DB and Adding the endpoints
 """
 import os
-from flask import Flask, request, jsonify, url_for, send_from_directory
+from flask import Flask, request, jsonify, Blueprint, url_for, send_from_directory, redirect, render_template
 from flask_jwt_extended import JWTManager
 from flask_migrate import Migrate
 from flask_swagger import swagger
@@ -11,6 +11,8 @@ from api.models import db, TokenBlockedList
 from api.routes import api
 from api.admin import setup_admin
 from api.commands import setup_commands
+import requests
+import urllib.parse
 
 # from models import Person
 
@@ -38,9 +40,10 @@ if db_url is not None:
 else:
     app.config['SQLALCHEMY_DATABASE_URI'] = "sqlite:////tmp/test.db"
 
-# acceso clave stripe
+# acceso clave Paypal
 PAYPAL_SECRET_KEY=os.getenv("PAYPAL_SECRET_KEY")
-
+PAYPAL_CLIENT_ID=os.getenv("PAYPAL_CLIENT_ID")
+PAYPAL_REDIRECT_URI='https://ominous-space-telegram-x5rp6rgqvv9pfvp9x-3000.app.github.dev/homeUser/callback'
 
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 MIGRATE = Migrate(app, db, compare_type=True)
@@ -82,7 +85,7 @@ def serve_any_other_file(path):
     response.cache_control.max_age = 0  # avoid cache memory
     return response
 
-# this only runs if `$ python src/main.py` is executed
 if __name__ == '__main__':
     PORT = int(os.environ.get('PORT', 3001))
     app.run(host='0.0.0.0', port=PORT, debug=True)
+            

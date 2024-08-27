@@ -13,6 +13,10 @@ export const HomeUser = () => {
     setIsModalOpen(true);
   };
 
+  const closeModal = () => {
+    setIsModalOpen(false);
+  };
+
 
   return (
     <div className="container">

@@ -1,44 +1,19 @@
-import React, { useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { PayPalScriptProvider, PayPalButtons } from "@paypal/react-paypal-js";
 import { useNavigate } from 'react-router-dom';
+import PayPalLogin from "../component/loginPaypal";
 
 function Home() {
   const navigate = useNavigate();
-
+  const [token, setToken] = useState(null); // Estado para almacenar el token de autorización
+  
   const handleSignUp = () => {
     navigate('/signup');
   };
 
-  const clientId = process.env.PAYPAL_CLIENT_ID
 
-  const initialOptions = {
-    components: 'buttons',
-    clientId: clientId,
-    currency: "EUR",
-    intent: "capture",
-};
-
-  const currency = 'EUR';
-  const amount = '10.00';
-
-  // useEffect(() => {
-  //   paypal.use( ['login'], function (login) {
-  //       login.render ({
-  //         "appid":"AYAHrre39sJu0_FFsnRKrWr0X4mxM1d5od9RNOIx_oP3gv7jKXHVHBO1lnE4G7LpePT9cEvj3EHxLvJI",
-  //         "scopes":"None",
-  //         "allowPopups": true,
-  //         "containerid":"paypalbutton",
-  //         "responseType":"code id_Token",
-  //         "locale":"es-es",
-  //         "buttonType":"LWP",
-  //         "buttonShape":"pill",
-  //         "buttonSize":"md",
-  //         "fullPage":"true",
-  //         "returnurl":"https://ominous-space-telegram-x5rp6rgqvv9pfvp9x-3000.app.github.dev/"
-  //       })
-  //     });
-  // }, [])
+  // const clientId = process.env.PAYPAL_CLIENT_ID
 
   return (
     <div className="home-content">
@@ -46,12 +21,9 @@ function Home() {
         <div className="hero-text text-center mb-5 mt-5 d-flex align-items-center justify-content-center flex-column">
           {/* div creado para hacer test con el boton de paypal */}
       <div className="container">
-        <PayPalScriptProvider options={initialOptions}>
-            <PayPalButtons />
-        </PayPalScriptProvider>
+      
+      <PayPalLogin />
 
-          {/* <meta httpEquiv="Cross-Origin-Opener-Policy" content="same-origin-allow-popups" />
-          <span id='paypalbutton'></span> */}
       </div>
       {/* cierra el div */}
           <h1 className="hero-title mb-4 mt-5">
@@ -61,7 +33,7 @@ function Home() {
             La cuenta diseñada para hacerte ahorrar tiempo en todo el mundo.
           </h3>
           <button
-            className="btn text-white signup-button mb-5"
+            className="btn text-white signup-button "
             onClick={handleSignUp}>
             Crear cuenta
           </button>
