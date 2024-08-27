@@ -17,8 +17,10 @@ const SignUp = () => {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [selectedDate, setSelectedDate] = useState(null);
   const [errorMessage, setErrorMessage] = useState("");
+  const [paypal_username, setPaypal_Username] = useState("")
 
   const navigate = useNavigate();
+
 
   const handleDateChange = (date) => {
     setSelectedDate(date);
@@ -39,14 +41,9 @@ const SignUp = () => {
       return;
     }
 
-    // Verificar que la edad esté definida
-    if (!age) {
-      setErrorMessage("Age is required");
-      return;
-    }
-
+    console.log("antes del fetch")
     // Llamar a la acción signup
-    const success = await actions.signup(username, email, password, first_name, last_name, age, address);
+    const success = await actions.signup(username, email, password, first_name, last_name, age, address, paypal_username);
 
     if (success) {
       navigate("/homeUser"); // Redirigir a la página de inicio o a otra página después del registro exitoso
@@ -80,6 +77,7 @@ const SignUp = () => {
 
         {/* FirstName input */}
         <div className="form-outline mb-4">
+          <label className="form-label" htmlFor="registerFirstName">First Name</label>
           <input
             onChange={(e) => setFirstName(e.target.value)}
             type="text"
@@ -87,11 +85,11 @@ const SignUp = () => {
             className="form-control"
             required
           />
-          <label className="form-label" htmlFor="registerFirstName">First Name</label>
         </div>
 
         {/* lastName input */}
         <div className="form-outline mb-4">
+          <label className="form-label" htmlFor="registerLastName">Last Name</label>
           <input
             onChange={(e) => setLastName(e.target.value)}
             type="text"
@@ -99,11 +97,11 @@ const SignUp = () => {
             className="form-control"
             required
           />
-          <label className="form-label" htmlFor="registerLastName">Last Name</label>
         </div>
 
         {/* Username input */}
         <div className="form-outline mb-4">
+          <label className="form-label" htmlFor="registerUsername">Username</label>
           <input
             onChange={(e) => setUsername(e.target.value)}
             type="text"
@@ -111,11 +109,17 @@ const SignUp = () => {
             className="form-control"
             required
           />
-          <label className="form-label" htmlFor="registerUsername">Username</label>
+        </div>
+        
+        <label  htmlFor= "paypal_user" className="form-label">Your vanity URL</label>
+        <div className="input-group mb-3">
+          <span className="input-group-text" id="basic-addon3">https://www.paypal.com/paypalme/</span>
+          <input type="text" className="form-control" id="basic-url" aria-describedby="basic-addon3"/>
         </div>
 
         {/* Email input */}
         <div className="form-outline mb-4">
+          <label className="form-label" htmlFor="registerEmail">Email</label>
           <input
             onChange={(e) => setEmail(e.target.value)}
             type="email"
@@ -123,7 +127,6 @@ const SignUp = () => {
             className="form-control"
             required
           />
-          <label className="form-label" htmlFor="registerEmail">Email</label>
         </div>
 
         {/* Age input */}
@@ -140,22 +143,11 @@ const SignUp = () => {
             yearDropdownItemNumber={100}
             placeholderText="Selecciona tu fecha de nacimiento"
           />
-          {age !== null && (
-            <div>
-              <input
-                type="number"
-                value={age}
-                onChange={(e) => setAge(e.target.value)}
-                placeholder="Introduce tu edad"
-                required
-              />
-              <p>Tu edad es: {age} años</p>
-            </div>
-          )}
         </div>
 
         {/* Address input */}
         <div className="form-outline mb-4">
+          <label className="form-label" htmlFor="registerAddress">Address</label>
           <input
             onChange={(e) => setAddress(e.target.value)}
             type="text"
@@ -163,11 +155,11 @@ const SignUp = () => {
             className="form-control"
             required
           />
-          <label className="form-label" htmlFor="registerAddress">Address</label>
         </div>
 
         {/* Password input */}
         <div className="form-outline mb-4">
+          <label className="form-label" htmlFor="registerPassword">Password</label>
           <input
             onChange={(e) => setPassword(e.target.value)}
             type="password"
@@ -175,11 +167,11 @@ const SignUp = () => {
             className="form-control"
             required
           />
-          <label className="form-label" htmlFor="registerPassword">Password</label>
         </div>
 
         {/* Repeat Password input */}
         <div className="form-outline mb-4">
+          <label className="form-label" htmlFor="registerRepeatPassword">Repeat Password</label>
           <input
             onChange={(e) => setConfirmPassword(e.target.value)}
             type="password"
@@ -187,7 +179,6 @@ const SignUp = () => {
             className="form-control"
             required
           />
-          <label className="form-label" htmlFor="registerRepeatPassword">Repeat Password</label>
         </div>
 
         {/* Checkbox */}

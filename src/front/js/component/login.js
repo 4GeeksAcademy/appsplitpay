@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { Context } from "../store/appContext";
 
@@ -20,7 +20,17 @@ const Login = () => {
     } else {
       setErrorMessage(store.errorMessage || "An error occurred during login.");
     }
+
+    useEffect(() => {
+      if (success != success) {
+        const timer = setTimeout(() => {
+          setErrorMessage("");
+        }, 6000);
+        return () => clearTimeout(timer);
+      }
+    }, [errorMessage]);
   };
+  
 
   return (
     <div className="card d-flex justify-content-center my-5 p-5 mx-auto" style={{ maxWidth: '600px', fontFamily: 'Trebuchet MS' }}>
@@ -70,13 +80,9 @@ const Login = () => {
           </div>
 
           <div className="col">
-            {/* Simple link */}
-            {/* Redirigir a la página de recuperación de contraseña */}
             <Link to="/requestPasswordRecovery">recupera tu contraseña</Link>
           </div>
         </div>
-
-        {/* Submit button */}
         <button type="submit" className="btn btn-primary btn-block mb-4 mt-4">
           Sign in
         </button>

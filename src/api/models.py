@@ -21,6 +21,7 @@ class User(db.Model):
     is_active = db.Column(db.Boolean(), unique=False, nullable=False)
     contacts = db.relationship('Contact', backref='user', lazy=True)
     groups = db.relationship('Group', secondary='group_members', back_populates='members')
+    paypal_username= db.Column(db.String(200), unique= True, nullable= True)
 
     def __repr__(self):
         return f'<User {self.id} - {self.first_name} {self.last_name}>'
@@ -34,6 +35,7 @@ class User(db.Model):
             "age": self.age,
             "address": self.address,            
             "email": self.email,
+            "paypal_user":self.paypal_username,
             "is_active": self.is_active
         }
     

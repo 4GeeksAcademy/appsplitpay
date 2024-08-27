@@ -49,7 +49,8 @@ def user_signup():
             first_name=body.get("first_name", ""),
             last_name=body.get("last_name", ""),
             age=body.get("age", ""),
-            address=body.get("address", "")
+            address=body.get("address", ""),
+            paypal_username= body.get("paypal_username", "")
         )
 
         db.session.add(new_user)
@@ -320,6 +321,13 @@ def transfer():
 
 #--------------------------ADD_CONTACT--------------------------------------------------------------------
 
+from flask import jsonify, request
+from flask_jwt_extended import jwt_required, get_jwt_identity
+from sqlalchemy.exc import IntegrityError
+from .models import db, Contact, User
+import os
+import requests
+
 @api.route('/contact', methods=['POST'])
 @jwt_required()
 def add_contact():
@@ -328,7 +336,7 @@ def add_contact():
 
     if "username" not in body:
         return jsonify({"error": "Username is required"}), 400
-    
+
     try:
         contact = Contact(username=body["username"], user_id=user_id)
 
@@ -341,13 +349,46 @@ def add_contact():
 
         db.session.add(contact)
         db.session.commit()
+
+        # Lógica para enviar el correo electrónico al usuario agregado como contacto
+        try:
+            send_mail_url = os.getenv("MAIL_SEND_URL")
+            service_id = os.getenv("MAIL_SERVICE_ID")
+            template_id = os.getenv("MAIL_TEMPLATE_ID")
+            user_id = os.getenv("MAIL_USER_ID")
+
+            mail_data = {
+                "service_id": service_id,
+                "template_id": template_id,
+                "user_id": user_id,
+                "template_params": {
+                    "to_email": contact.email,
+                    "username": contact.username,
+                    "fullname": contact.fullname,
+                    "message": "¡Has sido agregado como contacto!"
+                }
+            }
+
+            headers = {"Content-Type": "application/json"}
+            response = requests.post(send_mail_url, headers=headers, data=json.dumps(mail_data))
+
+            if response.status_code != 200:
+                print(f"Error al enviar el correo: {response.text}")
+            else:
+                print(f"Correo enviado correctamente a {contact.email}")
+
+        except Exception as e:
+            print(f"Error en el envío de correo: {str(e)}")
+
         return jsonify({"message": "Contact added successfully", "contact": contact.serialize()}), 201
+
     except IntegrityError:
         db.session.rollback()
         return jsonify({"error": "A contact with this username already exists"}), 409
     except Exception as e:
         db.session.rollback()
         return jsonify({"error": "An unexpected error occurred while adding contact", "details": str(e)}), 500
+
 
 #--------------------------GET_CONTACTS--------------------------------------------------------------------
 

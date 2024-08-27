@@ -36,7 +36,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 					} else {
 						const errorData = await response.json();
 						setStore({
-							errorMessage: errorData.msg || "Login failed",
+							errorMessage: errorData.msg || "Crea una cuenta para inicar sesion",
 							loading: false
 						});
 						return false;
@@ -156,13 +156,10 @@ const getState = ({ getStore, getActions, setStore }) => {
 						},
 						body: JSON.stringify({ email })
 					});
-					// Verifica si la respuesta del servidor es exitosa
 					if (response.ok) {
 						const data = await response.json();
-			
 						// Verifica si el servidor ha enviado un token en la respuesta
 						if (data.token) {
-							// Si hay un token, lo podemos registrar y devolverlo junto con el mensaje
 							console.log("Token recibido:", data.token);
 							return { 
 								msg: "Correo enviado con las instrucciones para cambiar la contraseña.", 
@@ -185,34 +182,6 @@ const getState = ({ getStore, getActions, setStore }) => {
 					throw error;
 				}
 			},
-			
-			
-			
-			// Función para cambiar la contraseña
-			// changePassword: async (token, password) => {
-			// 	try {
-			// 		const response = await fetch(`${apiUrl}/changepassword`, {
-			// 			method: "PATCH",
-			// 			headers: {
-			// 				"Content-Type": "application/json",
-			// 				"Authorization": `Bearer ${token}`
-			// 			},
-			// 			body: JSON.stringify({ password })
-			// 		});
-			
-			// 		if (!response.ok) {
-			// 			const result = await response.json();
-			// 			throw new Error(result.msg || "Error al cambiar la contraseña.");
-			// 		}
-			
-			// 		const result = await response.json();
-			// 		return result.msg;
-			// 	} catch (error) {
-			// 		console.error("Error al cambiar la contraseña:", error);
-			// 		throw new Error(error.message || "Error al cambiar la contraseña.");
-			// 	}
-			// },
-			
 		}
 	};
 };
