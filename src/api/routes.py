@@ -77,7 +77,7 @@ def user_login():
             return jsonify({"error": "Invalid password"}), 401
 
         token = create_access_token(identity=user.id, additional_claims={"role": "admin"})
-        return jsonify({"token": token}), 200
+        return jsonify({"token": token, "user":user.serialize()}), 200
     except Exception as e:
         return jsonify({"error": "An unexpected error occurred", "details": str(e)}), 500
 

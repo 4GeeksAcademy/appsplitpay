@@ -27,7 +27,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 
 					if (response.ok) {
 						const data = await response.json();
-
+						console.log(data.user)
 						// Asegúrate de que 'data.user' contiene la información del usuario
 						if (data.token && data.user) {
 							setStore({
