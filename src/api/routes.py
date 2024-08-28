@@ -192,7 +192,8 @@ def get_payments():
             'user_id': payment.user_id,
             'group_id': payment.group_id
         })
-    return jsonify(payments_list), 200
+    # return jsonify(payments_list), 200
+
 
 #--------------------------PAYMENT GET BY ID-----------------------------------------------------------------
     
@@ -215,28 +216,66 @@ def get_payment(payment_id):
 
 #--------------------------PAYMENT POST----------------------------------------------------------------
 
+# @api.route('/payments', methods=['POST'])
+# @jwt_required()
+# def create_payment():
+#     user_id = get_jwt_identity()
+#     data = request.get_json()
+#     if 'group_id' in data:
+#         group_id = data['group_id']
+#     else:
+#         group_id = None
+#     payment_date = datetime.strptime(data['date'], '%d-%m-%Y %H:%M:%S')
+#     # comment = data.get('comment')
+#     # user_comment_id = data.get('user_comment_id')
+#     payment = Payment(date=payment_date,
+#                         amount=data['amount'],
+#                         user_id=user_id,
+#                         group_id=group_id
+#                         # comment=comment,
+#                         # user_comment_id=user_comment_id
+#                     )
+#     db.session.add(payment)
+#     db.session.commit()
+#     return jsonify(payment.serialize()), 201
+
 @api.route('/payments', methods=['POST'])
 @jwt_required()
 def create_payment():
-    user_id = get_jwt_identity()
-    data = request.get_json()
-    if 'group_id' in data:
-        group_id = data['group_id']
-    else:
-        group_id = None
-    payment_date = datetime.strptime(data['date'], '%d-%m-%Y %H:%M:%S')
-    # comment = data.get('comment')
-    # user_comment_id = data.get('user_comment_id')
-    payment = Payment(date=payment_date,
-                        amount=data['amount'],
-                        user_id=user_id,
-                        group_id=group_id
-                        # comment=comment,
-                        # user_comment_id=user_comment_id
-                    )
-    db.session.add(payment)
+    body = request.get_json()
+    # payment_date = datetime.strptime(data['date'], '%d-%m-%Y %H:%M:%S')
+    new_Payment = Payment(
+            # date=payment_date, 
+            description=body["description"],
+            amount=body["amount"],
+            user_id=body["user_id"]
+        )
+    db.session.add(new_Payment)
     db.session.commit()
-    return jsonify(payment.serialize()), 201
+    url = "https://fictional-space-giggle-r476gj6vx4r6f5w9v-3000.app.github.dev" ## modificar ruta al crear nueva cada vez que se trabaje nuevo branch
+    url = url + "/login"
+        
+    send_mail_url = os.getenv("MAIL_SEND_URL")
+
+    data = {
+        "service_id": "service_w6al0dj",
+        "template_id":"template_n83bcms",
+        "user_id": "F9az-Ces-Jl8gFRBq",
+        "template_params": {
+            "url": url,
+        }
+    }
+
+    headers = {"Content-Type": "application/json"}
+    response = requests.post(send_mail_url, headers=headers, data=json.dumps(data))
+    if response.status_code == 200:
+        return jsonify({
+            "msg": "Evento creado con notificacion al usuario ."
+
+        }), 200
+    return jsonify(new_Payment.serialize()), 201
+
+
 
 #--------------------------PAYMENT PUT-----------------------------------------------------------------
 
@@ -333,18 +372,22 @@ def add_contact():
         return jsonify({"error": "Username is required"}), 400
     
     try:
-        contact = Contact(username=body["username"], user_id=user_id)
+        query = User.query.filter_by(username = body["username"])
+        if query:
+            contact = Contact(username=body["username"], user_id=user_id)
 
-        if "fullname" in body:
-            contact.fullname = body["fullname"]
-        if "email" in body:
-            contact.email = body["email"]
-        if "address" in body:
-            contact.address = body["address"]
+            if "fullname" in body:
+                contact.fullname = body["fullname"]
+            if "email" in body:
+                contact.email = body["email"]
+            if "address" in body:
+                contact.address = body["address"]
 
-        db.session.add(contact)
-        db.session.commit()
-        return jsonify({"message": "Contact added successfully", "contact": contact.serialize()}), 201
+            db.session.add(contact)
+            db.session.commit()
+            return jsonify({"message": "Contact added successfully", "contact": contact.serialize()}), 201 
+        else:
+            return jsonify({"message": "user doesn't exist"}), 400
     except IntegrityError:
         db.session.rollback()
         return jsonify({"error": "A contact with this username already exists"}), 409
@@ -638,17 +681,18 @@ def delete_group_member(group_id):
 @jwt_required()
 def create_event():
     body = request.get_json()
-    required_fields = ['type', 'payment_id', 'user_id', 'group_id']
+    print(f"Received data: {body}")
+    required_fields = ['type', 'description', 'user_id', 'totalAmount']
     for field in required_fields:
         if field not in body:
             return jsonify({"error": f"{field.capitalize()} is required"}), 400
 
     try:
         new_event = Event(
-            type=body["type"],
-            payment_id=body["payment_id"],
-            user_id=body["user_id"],
-            group_id=body["group_id"]
+            type= body["type"],
+            description=body["description"],
+            total_amount=body["totalAmount"],
+            user_id=body["user_id"]
         )
         db.session.add(new_event)
         db.session.commit()
@@ -863,14 +907,10 @@ def request_password_recovery():
         password_token = create_access_token(identity=user.id, additional_claims={"type": "password"})
         
         #URL al FRONTEND
-        url = "https://fictional-space-giggle-r476gj6vx4r6f5w9v-3000.app.github.dev" ## modificar ruta y data al crear nueva
+        url = "https://fictional-space-giggle-r476gj6vx4r6f5w9v-3000.app.github.dev" ## modificar ruta al crear nueva cada vez que se trabaje nuevo branch
         url = url + "/changepassword?token=" + password_token
-        print (url)
-        # Datos para la solicitud de envío de correo
+        
         send_mail_url = os.getenv("MAIL_SEND_URL")
-        # service_id = os.getenv("MAIL_SERVICE_ID")
-        # template_id = os.getenv("MAIL_TEMPLATE_ID")
-        # user_id = os.getenv("MAIL_USER_ID")
 
         data = {
             "service_id": "service_w6al0dj",
@@ -883,9 +923,6 @@ def request_password_recovery():
 
         headers = {"Content-Type": "application/json"}
         response = requests.post(send_mail_url, headers=headers, data=json.dumps(data))
-        print("Response status code:", response.status_code)
-        print("Response content:", response.text)
-        print("Data sent:", json.dumps(data, indent=4))
 
         # Verificacion envio de correo
         if response.status_code == 200:

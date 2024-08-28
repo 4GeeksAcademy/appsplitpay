@@ -101,17 +101,13 @@ class Payment(db.Model):
 
     __tablename__ = 'payments'
     id = db.Column(db.Integer, primary_key=True)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
     date = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
     amount = db.Column(db.Float)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     user = db.relationship('User', backref='payments')
-    group_id = db.Column(db.Integer, db.ForeignKey('groups.id'))
-    group = db.relationship('Group', backref='payments')
-    created_at = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
-    # comment = db.Column(db.String(300))
-    # user_comment_id = db.Column(db.Integer, db.ForeignKey('users.id'))
-    # user_comment = db.relationship('User', backref='payment_comments')
-    
+    description = db.Column(db.String(200), nullable= False)
+
 
     def __repr__(self):
         return f'<Payment {self.id} - {self.date} - {self.amount}>'
@@ -122,9 +118,7 @@ class Payment(db.Model):
             "date": self.date.strftime('%d-%m-%Y %H:%M:%S'),
             "amount": self.amount,
             "user_id": self.user_id,
-            "group_id": self.group_id,
-            # "comment": self.comment,
-            # "user_comment_id": self.user_comment_id
+            "description": self.description
         }
 
 class Account(db.Model):
