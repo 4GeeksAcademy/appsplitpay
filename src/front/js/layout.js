@@ -21,20 +21,23 @@ import Grupos from "./component/grupos";
 
 const Layout = () => {
   const { actions } = useContext(Context);
-
+  
+  
   useEffect(() => {
     actions.checkAuthentication();
   }, []);
-
+  
   if (!process.env.BACKEND_URL || process.env.BACKEND_URL === "") {
     return <BackendURL />;
   }
+  
+  const basename = process.env.BASENAME || "";
 
-  return (
-    <BrowserRouter basename={basename}>
-      <Content />
-    </BrowserRouter>
-  );
+    return (
+        <BrowserRouter basename={basename}>
+            <Content />
+        </BrowserRouter>
+    );
 };
 
 const Content = () => {
