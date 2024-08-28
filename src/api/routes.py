@@ -391,16 +391,23 @@ def get_contacts():
 @jwt_required()
 def get_single_contact(contactId):
     user_id = get_jwt_identity()
+    user_email = request.args.get('user_email', type=str)  # Obtener el parámetro opcional 'user_email'
     
     try:
-        contact = Contact.query.filter_by(id=contactId, user_id=user_id).first()
-        
+        if user_email:
+            # Buscar contacto por email y user_id
+            contact = Contact.query.filter_by(email=user_email, user_id=user_id).first()
+        else:
+            # Buscar contacto por ID y user_id
+            contact = Contact.query.filter_by(id=contactId, user_id=user_id).first()
+
         if not contact:
             return jsonify({"error": "Contact not found or you don't have permission to access it"}), 404
         
         return jsonify({"contact": contact.serialize()}), 200
     except Exception as e:
         return jsonify({"error": "An unexpected error occurred", "details": str(e)}), 500
+
 
 #--------------------------EDIT_CONTACT--------------------------------------------------------------------
 
@@ -856,19 +863,19 @@ def request_password_recovery():
         password_token = create_access_token(identity=user.id, additional_claims={"type": "password"})
         
         #URL al FRONTEND
-        url = os.getenv('FRONTEND_URL') 
+        url = "https://fictional-space-giggle-r476gj6vx4r6f5w9v-3000.app.github.dev" ## modificar ruta y data al crear nueva
         url = url + "/changepassword?token=" + password_token
         print (url)
         # Datos para la solicitud de envío de correo
         send_mail_url = os.getenv("MAIL_SEND_URL")
-        service_id = os.getenv("MAIL_SERVICE_ID")
-        template_id = os.getenv("MAIL_TEMPLATE_ID")
-        user_id = os.getenv("MAIL_USER_ID")
+        # service_id = os.getenv("MAIL_SERVICE_ID")
+        # template_id = os.getenv("MAIL_TEMPLATE_ID")
+        # user_id = os.getenv("MAIL_USER_ID")
 
         data = {
-            "service_id": service_id,
-            "template_id": template_id,
-            "user_id": user_id,
+            "service_id": "service_w6al0dj",
+            "template_id":"template_n4onvkn",
+            "user_id": "F9az-Ces-Jl8gFRBq",
             "template_params": {
                 "url": url,
             }
