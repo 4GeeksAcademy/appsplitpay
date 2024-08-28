@@ -677,6 +677,138 @@ const getState = ({ getStore, getActions, setStore }) => {
 				}
 			},
 
+			//-------------------------------------------------EVENTO----------------------------------------------------------------------//
+			//-------------------------------------------------EVENTO----------------------------------------------------------------------//
+			//-------------------------------------------------Evento pagos----------------------------------------------------------------//
+
+
+
+			createEvent: async (groupId, eventData) => {
+				const store = getStore();
+				try {
+					const resp = await fetch(`${apiUrl}/group/${groupId}/event`, {
+						method: "POST",
+						headers: {
+							"Content-Type": "application/json",
+							"Authorization": `Bearer ${store.token}`
+						},
+						body: JSON.stringify(eventData)
+					});
+					if (resp.ok) {
+						const data = await resp.json();
+						// Actualizar el store con el nuevo evento si es necesario
+						return data;
+					} else {
+						const error = await resp.json();
+						setStore({ errorMessage: error.error });
+						return null;
+					}
+				} catch (error) {
+					console.error("Error creating event:", error);
+					setStore({ errorMessage: "An unexpected error occurred" });
+					return null;
+				}
+			},
+
+			getEvent: async (groupId, eventId) => {
+				const store = getStore();
+				try {
+					const resp = await fetch(`${apiUrl}/group/${groupId}/event/${eventId}`, {
+						method: "GET",
+						headers: {
+							"Authorization": `Bearer ${store.token}`
+						}
+					});
+					if (resp.ok) {
+						const data = await resp.json();
+						// Puedes actualizar el store con los detalles del evento si lo necesitas
+						return data;
+					} else {
+						const error = await resp.json();
+						setStore({ errorMessage: error.error });
+						return null;
+					}
+				} catch (error) {
+					console.error("Error getting event:", error);
+					setStore({ errorMessage: "An unexpected error occurred" });
+					return null;
+				}
+			},
+			updateEvent: async (groupId, eventId, updatedData) => {
+				const store = getStore();
+				try {
+					const resp = await fetch(`${apiUrl}/group/${groupId}/event/${eventId}`, {
+						method: "PATCH",
+						headers: {
+							"Content-Type": "application/json",
+							"Authorization": `Bearer ${store.token}`
+						},
+						body: JSON.stringify(updatedData)
+					});
+					if (resp.ok) {
+						const data = await resp.json();
+						// Actualizar el store con el evento actualizado si es necesario
+						return data;
+					} else {
+						const error = await resp.json();
+						setStore({ errorMessage: error.error });
+						return null;
+					}
+				} catch (error) {
+					console.error("Error updating event:", error);
+					setStore({ errorMessage: "An unexpected error occurred" });
+					return null;
+				}
+			},
+
+			deleteEvent: async (groupId, eventId) => {
+				const store = getStore();
+				try {
+					const resp = await fetch(`${apiUrl}/group/${groupId}/event/${eventId}`, {
+						method: "DELETE",
+						headers: {
+							"Authorization": `Bearer ${store.token}`
+						}
+					});
+					if (resp.ok) {
+						return true;
+					} else {
+						const error = await resp.json();
+						setStore({ errorMessage: error.error });
+						return false;
+					}
+				} catch (error) {
+					console.error("Error deleting event:", error);
+					setStore({ errorMessage: "An unexpected error occurred" });
+					return false;
+				}
+			},
+
+			getAllEvents: async (groupId) => {
+				const store = getStore();
+				try {
+					const resp = await fetch(`${apiUrl}/group/${groupId}/events`, {
+						method: "GET",
+						headers: {
+							"Authorization": `Bearer ${store.token}`
+						}
+					});
+					if (resp.ok) {
+						const data = await resp.json();
+						setStore({ events: data });
+						return data;
+					} else {
+						const error = await resp.json();
+						setStore({ errorMessage: error.error });
+						return null;
+					}
+				} catch (error) {
+					console.error("Error getting all events:", error);
+					setStore({ errorMessage: "An unexpected error occurred" });
+					return null;
+				}
+			},
+
 
 
 			// Función para cambiar la contraseña

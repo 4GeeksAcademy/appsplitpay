@@ -177,22 +177,21 @@ class Notification(db.Model):
 class Event(db.Model):
     __tablename__ = 'events'
     id = db.Column(db.Integer, primary_key=True)
-    type = db.Column(db.String(200))  # (payment, reimbursement, adjustment, etc.)
-    payment_id = db.Column(db.Integer, db.ForeignKey('payments.id'))
-    payment = db.relationship('Payment', backref='events')
+    name = db.Column(db.String(180), unique=True, nullable=False)
+    amount = db.Column(db.String(180), unique=False, nullable=False)
+    description = db.Column(db.String(180), unique=False, nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     user = db.relationship('User', backref='events')
     group_id = db.Column(db.Integer, db.ForeignKey('groups.id'))
     group = db.relationship('Group', backref='events')
-
     def __repr__(self):
-        return f'<Event {self.id} - {self.type} - {self.payment_id}>'
-
+        return f'<Event {self.id} - {self.amount} - {self.description}>'
     def serialize(self):
         return {
             "id": self.id,
-            "type": self.type,
-            "payment_id": self.payment_id,
+            "name": self.name,
+            "amount": self.amount,
+            "description": self.description,
             "user_id": self.user_id,
             "group_id": self.group_id,
         }

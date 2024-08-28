@@ -18,6 +18,8 @@ import EditarContacto from "../js/component/editarContacto";
 import ConfirmDeleteModal from "../js/component/confirmDeleteModal";
 import ModalContactoInfo from "./component/modalContactoInfo";
 import Grupos from "./component/grupos";
+import ConfirmDeleteGroup from "../js/component/confirmDeleteGroup.js";
+import EventoGrupal from "./component/eventoGrupal.js";
 
 const Layout = () => {
   const { actions } = useContext(Context);
@@ -31,7 +33,7 @@ const Layout = () => {
   }
 
   return (
-    <BrowserRouter basename={basename}>
+    <BrowserRouter>
       <Content />
     </BrowserRouter>
   );
@@ -56,8 +58,10 @@ const Content = () => {
           <Route path="/addContacto" element={<AddContacto />} />
           <Route path="/editarContacto/:contactId" element={<EditarContacto />} />
           <Route path="/confirmDeleteModal" element={<ConfirmDeleteModal />} />
+          <Route path="/confirmDeleteGroup" element={<ConfirmDeleteGroup />} />
           <Route path="/modalContactoInfo" element={<ModalContactoInfo />} />
           <Route path="/grupos" element={<Grupos />} />
+          <Route path="/eventoGrupal" element={<EventoGrupal />} />
           <Route path="/changepassword" element={<PasswordRecovery />} />
           <Route path="/requestpasswordrecovery" element={<RequestPasswordRecovery />} />
         </Routes>
