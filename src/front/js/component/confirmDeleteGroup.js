@@ -1,7 +1,7 @@
 import React from "react";
-import "../../styles/confirmDeleteModal.css";
+import "../../styles/confirmDeleteGroup.css";
 
-const ConfirmDeleteModal = ({ show, handleClose, handleConfirm }) => {
+const ConfirmDeleteGroup = ({ show, handleClose, handleConfirm }) => {
     if (!show) {
         return null;
     }
@@ -10,7 +10,7 @@ const ConfirmDeleteModal = ({ show, handleClose, handleConfirm }) => {
         <div className="modal-overlay">
             <div className="cardModal">
                 <div className="card-content">
-                    <p className="card-heading">Delete contact?</p>
+                    <p className="card-heading">Delete Group?</p>
                     <p className="card-description">
                         Are you sure you want to delete this item? This action cannot be
                         undone.
@@ -35,4 +35,4 @@ const ConfirmDeleteModal = ({ show, handleClose, handleConfirm }) => {
 };
 
 
-export default ConfirmDeleteModal;
+export default ConfirmDeleteGroup;
