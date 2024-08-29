@@ -23,20 +23,31 @@ import EventoGrupal from "./component/eventoGrupal.js";
 
 const Layout = () => {
   const { actions } = useContext(Context);
-
+  
+  
   useEffect(() => {
     actions.checkAuthentication();
   }, []);
-
+  
   if (!process.env.BACKEND_URL || process.env.BACKEND_URL === "") {
     return <BackendURL />;
   }
+  
+  const basename = process.env.BASENAME || "";
 
+<<<<<<< HEAD
   return (
     <BrowserRouter>
       <Content />
     </BrowserRouter>
   );
+=======
+    return (
+        <BrowserRouter basename={basename}>
+            <Content />
+        </BrowserRouter>
+    );
+>>>>>>> 9864767c6efad2bde034b56a90959233d65177a3
 };
 
 const Content = () => {

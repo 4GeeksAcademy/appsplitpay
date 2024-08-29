@@ -648,13 +648,10 @@ const getState = ({ getStore, getActions, setStore }) => {
 						},
 						body: JSON.stringify({ email })
 					});
-					// Verifica si la respuesta del servidor es exitosa
 					if (response.ok) {
 						const data = await response.json();
-
 						// Verifica si el servidor ha enviado un token en la respuesta
 						if (data.token) {
-							// Si hay un token, lo podemos registrar y devolverlo junto con el mensaje
 							console.log("Token recibido:", data.token);
 							return {
 								msg: "Correo enviado con las instrucciones para cambiar la contraseña.",
@@ -677,6 +674,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 					throw error;
 				}
 			},
+<<<<<<< HEAD
 
 			//-------------------------------------------------EVENTO----------------------------------------------------------------------//
 			//-------------------------------------------------EVENTO----------------------------------------------------------------------//
@@ -839,6 +837,8 @@ const getState = ({ getStore, getActions, setStore }) => {
 			// 	}
 			// },
 
+=======
+>>>>>>> 9864767c6efad2bde034b56a90959233d65177a3
 		}
 	};
 };
