@@ -71,7 +71,7 @@ class Contact(db.Model):
 class Group(db.Model):
     __tablename__ = 'groups'
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(60), nullable=False)
+    name = db.Column(db.String(100), unique=True, nullable=False)
     creator_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
     creator = db.relationship('User', backref='created_groups')
     members = db.relationship('User', secondary='group_members', back_populates='groups')

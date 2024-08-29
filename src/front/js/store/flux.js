@@ -392,7 +392,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 
 				const groupPayload = {
 					...groupData,
-					creator_id: userInfo.id  // Asegúrate de incluir el ID del creador
+					creator_id: userInfo.id
 				};
 
 				try {
@@ -724,7 +724,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 					});
 					if (resp.ok) {
 						const data = await resp.json();
-						// Puedes actualizar el store con los detalles del evento si lo necesitas
+
 						return data;
 					} else {
 						const error = await resp.json();
