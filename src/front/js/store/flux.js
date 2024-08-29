@@ -12,6 +12,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 			contacts: [],
 			groups: [],
 			groupDetails: null,
+			events: [],  // <-- Nueva lista de eventos
 		},
 		actions: {
 			login: async (email, password) => {
@@ -696,7 +697,9 @@ const getState = ({ getStore, getActions, setStore }) => {
 					});
 					if (resp.ok) {
 						const data = await resp.json();
-						// Actualizar el store con el nuevo evento si es necesario
+						setStore({
+							events: [...store.events, data]
+						});
 						return data;
 					} else {
 						const error = await resp.json();
