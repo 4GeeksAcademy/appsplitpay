@@ -30,7 +30,7 @@ const Login = () => {
       }
     }, [errorMessage]);
   };
-  
+
 
   return (
     <div className="card d-flex justify-content-center my-5 p-5 mx-auto" style={{ maxWidth: '600px', fontFamily: 'Trebuchet MS', width: '100%' }}>
@@ -85,7 +85,7 @@ const Login = () => {
         </div>
 
         <button type="submit" className="btn btn-primary btn-block mb-4 mt-4">
-          Sign in
+          Iniciar sesión
         </button>
 
 

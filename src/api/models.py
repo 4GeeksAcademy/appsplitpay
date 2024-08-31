@@ -35,7 +35,7 @@ class User(db.Model):
             "age": self.age,
             "address": self.address,
             "email": self.email,
-            "paypal_user":self.paypal_username,
+            "paypal_username":self.paypal_username,
             "is_active": self.is_active
         }
     

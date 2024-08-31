@@ -73,7 +73,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 			},
 
 
-			signup: async (username, email, password, first_name, last_name, age, address) => {
+			signup: async (username, email, password, first_name, last_name, age, address, paypal_username) => {
 				setStore({ loading: true });
 				try {
 					const response = await fetch(apiUrl + "/signup", {
@@ -81,7 +81,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 						headers: {
 							"Content-Type": "application/json",
 						},
-						body: JSON.stringify({ username, email, password, first_name, last_name, age, address })
+						body: JSON.stringify({ username, email, password, first_name, last_name, age, address, paypal_username })
 					});
 
 					if (response.ok) {
@@ -674,7 +674,6 @@ const getState = ({ getStore, getActions, setStore }) => {
 					throw error;
 				}
 			},
-<<<<<<< HEAD
 
 			//-------------------------------------------------EVENTO----------------------------------------------------------------------//
 			//-------------------------------------------------EVENTO----------------------------------------------------------------------//
@@ -837,8 +836,6 @@ const getState = ({ getStore, getActions, setStore }) => {
 			// 	}
 			// },
 
-=======
->>>>>>> 9864767c6efad2bde034b56a90959233d65177a3
 		}
 	};
 };

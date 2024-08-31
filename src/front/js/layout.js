@@ -23,41 +23,33 @@ import EventoGrupal from "./component/eventoGrupal.js";
 
 const Layout = () => {
   const { actions } = useContext(Context);
-  
-  
+
+
   useEffect(() => {
     actions.checkAuthentication();
   }, []);
-  
+
   if (!process.env.BACKEND_URL || process.env.BACKEND_URL === "") {
     return <BackendURL />;
   }
-  
+
   const basename = process.env.BASENAME || "";
 
-<<<<<<< HEAD
   return (
-    <BrowserRouter>
+    <BrowserRouter basename={basename}>
       <Content />
     </BrowserRouter>
   );
-=======
-    return (
-        <BrowserRouter basename={basename}>
-            <Content />
-        </BrowserRouter>
-    );
->>>>>>> 9864767c6efad2bde034b56a90959233d65177a3
 };
 
 const Content = () => {
   const location = useLocation();
-  const hideNavbarAndFooter = ["/signup"];
+  const hideNavbarAndFooter = ["/*"];
   const shouldHideNavbarAndFooter = hideNavbarAndFooter.includes(location.pathname);
 
   return (
     <>
-      {!shouldHideNavbarAndFooter && <Navbar />}
+      {<Navbar />}
       <ScrollToTop>
         <Routes>
           <Route path="/" element={<Home />} />
@@ -77,7 +69,7 @@ const Content = () => {
           <Route path="/requestpasswordrecovery" element={<RequestPasswordRecovery />} />
         </Routes>
       </ScrollToTop>
-      {!shouldHideNavbarAndFooter && <Footer />}
+      {<Footer />}
     </>
   );
 

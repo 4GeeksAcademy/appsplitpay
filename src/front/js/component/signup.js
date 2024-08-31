@@ -110,11 +110,11 @@ const SignUp = () => {
             required
           />
         </div>
-        
-        <label  htmlFor= "paypal_user" className="form-label">Your vanity URL</label>
+
+        <label htmlFor="paypal_username" className="form-label">Your vanity URL</label>
         <div className="input-group mb-3">
           <span className="input-group-text" id="basic-addon3">https://www.paypal.com/paypalme/</span>
-          <input type="text" className="form-control" id="basic-url" aria-describedby="basic-addon3"/>
+          <input onChange={(e) => setPaypal_Username(e.target.value)} type="text" className="form-control" id="basic-url" aria-describedby="basic-addon3" />
         </div>
 
         {/* Email input */}

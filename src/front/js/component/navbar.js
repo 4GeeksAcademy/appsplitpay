@@ -7,7 +7,7 @@ const Navbar = () => {
   const { store, actions } = useContext(Context);
   const navigate = useNavigate();
 
-  // Verifica la autenticación cuando se monta el componente
+
   useEffect(() => {
     actions.checkAuthentication();
   }, [store.token]);
@@ -23,7 +23,7 @@ const Navbar = () => {
     if (store.isAuthenticated) {
       navigate("/homeUser");  // Redirige a HomeUser si está autenticado
     } else {
-      navigate("/login");  // Redirige a la página de login si no está autenticado
+      navigate("/");  // Redirige a la página de login si no está autenticado
     }
   };
 
@@ -35,7 +35,7 @@ const Navbar = () => {
         </div>
 
         <button className="navbar-toggler ms-auto" type="button" data-bs-toggle="collapse" data-bs-target="#navbarTogglerDemo01" aria-controls="navbarTogglerDemo01" aria-expanded="false" aria-label="Toggle navigation">
-          <span className="navbar-toggler-icon"></span>
+          <span className="navbar-toggler-icon"><i className="fa-solid fa-bars"></i></span>
         </button>
 
         <div className="collapse navbar-collapse" id="navbarTogglerDemo01">
@@ -46,7 +46,7 @@ const Navbar = () => {
               </button>
             ) : (
               <>
-                <Link className="btn me-2 text-white" to="/login">
+                <Link className="btn btn-light me-2 " to="/login">
                   Iniciar sesión
                 </Link>
                 <Link className="btn btn-light" to="/signup">
