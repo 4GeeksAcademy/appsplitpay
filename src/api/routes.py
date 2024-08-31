@@ -40,7 +40,7 @@ PAYPAL_REDIRECT_URI='https://ominous-space-telegram-x5rp6rgqvv9pfvp9x-3000.app.g
 def user_signup():
     body = request.get_json()
 
-    required_fields = ['username', 'email', 'password']
+    required_fields = ['username', 'email', 'password', 'paypal_username']
     for field in required_fields:
         if field not in body:
             return jsonify({"error": f"{field.capitalize()} is required"}), 400
@@ -55,7 +55,8 @@ def user_signup():
             first_name=body.get("first_name", ""),
             last_name=body.get("last_name", ""),
             age=body.get("age", ""),
-            address=body.get("address", "")
+            address=body.get("address", ""),
+            paypal_username=body.get("paypal_username", "")
         )
 
         db.session.add(new_user)
@@ -126,6 +127,29 @@ def user_info():
     except Exception as e:
         return jsonify({"error": "An unexpected error occurred", "details": str(e)}), 500
 
+#--------------------------GET_USERS--------------------------------------------------------------------
+
+@api.route('/users', methods=['GET'])
+def get_all_users():
+    try:
+        users = User.query.all()
+        output = []
+        for user in users:
+            user_data = {
+                'id': user.id,
+                'username': user.username,
+                'email': user.email,
+                'first_name': user.first_name,
+                'last_name': user.last_name,
+                'age': user.age,
+                'address': user.address
+            }
+            output.append(user_data)
+        return jsonify({'users': output}), 200
+    except Exception as e:
+        return jsonify({"error": "An unexpected error occurred", "details": str(e)}), 500
+
+
 #--------------------------EDIT_USER--------------------------------------------------------------------
 
 @api.route('/user', methods=['PATCH'])
@@ -189,13 +213,14 @@ def get_payments():
     payments = Payment.query.all()
     payments_list = []
     for payment in payments:
-        payment_date = payment.date.astimezone(timezone('UTC'))  # Convertir a la zona horaria neutra
+        # payment_date = payment.date.astimezone(timezone('UTC'))  # Convertir a la zona horaria neutra
         payments_list.append({
             'id': payment.id,
-            'date': payment_date.strftime('%d-%m-%Y %H:%M:%S'),
+            # 'date': payment_date.strftime('%d-%m-%Y %H:%M:%S'),
             'amount': payment.amount,
             'user_id': payment.user_id,
-            'group_id': payment.group_id
+            'group_id': payment.group_id,
+            'paypal_username': payment.paypal_username
         })
     return jsonify(payments_list), 200
 
@@ -209,13 +234,14 @@ def get_payment(payment_id):
     payment = Payment.query.get(payment_id)
     if payment is None:
         return jsonify({'error': 'Payment not found'}), 404
-    payment_date = payment.date.astimezone(timezone('UTC'))  # Convertir a la zona horaria neutra
+    # payment_date = payment.date.astimezone(timezone('UTC'))  # Convertir a la zona horaria neutra
     return jsonify({
         'id': payment.id,
-        'date': payment_date.strftime('%d-%m-%Y %H:%M:%S'),
+        # 'date': payment_date.strftime('%d-%m-%Y %H:%M:%S'),
         'amount': payment.amount,
         'user_id': payment.user_id,
-        'group_id': payment.group_id
+        'group_id': payment.group_id,
+        'paypal_username': payment.paypal_username
     }), 200
 
 #--------------------------PAYMENT POST----------------------------------------------------------------
@@ -229,10 +255,11 @@ def create_payment():
         group_id = data['group_id']
     else:
         group_id = None
-    payment_date = datetime.strptime(data['date'], '%d-%m-%Y %H:%M:%S')
+    # payment_date = datetime.strptime(data['date'], '%d-%m-%Y %H:%M:%S')
     # comment = data.get('comment')
     # user_comment_id = data.get('user_comment_id')
-    payment = Payment(date=payment_date,
+    # date=payment_date,
+    payment = Payment(
                         amount=data['amount'],
                         user_id=user_id,
                         group_id=group_id
@@ -302,92 +329,92 @@ def create_payment():
 #----------------------------------------------------------------------------------------------------------
 
 
-# Ruta para la página de autenticación con PayPal
-@api.route('/paypal/login', methods=['POST'])
-def paypal_login():
-    # Redirige al usuario a la página de autenticación de PayPal
-    auth_url = 'https://sandbox.paypal.com'
-    params = {
-        'client_id': PAYPAL_CLIENT_ID,
-        'response_type': 'code',
-        'redirect_uri': PAYPAL_REDIRECT_URI,
-        'scope': 'openid profile email'
-    }
-    return redirect(auth_url + '?' + urllib.parse.urlencode(params))
+# # Ruta para la página de autenticación con PayPal
+# @api.route('/paypal/login', methods=['POST'])
+# def paypal_login():
+#     # Redirige al usuario a la página de autenticación de PayPal
+#     auth_url = 'https://sandbox.paypal.com'
+#     params = {
+#         'client_id': PAYPAL_CLIENT_ID,
+#         'response_type': 'code',
+#         'redirect_uri': PAYPAL_REDIRECT_URI,
+#         'scope': 'openid profile email'
+#     }
+#     return redirect(auth_url + '?' + urllib.parse.urlencode(params))
 
-@api.route('/paypal/callback', methods=['POST'])
-def paypal_callback():
-    # Obtener el token de acceso desde la solicitud
-    token = request.args.get('token')
+# @api.route('/paypal/callback', methods=['POST'])
+# def paypal_callback():
+#     # Obtener el token de acceso desde la solicitud
+#     token = request.args.get('token')
 
-    # Utilizar el token de acceso para obtener la información del usuario
-    headers = {
-        'Authorization': f'Bearer {token}',
-        'Content-Type': 'application/json'
-    }
-    response = requests.get('https://api-m.sandbox.paypal.com/v1/identity/openidconnect/userinfo', headers=headers)
+#     # Utilizar el token de acceso para obtener la información del usuario
+#     headers = {
+#         'Authorization': f'Bearer {token}',
+#         'Content-Type': 'application/json'
+#     }
+#     response = requests.get('https://api-m.sandbox.paypal.com/v1/identity/openidconnect/userinfo', headers=headers)
 
-    if response.status_code == 200:
-        user_info = response.json()
-        user_name = user_info.get('name')
-        user_email = user_info.get('email')
+#     if response.status_code == 200:
+#         user_info = response.json()
+#         user_name = user_info.get('name')
+#         user_email = user_info.get('email')
 
-        # Renderizar el template con la información del usuario
-        return render_template('paypal_inicio.html', user_name=user_name, user_email=user_email)
-    else:
-        # Manejar errores
-        return 'Error obteniendo información del usuario', 500
-
-
-# Ruta para la página de inicio con la información del usuario
-@api.route('/paypal/inicio')
-def paypal_inicio():
-    # Obtener el token de acceso desde la sesión o desde una base de datos
-    access_token = session.get('access_token')
-
-    # Utilizar el token de acceso para obtener la información del usuario
-    headers = {
-        'Authorization': f'Bearer {access_token}',
-        'Content-Type': 'application/json'
-    }
-    response = requests.get('https://api-m.sandbox.paypal.com/v1/identity/openidconnect/userinfo', headers=headers)
-
-    if response.status_code == 200:
-        user_info = response.json()
-        user_name = user_info.get('name')
-        user_email = user_info.get('email')
-
-        # Renderizar el template con la información del usuario
-        return render_template('paypal_inicio.html', user_name=user_name, user_email=user_email)
-    else:
-        # Manejar errores
-        return 'Error obteniendo información del usuario', 500
+#         # Renderizar el template con la información del usuario
+#         return render_template('paypal_inicio.html', user_name=user_name, user_email=user_email)
+#     else:
+#         # Manejar errores
+#         return 'Error obteniendo información del usuario', 500
 
 
+# # Ruta para la página de inicio con la información del usuario
+# @api.route('/paypal/inicio')
+# def paypal_inicio():
+#     # Obtener el token de acceso desde la sesión o desde una base de datos
+#     access_token = session.get('access_token')
+
+#     # Utilizar el token de acceso para obtener la información del usuario
+#     headers = {
+#         'Authorization': f'Bearer {access_token}',
+#         'Content-Type': 'application/json'
+#     }
+#     response = requests.get('https://api-m.sandbox.paypal.com/v1/identity/openidconnect/userinfo', headers=headers)
+
+#     if response.status_code == 200:
+#         user_info = response.json()
+#         user_name = user_info.get('name')
+#         user_email = user_info.get('email')
+
+#         # Renderizar el template con la información del usuario
+#         return render_template('paypal_inicio.html', user_name=user_name, user_email=user_email)
+#     else:
+#         # Manejar errores
+#         return 'Error obteniendo información del usuario', 500
 
 
 
-#ruta para solicitar pago entre usuarios
-@api.route('/transfer', methods=['POST'])
-def transfer():
-    data = request.get_json()
 
-    sender_id = data.get('sender_id')
-    recipient_id = data.get('recipient_id')
-    amount = data.get('amount')
 
-    if not sender_id or not recipient_id or not amount:
-        return jsonify({'error': 'Faltan datos'}), 400
+# #ruta para solicitar pago entre usuarios
+# @api.route('/transfer', methods=['POST'])
+# def transfer():
+#     data = request.get_json()
 
-    success = transfer_money(sender_id, recipient_id, amount)
+#     sender_id = data.get('sender_id')
+#     recipient_id = data.get('recipient_id')
+#     amount = data.get('amount')
 
-    if success:
-        return jsonify({
-            'message': 'Transferencia exitosa',
-            'currency': 'EUR',
-            'amount': amount}), 201
-    else:
-        return jsonify({'error': 'Fallo en la transferencia'}), 500
+#     if not sender_id or not recipient_id or not amount:
+#         return jsonify({'error': 'Faltan datos'}), 400
+
+#     success = transfer_money(sender_id, recipient_id, amount)
+
+#     if success:
+#         return jsonify({
+#             'message': 'Transferencia exitosa',
+#             'currency': 'EUR',
+#             'amount': amount}), 201
+#     else:
+#         return jsonify({'error': 'Fallo en la transferencia'}), 500
 
 #********************************************************************************************************
 #*****************************************CONTACTS*******************************************************
@@ -411,8 +438,8 @@ def add_contact():
             contact.fullname = body["fullname"]
         if "email" in body:
             contact.email = body["email"]
-        if "address" in body:
-            contact.address = body["address"]
+        if "paypal_username" in body:
+            contact.paypal_username = body["paypal_username"]
 
         db.session.add(contact)
         db.session.commit()
@@ -441,50 +468,50 @@ def get_contacts():
 
 #--------------------------GET_SINGLE_CONTACT--------------------------------------------------------------------
 
-@api.route('/contact/<int:contactId>', methods=['GET'])
-@jwt_required()
-def get_single_contact(contactId):
-    user_id = get_jwt_identity()
+# @api.route('/contact/<int:contactId>', methods=['GET'])
+# @jwt_required()
+# def get_single_contact(contactId):
+#     user_id = get_jwt_identity()
     
-    try:
-        contact = Contact.query.filter_by(id=contactId, user_id=user_id).first()
+#     try:
+#         contact = Contact.query.filter_by(id=contactId, user_id=user_id).first()
         
-        if not contact:
-            return jsonify({"error": "Contact not found or you don't have permission to access it"}), 404
+#         if not contact:
+#             return jsonify({"error": "Contact not found or you don't have permission to access it"}), 404
         
-        return jsonify({"contact": contact.serialize()}), 200
-    except Exception as e:
-        return jsonify({"error": "An unexpected error occurred", "details": str(e)}), 500
+#         return jsonify({"contact": contact.serialize()}), 200
+#     except Exception as e:
+#         return jsonify({"error": "An unexpected error occurred", "details": str(e)}), 500
 
 #--------------------------EDIT_CONTACT--------------------------------------------------------------------
 
-@api.route('/contact/<int:contactId>', methods=['PATCH'])
-@jwt_required()
-def edit_contact(contactId):
-    user_id = get_jwt_identity()
+# @api.route('/contact/<int:contactId>', methods=['PATCH'])
+# @jwt_required()
+# def edit_contact(contactId):
+#     user_id = get_jwt_identity()
     
-    try:
-        contact_db = Contact.query.filter_by(id=contactId, user_id=user_id).first()
-        if not contact_db:
-            return jsonify({"error": "Contact not found or you don't have permission to edit it"}), 404
+#     try:
+#         contact_db = Contact.query.filter_by(id=contactId, user_id=user_id).first()
+#         if not contact_db:
+#             return jsonify({"error": "Contact not found or you don't have permission to edit it"}), 404
         
-        contact_body = request.get_json()
+#         contact_body = request.get_json()
         
-        if "fullname" in contact_body:
-            contact_db.fullname = contact_body["fullname"]
-        if "email" in contact_body:
-            contact_db.email = contact_body["email"]
-        if "address" in contact_body:
-            contact_db.address = contact_body["address"]
+#         if "fullname" in contact_body:
+#             contact_db.fullname = contact_body["fullname"]
+#         if "email" in contact_body:
+#             contact_db.email = contact_body["email"]
+#         if "address" in contact_body:
+#             contact_db.address = contact_body["address"]
 
-        db.session.commit()
-        return jsonify(contact_db.serialize()), 200
-    except IntegrityError:
-        db.session.rollback()
-        return jsonify({"error": "A contact with this information already exists"}), 409
-    except Exception as e:
-        db.session.rollback()
-        return jsonify({"error": "An unexpected error occurred", "details": str(e)}), 500
+#         db.session.commit()
+#         return jsonify(contact_db.serialize()), 200
+#     except IntegrityError:
+#         db.session.rollback()
+#         return jsonify({"error": "A contact with this information already exists"}), 409
+#     except Exception as e:
+#         db.session.rollback()
+#         return jsonify({"error": "An unexpected error occurred", "details": str(e)}), 500
 
 #--------------------------DELETE_CONTACT--------------------------------------------------------------------
 
@@ -681,21 +708,22 @@ def delete_group_member(group_id):
 
 #--------------------------CREATE_EVENT---------------------------------------------------------------
 
-@api.route('/event', methods=['POST'])
+@api.route('/group/<int:group_id>/event', methods=['POST'])
 @jwt_required()
-def create_event():
+def create_event(group_id):
+    user_id = get_jwt_identity()
     body = request.get_json()
-    required_fields = ['type', 'payment_id', 'user_id', 'group_id']
+    required_fields = ['name', 'amount', 'user_id', 'group_id']
     for field in required_fields:
         if field not in body:
             return jsonify({"error": f"{field.capitalize()} is required"}), 400
-
     try:
         new_event = Event(
-            type=body["type"],
-            payment_id=body["payment_id"],
-            user_id=body["user_id"],
-            group_id=body["group_id"]
+            name=body["name"],
+            amount=body["amount"],
+            description=body["description"],
+            user_id=user_id,
+            group_id=group_id
         )
         db.session.add(new_event)
         db.session.commit()
@@ -709,7 +737,7 @@ def create_event():
 
 #--------------------------GET_EVENT---------------------------------------------------------------
 
-@api.route('/event/<int:event_id>', methods=['GET'])
+@api.route('/group/<int:group_id>/event/<int:event_id>', methods=['GET'])
 @jwt_required()
 def get_event(event_id):
     try:
@@ -722,7 +750,7 @@ def get_event(event_id):
 
 #--------------------------EDIT_EVENT---------------------------------------------------------------
 
-@api.route('/event/<int:event_id>', methods=['PATCH'])
+@api.route('/group/<int:group_id>/event/<int:event_id>', methods=['PATCH'])
 @jwt_required()
 def update_event(event_id):
     body = request.get_json()
@@ -730,16 +758,12 @@ def update_event(event_id):
         event_db = Event.query.get(event_id)
         if not event_db:
             return jsonify({"error": "Event not found"}), 404
-
-        if "type" in body:
-            event_db.type = body["type"]
-        if "payment_id" in body:
-            event_db.payment_id = body["payment_id"]
-        if "user_id" in body:
-            event_db.user_id = body["user_id"]
-        if "group_id" in body:
-            event_db.group_id = body["group_id"]
-
+        if "name" in body:
+            event_db.name = body["name"]
+        if "amount" in body:
+            event_db.amount = body["amount"]
+        if "description" in body:
+            event_db.description = body["description"]
         db.session.commit()
         return jsonify(event_db.serialize()), 200
     except IntegrityError:
@@ -751,14 +775,16 @@ def update_event(event_id):
 
 #--------------------------DELETE_EVENT---------------------------------------------------------------
 
-@api.route('/event/<int:event_id>', methods=['DELETE'])
+@api.route('/group/<int:group_id>/event/<int:event_id>', methods=['DELETE'])
 @jwt_required()
 def delete_event(event_id):
+    user_id = get_jwt_identity()
     try:
         event_db = Event.query.get(event_id)
         if not event_db:
             return jsonify({"error": "Event not found"}), 404
-
+        if event_db.user_id != user_id:
+            return jsonify({"error": "Event not authorizate"}), 404
         db.session.delete(event_db)
         db.session.commit()
         return jsonify({"message": "Event deleted successfully"}), 200
@@ -768,7 +794,7 @@ def delete_event(event_id):
 
 #--------------------------GET_ALL_EVENT---------------------------------------------------------------
 
-@api.route('/events', methods=['GET'])
+@api.route('/group/<int:group_id>/events', methods=['GET'])
 @jwt_required()
 def get_all_events():
     try:
