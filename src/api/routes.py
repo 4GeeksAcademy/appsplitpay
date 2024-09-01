@@ -3,7 +3,7 @@ This module takes care of starting the API Server, Loading the DB and Adding the
 """
 from flask import Flask, request, jsonify, url_for, Blueprint
 from flask_jwt_extended import create_access_token, get_jwt_identity, get_jwt, jwt_required
-from api.models import db, User, TokenBlockedList
+from api.models import db, User, TokenBlockedList, Contact
 from api.utils import generate_sitemap, APIException
 from flask_cors import CORS
 from flask_bcrypt import Bcrypt
@@ -193,7 +193,71 @@ def delete_user():
         db.session.rollback()
         return jsonify({"error": "An unexpected error occurred while deleting user", "details": str(e)}), 500
 
-
+#--------------------------ADD_CONTACT--------------------------------------------------------------------
+@api.route('/contact', methods=['POST'])
+@jwt_required()
+def add_contact():
+    user_id = get_jwt_identity()
+    body = request.get_json()
+    if "username" not in body:
+        return jsonify({"error": "Username is required"}), 400
+    try:
+        contact = Contact(username=body["username"], user_id=user_id)
+        if "fullname" in body:
+            contact.fullname = body["fullname"]
+        if "email" in body:
+            contact.email = body["email"]
+        if "paypal_username" in body:
+            contact.paypal_username = body["paypal_username"]
+        db.session.add(contact)
+        db.session.commit()
+        return jsonify({"message": "Contact added successfully", "contact": contact.serialize()}), 201
+    except IntegrityError:
+        db.session.rollback()
+        return jsonify({"error": "A contact with this username already exists"}), 409
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"error": "An unexpected error occurred while adding contact", "details": str(e)}), 500
+#--------------------------GET_CONTACTS--------------------------------------------------------------------
+@api.route('/contact', methods=['GET'])
+@jwt_required()
+def get_contacts():
+    user_id = get_jwt_identity()
+    try:
+        contacts = Contact.query.filter_by(user_id=user_id).all()
+        contact_list = [contact.serialize() for contact in contacts]
+        return jsonify({"contacts": contact_list}), 200
+    except Exception as e:
+        return jsonify({"error": "An unexpected error occurred while fetching contacts", "details": str(e)}), 500
+#--------------------------GET_CONTACT_DATABASE--------------------------------------------------------------------
+@api.route('/search', methods=['GET'])
+@jwt_required()
+def get_single_user():
+    username = request.args.get('username')
+    if not username:
+        return jsonify({"error": "Username is required"}), 400
+    try:
+        user = User.query.filter_by(username=username).first()
+        if user is None:
+            return jsonify({"error": "User not found"}), 404
+        return jsonify({"user": user.serialize()})
+    except Exception as e:
+        return jsonify({"error": "An unexpected error occurred", "details": str(e)}), 500
+#--------------------------DELETE_CONTACT--------------------------------------------------------------------
+@api.route('/contact/<int:contactId>', methods=['DELETE'])
+@jwt_required()
+def delete_contact(contactId):
+    user_id = get_jwt_identity()
+    try:
+        contact_db = Contact.query.filter_by(id=contactId, user_id=user_id).first()
+        if not contact_db:
+            return jsonify({"error": "Contact not found or you don't have permission to delete it"}), 404
+        db.session.delete(contact_db)
+        db.session.commit()
+        return jsonify({"message": "Contact deleted successfully"}), 200
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"error": "An unexpected error occurred", "details": str(e)}), 500
 
 
 
