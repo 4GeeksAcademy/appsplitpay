@@ -1,6 +1,6 @@
 import React, { useContext, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import "../../styles/home.css";
+import "../../styles/navbar.css";
 import { Context } from '../store/appContext.js';
 
 const Navbar = () => {
@@ -23,58 +23,60 @@ const Navbar = () => {
     if (store.isAuthenticated) {
       navigate("/homeUser");  // Redirige a HomeUser si está autenticado
     } else {
-      navigate("/login");  // Redirige a la página de login si no está autenticado
+      navigate("/");  // Redirige a la página de login si no está autenticado
     }
   };
 
   return (
-    <nav className="navbar navbar-expand-lg custom-navbar" style={{ backgroundColor: "#274d95", fontFamily: "Trebuchet MS" }}>
-      <div className="container-fluid d-flex align-items-center">
+    <nav className="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+      <div className="container-fluid bg-dark">
+        {/* Logo */}
         <div onClick={handleLogoClick} className="navbar-brand d-flex align-items-center me-auto" style={{ cursor: "pointer" }}>
           <h1 style={{ color: "white" }}>AppSplitPay</h1>
         </div>
-
-        <button className="navbar-toggler ms-auto" type="button" data-bs-toggle="collapse" data-bs-target="#navbarTogglerDemo01" aria-controls="navbarTogglerDemo01" aria-expanded="false" aria-label="Toggle navigation">
+        {/* Toggle Buttom */}
+        <button className="navbar-toggler shadow-none border-0" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar" aria-controls="offcanvasNavbar" aria-label="Toggle navigation">
           <span className="navbar-toggler-icon"></span>
         </button>
-
-        <div className="collapse navbar-collapse" id="navbarTogglerDemo01">
-          <div className="navbar-nav ms-auto">
-            {store.isAuthenticated ? (
-              <button className="btn btn-light" onClick={handleLogout}>
+        {/* SideBar */}
+        <div className="offcanvas offcanvas-start bg-dark" tabIndex="-1" id="offcanvasNavbar" aria-labelledby="offcanvasNavbarLabel">
+          <div className="offcanvas-header text-white border-bottom">
+            <h5 className="offcanvas-title text-white" id="offcanvasNavbarLabel">SplitPay Navbar</h5>
+            <button type="button" className="btn-close btn-close-white shadow-none" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+          </div>
+          {store.isAuthenticated ? (
+          <div className="offcanvas-body d-flex flex-column flex-lg-row p-4 p-lg-0">
+            <ul className="navbar-nav justify-content-center align-items-center fs-5 flex-grow-1 pe-3">
+              <li className="nav-item mx-2">
+                <Link to="/homeUser" className="nav-link active" aria-current="page">Home</Link>
+              </li>
+              <li className="nav-item mx-2">
+                <Link to="/contacts" className="nav-link">Contacts</Link>
+              </li>
+              <li className="nav-item mx-2">
+                <Link to="/groups" className="nav-link">Groups</Link>
+              </li>
+              <li className="nav-item mx-2">
+                <Link to="/records" className="nav-link">Records</Link>
+              </li>
+            </ul>
+            <div className="d-flex flex-column flex-lg-row justify-content-center align-items-center gap-3">
+              <button className="text-white text-decoration-none px-3 py-1 bg-primary rounded-4" onClick={handleLogout}>
                 Logout
               </button>
-            ) : (
-              <>
-                <Link className="btn me-2 text-white" to="/login">
-                  Iniciar sesión
-                </Link>
-                <Link className="btn btn-light" to="/signup">
-                  Crea una cuenta
-                </Link>
-              </>
-            )}
+            </div>
           </div>
+          ):(
+          <div className="offcanvas-body d-flex flex-column flex-lg-row p-4 p-lg-0">
+            <ul className="navbar-nav justify-content-center align-items-center fs-5 flex-grow-1 pe-3"></ul>
+            <div className="d-flex flex-column flex-lg-row justify-content-center align-items-center gap-3">
+              <Link to="/login" className="text-white">Login</Link>
+              <Link to="/signup" className="text-white text-decoration-none px-3 py-1 bg-primary rounded-4">Sign Up</Link>
+            </div>
+          </div>
+          )}
         </div>
       </div>
-
-      <style>
-        {`
-          .custom-navbar {
-              background-color: #003459;
-              padding: 0 2rem;
-            
-          }
-
-          .navbar-toggler-icon {
-              background-image: url("data:image/svg+xml;charset=UTF8,%3Csvg viewBox='0 0 30 30' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath stroke='rgba%28255, 255, 255, 1%29' stroke-width='2' stroke-linecap='round' stroke-miterlimit='10' d='M4 7h22M4 15h22M4 23h22'/%3E%3Csvg%3E");
-          }
-
-          .navbar-brand img {
-              height: 40px;
-          }
-        `}
-      </style>
     </nav>
   );
 };

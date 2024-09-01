@@ -3,13 +3,12 @@ This module takes care of starting the API Server, Loading the DB and Adding the
 """
 from flask import Flask, request, jsonify, url_for, Blueprint
 from flask_jwt_extended import create_access_token, get_jwt_identity, get_jwt, jwt_required
-from api.models import db, User, TokenBlockedList, Contact, Group, GroupMember, Event, Account, Payment
+from api.models import db, User, TokenBlockedList
 from api.utils import generate_sitemap, APIException
 from flask_cors import CORS
 from flask_bcrypt import Bcrypt
 from datetime import datetime
 from pytz import timezone
-from api.paypal_funciones import paypal_Login, create_order, transfer_money
 from sqlalchemy.exc import IntegrityError
 import os
 import requests
@@ -43,14 +42,14 @@ def user_signup():
         encrypted_password = bcrypt.generate_password_hash(body["password"]).decode('utf-8')
         new_user = User(
             username=body["username"],
-            email=body["email"],
-            password=encrypted_password,
-            is_active=True,
             first_name=body.get("first_name", ""),
             last_name=body.get("last_name", ""),
             age=body.get("age", ""),
             address=body.get("address", ""),
-            paypal_username=body.get("paypal_username", "")
+            email=body["email"],
+            password=encrypted_password,
+            is_active=True,
+            paypal_username=body["paypal_username"]
         )
 
         db.session.add(new_user)
@@ -82,7 +81,7 @@ def user_login():
             return jsonify({"error": "Invalid password"}), 401
 
         token = create_access_token(identity=user.id, additional_claims={"role": "admin"})
-        return jsonify({"token": token}), 200
+        return jsonify({"token": token, "user":user.serialize()}), 200
     except Exception as e:
         return jsonify({"error": "An unexpected error occurred", "details": str(e)}), 500
 

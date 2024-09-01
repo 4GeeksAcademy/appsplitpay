@@ -7,19 +7,14 @@ import BackendURL from "./component/backendURL";
 import Navbar from "./component/navbar";
 import Footer from "./component/footer";
 import HomeUser from "./component/homeUser";
-import Evento from "./component/evento";
 import PasswordRecovery from "./component/passwordRecovery";
 import RequestPasswordRecovery from "./component/requestPasswordRecovery.js";
 import injectContext, { Context } from "./store/appContext";
-import Contactos from "./component/contactos";
 import ScrollToTop from "../js/component/scrollToTop";
-import AddContacto from "./component/addContacto";
-import EditarContacto from "../js/component/editarContacto";
-import ConfirmDeleteModal from "../js/component/confirmDeleteModal";
-import ModalContactoInfo from "./component/modalContactoInfo";
-import Grupos from "./component/grupos";
-import ConfirmDeleteGroup from "../js/component/confirmDeleteGroup.js";
-import EventoGrupal from "./component/eventoGrupal.js";
+import Contacts from "./component/contacts.js";
+import Groups from "./component/groups.js";
+import Records from "./component/records.js";
+
 
 const Layout = () => {
   const { actions } = useContext(Context);
@@ -35,24 +30,16 @@ const Layout = () => {
   
   const basename = process.env.BASENAME || "";
 
-<<<<<<< HEAD
-  return (
-    <BrowserRouter>
-      <Content />
-    </BrowserRouter>
-  );
-=======
     return (
         <BrowserRouter basename={basename}>
             <Content />
         </BrowserRouter>
     );
->>>>>>> 9864767c6efad2bde034b56a90959233d65177a3
 };
 
 const Content = () => {
   const location = useLocation();
-  const hideNavbarAndFooter = ["/signup"];
+  const hideNavbarAndFooter = ["/*"];
   const shouldHideNavbarAndFooter = hideNavbarAndFooter.includes(location.pathname);
 
   return (
@@ -64,15 +51,9 @@ const Content = () => {
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<SignUp />} />
           <Route path="/homeUser" element={<HomeUser />} />
-          <Route path="/evento" element={<Evento />} />
-          <Route path="/contactos" element={<Contactos />} />
-          <Route path="/addContacto" element={<AddContacto />} />
-          <Route path="/editarContacto/:contactId" element={<EditarContacto />} />
-          <Route path="/confirmDeleteModal" element={<ConfirmDeleteModal />} />
-          <Route path="/confirmDeleteGroup" element={<ConfirmDeleteGroup />} />
-          <Route path="/modalContactoInfo" element={<ModalContactoInfo />} />
-          <Route path="/grupos" element={<Grupos />} />
-          <Route path="/eventoGrupal" element={<EventoGrupal />} />
+          <Route path="/contacts" element={<Contacts />} />
+          <Route path="/groups" element={<Groups />} />
+          <Route path="/records" element={<Records />} />
           <Route path="/changepassword" element={<PasswordRecovery />} />
           <Route path="/requestpasswordrecovery" element={<RequestPasswordRecovery />} />
         </Routes>

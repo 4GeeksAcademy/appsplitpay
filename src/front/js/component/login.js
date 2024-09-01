@@ -9,6 +9,10 @@ const Login = () => {
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
 
+  const handleCancelButton = () => {
+    navigate('/');
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -21,14 +25,14 @@ const Login = () => {
       setErrorMessage(store.errorMessage || "An error occurred during login.");
     }
 
-    useEffect(() => {
+    /* useEffect(() => {
       if (success != success) {
         const timer = setTimeout(() => {
           setErrorMessage("");
         }, 6000);
         return () => clearTimeout(timer);
       }
-    }, [errorMessage]);
+    }, [errorMessage]); */
   };
   
 
@@ -84,27 +88,18 @@ const Login = () => {
           </div>
         </div>
 
-        <button type="submit" className="btn btn-primary btn-block mb-4 mt-4">
-          Sign in
-        </button>
-
-
         <div className="text-center">
           <p>
             Not a member? <Link to="/signup">Register</Link>
           </p>
-          <p>or sign up with:</p>
-          <button type="button" className="btn btn-secondary btn-floating mx-1">
-            <i className="fab fa-facebook-f"></i>
+        </div>
+
+        <div className="d-grid gap-2 col-6 mx-auto">
+          <button type="submit" className="btn btn-primary btn-block ">
+            Login
           </button>
-          <button type="button" className="btn btn-secondary btn-floating mx-1">
-            <i className="fab fa-google"></i>
-          </button>
-          <button type="button" className="btn btn-secondary btn-floating mx-1">
-            <i className="fab fa-twitter"></i>
-          </button>
-          <button type="button" className="btn btn-secondary btn-floating mx-1">
-            <i className="fab fa-github"></i>
+          <button type="submit" className="btn btn-outline-secondary" onClick={handleCancelButton}>
+            Cancel
           </button>
         </div>
       </form>

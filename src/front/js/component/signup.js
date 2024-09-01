@@ -21,6 +21,9 @@ const SignUp = () => {
 
   const navigate = useNavigate();
 
+  const handleCancelButton = () => {
+    navigate('/');
+  };
 
   const handleDateChange = (date) => {
     setSelectedDate(date);
@@ -55,24 +58,6 @@ const SignUp = () => {
   return (
     <div className="card d-flex justify-content-center my-5 p-5 mx-auto" style={{ maxWidth: '600px', width: '100%' }}>
       <form onSubmit={handleSubmit}>
-        <div className="text-center mb-3">
-          <p>Sign up with:</p>
-          <button type="button" className="btn btn-secondary btn-floating mx-1">
-            <i className="fab fa-facebook-f"></i>
-          </button>
-          <button type="button" className="btn btn-secondary btn-floating mx-1">
-            <i className="fab fa-google"></i>
-          </button>
-          <button type="button" className="btn btn-secondary btn-floating mx-1">
-            <i className="fab fa-twitter"></i>
-          </button>
-          <button type="button" className="btn btn-secondary btn-floating mx-1">
-            <i className="fab fa-github"></i>
-          </button>
-        </div>
-
-        <p className="text-center">or:</p>
-
         {errorMessage && <div className="alert alert-danger">{errorMessage}</div>}
 
         {/* FirstName input */}
@@ -114,7 +99,7 @@ const SignUp = () => {
         <label  htmlFor= "paypal_user" className="form-label">Your vanity URL</label>
         <div className="input-group mb-3">
           <span className="input-group-text" id="basic-addon3">https://www.paypal.com/paypalme/</span>
-          <input type="text" className="form-control" id="basic-url" aria-describedby="basic-addon3"/>
+          <input onChange={(e) => setPaypal_Username(e.target.value)} type="text" className="form-control" id="basic-url" aria-describedby="basic-addon3"/>
         </div>
 
         {/* Email input */}
@@ -195,9 +180,14 @@ const SignUp = () => {
         </div>
 
         {/* Submit button */}
-        <button type="submit" className="btn btn-primary btn-block mb-3">
-          {store.loading ? "Signing up..." : "Sign up"}
-        </button>
+        <div className="d-grid gap-2 col-6 mx-auto">
+          <button type="submit" className="btn btn-primary btn-block mb-3">
+            {store.loading ? "Signing up..." : "Sign up"}
+          </button>
+          <button type="submit" className="btn btn-outline-secondary" onClick={handleCancelButton}>
+            Cancel
+          </button>
+        </div>
       </form>
     </div>
   );
