@@ -194,7 +194,6 @@ def delete_user():
         return jsonify({"error": "An unexpected error occurred while deleting user", "details": str(e)}), 500
 
 #--------------------------ADD_CONTACT--------------------------------------------------------------------
-
 @api.route('/contact', methods=['POST'])
 @jwt_required()
 def add_contact():
@@ -244,8 +243,7 @@ def get_single_user():
         return jsonify({"user": user.serialize()})
     except Exception as e:
         return jsonify({"error": "An unexpected error occurred", "details": str(e)}), 500
-    
-    #--------------------------DELETE_CONTACT--------------------------------------------------------------------
+#--------------------------DELETE_CONTACT--------------------------------------------------------------------
 @api.route('/contact/<int:contactId>', methods=['DELETE'])
 @jwt_required()
 def delete_contact(contactId):

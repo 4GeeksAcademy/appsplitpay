@@ -12,7 +12,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 			contacts: [],
 			groups: [],
 			groupDetails: null,
-			events: [],  // <-- Nueva lista de eventos
+			userContact: null,
 		},
 		actions: {
 			login: async (email, password) => {
@@ -272,6 +272,98 @@ const getState = ({ getStore, getActions, setStore }) => {
 					// Maneja cualquier error que pueda ocurrir durante la solicitud
 					console.error("Error:", error);
 					throw error;
+				}
+			},
+			getSingleUser: async (username) => {
+				const store = getStore();
+				try {
+					const response = await fetch(`${apiUrl}/search?username=${encodeURIComponent(username)}`, {
+						method: 'GET',
+						headers: {
+							'Authorization': `Bearer ${store.token}`,
+							'Content-Type': 'application/json'
+						}
+					});
+					if (!response.ok) {
+						const errorData = await response.json();
+						throw new Error(errorData.error || 'Error al obtener el usuario');
+					}
+					const data = await response.json();
+					setStore({ userContact: data.user });
+					return data;
+				} catch (error) {
+					console.error("Error fetching single usuario:", error);
+					setStore({ errorMessage: error.message || "Error al obtener el usuario" });
+				}
+			},
+			getContacts: async () => {
+				const { token } = getStore();
+				setStore({ loading: true });
+				try {
+					const response = await fetch(apiUrl + "/contact", {
+						method: "GET",
+						headers: {
+							"Authorization": `Bearer ${token}`,
+							"Content-Type": "application/json",
+						},
+					});
+					if (!response.ok) {
+						const errorData = await response.json();
+						setStore({
+							errorMessage: errorData.error || "Failed to fetch contacts",
+							loading: false,
+						});
+						return [];
+					}
+					const data = await response.json();
+					setStore({
+						contacts: data.contacts,
+						loading: false,
+						errorMessage: null,
+					});
+					return data.contacts;
+				} catch (error) {
+					console.error("Error fetching contacts:", error);
+					setStore({
+						errorMessage: "An error occurred while fetching contacts.",
+						loading: false,
+					});
+					return [];
+				}
+			},
+			addContact: async (username, fullname, paypal_username, email) => {
+				const { token } = getStore();
+				setStore({ loading: true });
+				try {
+					const response = await fetch(apiUrl + "/contact", {
+						method: "POST",
+						headers: {
+							"Content-Type": "application/json",
+							"Authorization": `Bearer ${token}`,
+						},
+						body: JSON.stringify(username, fullname, paypal_username, email),
+					});
+					if (!response.ok) {
+						const errorData = await response.json();
+						setStore({
+							errorMessage: errorData.error || "Failed to add contact",
+							loading: false,
+						});
+						return null;
+					}
+					const data = await response.json();
+					setStore({
+						loading: false,
+						errorMessage: null,
+					});
+					return data.contact;
+				} catch (error) {
+					console.error("Error adding contact:", error);
+					setStore({
+						errorMessage: "An error occurred while adding contact.",
+						loading: false,
+					});
+					return null;
 				}
 			},
 
