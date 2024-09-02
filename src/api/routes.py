@@ -218,7 +218,9 @@ def add_contact():
     except Exception as e:
         db.session.rollback()
         return jsonify({"error": "An unexpected error occurred while adding contact", "details": str(e)}), 500
+    
 #--------------------------GET_CONTACTS--------------------------------------------------------------------
+
 @api.route('/contact', methods=['GET'])
 @jwt_required()
 def get_contacts():
@@ -229,7 +231,9 @@ def get_contacts():
         return jsonify({"contacts": contact_list}), 200
     except Exception as e:
         return jsonify({"error": "An unexpected error occurred while fetching contacts", "details": str(e)}), 500
+    
 #--------------------------GET_CONTACT_DATABASE--------------------------------------------------------------------
+
 @api.route('/search', methods=['GET'])
 @jwt_required()
 def get_single_user():
@@ -243,7 +247,9 @@ def get_single_user():
         return jsonify({"user": user.serialize()})
     except Exception as e:
         return jsonify({"error": "An unexpected error occurred", "details": str(e)}), 500
+    
 #--------------------------DELETE_CONTACT--------------------------------------------------------------------
+
 @api.route('/contact/<int:contactId>', methods=['DELETE'])
 @jwt_required()
 def delete_contact(contactId):

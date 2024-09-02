@@ -205,6 +205,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 					throw error;
 				}
 			},
+
 			getSingleUser: async (username) => {
 				const store = getStore();
 				try {
@@ -221,12 +222,14 @@ const getState = ({ getStore, getActions, setStore }) => {
 					}
 					const data = await response.json();
 					setStore({ userContact: data.user });
+					console.log(data.user);
 					return data;
 				} catch (error) {
 					console.error("Error fetching single usuario:", error);
 					setStore({ errorMessage: error.message || "Error al obtener el usuario" });
 				}
 			},
+
 			getContacts: async () => {
 				const { token } = getStore();
 				setStore({ loading: true });
@@ -262,7 +265,14 @@ const getState = ({ getStore, getActions, setStore }) => {
 					return [];
 				}
 			},
+			
 			addContact: async (username, fullname, paypal_username, email) => {
+				const requestBody = {
+					username,
+					fullname,
+					paypal_username,
+					email
+				};
 				const { token } = getStore();
 				setStore({ loading: true });
 				try {
@@ -272,7 +282,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 							"Content-Type": "application/json",
 							"Authorization": `Bearer ${token}`,
 						},
-						body: JSON.stringify(username, fullname, paypal_username, email),
+						body: JSON.stringify(requestBody),
 					});
 					if (!response.ok) {
 						const errorData = await response.json();

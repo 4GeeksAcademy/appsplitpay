@@ -17,19 +17,10 @@ export const Contacts = () => {
         }
     };
 
-    /*  const contactInfo = {
-         "username": store.userContact.username,
-         "paypal_username": store.userContact.paypal_username,
-         "fullname": store.userContact.first_name + " " + store.userContact.last_name,
-         "email": store.userContact.email
- 
-     } */
-
     const handleAddContact = async (username, fullname, paypal_username, email) => {
+        console.log(username, fullname, paypal_username, email);
         await actions.addContact(username, fullname, paypal_username, email);
-
     }
-
 
     useEffect(() => {
         actions.getContacts()
@@ -65,12 +56,12 @@ export const Contacts = () => {
                             <td>{store.userContact.paypal_username}</td>
                             <td>{store.userContact.first_name + " " + store.userContact.last_name}</td>
                             <td>{store.userContact.email}</td>
-                            <button onClick={handleAddContact({
-                                "username": store.userContact.username,
-                                "fullname": store.userContact.first_name + " " + store.userContact.last_name,
-                                "paypal_username": store.userContact.paypal_username,
-                                "email": store.userContact.email
-                            })} className="btn btn-outline-success" type="submit"> + add this contact </button>
+                            <button onClick={() => handleAddContact(
+                                store.userContact.username,
+                                store.userContact.first_name + " " + store.userContact.last_name,
+                                store.userContact.paypal_username,
+                                store.userContact.email
+                            )} className="btn btn-outline-success" type="buttom"> + add this contact </button>
                         </tr>
                     ) : (
                         <tr>
@@ -78,11 +69,8 @@ export const Contacts = () => {
                             <td>.............</td>
                             <td>.............</td>
                             <td>.............</td>
-
                         </tr>
                     )}
-
-
                 </tbody>
             </table>
             <h1>Tus contactos</h1>
@@ -97,7 +85,6 @@ export const Contacts = () => {
                 </thead>
                 <tbody>
                     {store.contacts.length > 0 ? (
-
                         store.contacts.map((contact, index) => (
                             <tr key={index}>
                                 <td>{contact.username}</td>
@@ -106,7 +93,6 @@ export const Contacts = () => {
                                 <td>{contact.email}</td>
                             </tr>
                         ))
-
                     ) : (
                         <tr>
                             <td>.............</td>
@@ -117,9 +103,6 @@ export const Contacts = () => {
                     )}
                 </tbody>
             </table>
-
-
-
         </div>
     );
 };
