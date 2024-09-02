@@ -73,6 +73,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 
 			signup: async (username, email, password, first_name, last_name, age, address, paypal_username) => {
 				setStore({ loading: true });
+				console.log(username)	
 				try {
 					const response = await fetch(apiUrl + "/signup", {
 						method: "POST",
@@ -81,7 +82,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 						},
 						body: JSON.stringify({ username, email, password, first_name, last_name, age, address, paypal_username })
 					});
-
+						console.log(response)
 					if (response.ok) {
 						const data = await response.json();
 						setStore({
@@ -168,6 +169,74 @@ const getState = ({ getStore, getActions, setStore }) => {
 			setMessage: (msg) => {
 				setStore({ message: msg });
 			},
+
+
+			createGroup: async(name, members_id)=>{
+				const {token} = getStore() 
+				try{
+					const response = await fetch (apiUrl + "/group",{
+						method : "POST",
+						headers: {
+							"Content-Type": "application/json", 
+							"Authorization": "Bearer " + token
+						},
+						body: JSON.stringify({name, members_id})
+					});
+					if (response.ok){
+					const data = await response.json();
+					alert ("group succesfully created ")
+					
+					setStore({
+						groups: [...getStore().groups, data.group]
+					});
+					}else {
+						const errorData= await response.json(); 
+						alert (`Error: ${errorData.error}`);
+					}
+				} catch(error){
+					console.error("Error in createGroup:", error)
+					alert("there was an error creating group")
+				}
+			},
+
+			getContacts: async () => {
+                const { token } = getStore();
+                setStore({ loading: true });
+                try {
+                    const response = await fetch(apiUrl + "/contact", {
+                        method: "GET",
+                        headers: {
+                            "Authorization": `Bearer ${token}`,
+                            "Content-Type": "application/json",
+                        },
+                    });
+                    if (!response.ok) {
+                        const errorData = await response.json();
+                        setStore({
+                            errorMessage: errorData.error || "Failed to fetch contacts",
+                            loading: false,
+                        });
+                        return [];
+                    }
+                    const data = await response.json();
+                    setStore({
+                        contacts: data.contacts,
+                        loading: false,
+                        errorMessage: null,
+                    });
+                    return data.contacts;
+                } catch (error) {
+                    console.error("Error fetching contacts:", error);
+                    setStore({
+                        errorMessage: "An error occurred while fetching contacts.",
+                        loading: false,
+                    });
+                    return [];
+                }
+            },
+
+
+
 			// Función para solicitar un enlace de recuperación de contraseña
 			requestPasswordRecovery: async (email) => {
 				try {

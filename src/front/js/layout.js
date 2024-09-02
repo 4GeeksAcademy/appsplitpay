@@ -13,6 +13,7 @@ import injectContext, { Context } from "./store/appContext";
 import ScrollToTop from "../js/component/scrollToTop";
 import Contacts from "./component/contacts.js";
 import Groups from "./component/groups.js";
+import CreateGroup from "./component/createGroup.js";
 import Records from "./component/records.js";
 
 
@@ -52,7 +53,8 @@ const Content = () => {
           <Route path="/signup" element={<SignUp />} />
           <Route path="/homeUser" element={<HomeUser />} />
           <Route path="/contacts" element={<Contacts />} />
-          <Route path="/groups" element={<Groups />} />
+          <Route path="/group" element={<Groups />} />
+          <Route path="/createGroup" element={<CreateGroup />} />
           <Route path="/records" element={<Records />} />
           <Route path="/changepassword" element={<PasswordRecovery />} />
           <Route path="/requestpasswordrecovery" element={<RequestPasswordRecovery />} />
