@@ -298,7 +298,41 @@ const getState = ({ getStore, getActions, setStore }) => {
 				}
 			},
 
-		}
+// #-----------------------------------------PAYMENT--------------------------------------------------
+
+			getPayments: async () => {
+				try {
+				  const response = await fetch(`${apiUrl}/payments`, {
+					method: 'GET',
+					headers: {
+					  'Content-Type': 'application/json',
+					  'Authorization': `Bearer ${getStore().token}`,
+					},
+				  });
+				  return response.json();
+				} catch (error) {
+				  console.error(error);
+				  return [];
+				}
+			  },
+			
+			  getPayment: async (paymentId) => {
+				try {
+				  const response = await fetch(`${apiUrl}/payments/${paymentId}`, {
+					method: 'GET',
+					headers: {
+					  'Content-Type': 'application/json',
+					  'Authorization': `Bearer ${getStore().token}`,
+					},
+				  });
+				  return response.json();
+				} catch (error) {
+				  console.error(error);
+				  return null;
+				}
+			  },
+			},
+
 	};
 };
 

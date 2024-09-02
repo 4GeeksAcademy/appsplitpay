@@ -3,7 +3,7 @@ This module takes care of starting the API Server, Loading the DB and Adding the
 """
 from flask import Flask, request, jsonify, url_for, Blueprint
 from flask_jwt_extended import create_access_token, get_jwt_identity, get_jwt, jwt_required
-from api.models import db, User, TokenBlockedList, Contact
+from api.models import db, User, TokenBlockedList, Contact, Payment, Event, Group
 from api.utils import generate_sitemap, APIException
 from flask_cors import CORS
 from flask_bcrypt import Bcrypt
@@ -258,7 +258,92 @@ def delete_contact(contactId):
     except Exception as e:
         db.session.rollback()
         return jsonify({"error": "An unexpected error occurred", "details": str(e)}), 500
+    
+#--------------------------PAYMENT GET-----------------------------------------------------------------
 
+@api.route('/payments', methods=['GET'])
+@jwt_required()
+def get_payments():
+    user_id = get_jwt_identity()
+    payments = Payment.query.filter_by(user_id=user_id).all()
+    payments_list = []
+    for payment in payments:
+        payments_list.append({
+            'id': payment.id,
+            'amount': payment.amount,
+            'user_id': payment.user_id,
+            'group_id': payment.group_id,
+            'paypal_username': payment.paypal_username,
+        })
+    return jsonify(payments_list), 200
+
+#--------------------------PAYMENT GET BY ID-----------------------------------------------------------------
+    
+
+@api.route('/payments/<int:payment_id>', methods=['GET'])
+@jwt_required()
+def get_payment(payment_id):
+    
+    payment = Payment.query.get(payment_id)
+    if payment is None:
+        return jsonify({'error': 'Payment not found'}), 404
+    # payment_date = payment.date.astimezone(timezone('UTC'))  # Convertir a la zona horaria neutra
+    return jsonify({
+        'id': payment.id,
+        # 'date': payment_date.strftime('%d-%m-%Y %H:%M:%S'),
+        'amount': payment.amount,
+        'user_id': payment.user_id,
+        'group_id': payment.group_id,
+        'paypal_username': payment.paypal_username,
+    }), 200
+
+
+#-------------------------- POST PAYMENT-----------------------------------------------------------------
+
+@api.route('/payments', methods=['POST'])
+@jwt_required()
+def create_payment():
+    user_id = get_jwt_identity()
+    data = request.get_json()
+
+    if 'group_id' in data:
+        group_id = data['group_id']
+        paypal_username = None
+        if 'event_id' not in data:
+            return jsonify({"error": "Event ID is required if group is specified"}), 400
+        event_id = data['event_id']
+    else:
+        group_id = None
+        if 'paypal_username' not in data:
+            return jsonify({"error": "Paypal username is required if no group is specified"}), 400
+        paypal_username = data['paypal_username']
+        event_id = None
+
+    # Verificar que el grupo y el evento existan
+    if group_id:
+        group = Group.query.get(group_id)
+        if group is None:
+            return jsonify({"error": "Group not found"}), 404
+        event = Event.query.get(event_id)
+        if event is None or event.group_id != group_id:
+            return jsonify({"error": "Event not found or does not belong to group"}), 404
+
+    payment = Payment(
+        amount=data['amount'],
+        user_id=user_id,
+        group_id=group_id,
+        event_id=event_id,
+        paypal_username=paypal_username
+    )
+
+    if paypal_username:
+        recipient_user = User.query.filter_by(paypal_username=paypal_username).first()
+        if not recipient_user:
+            return jsonify({"error": "Recipient not found"}), 404
+
+    db.session.add(payment)
+    db.session.commit()
+    return jsonify(payment.serialize()), 201
 
 
 
