@@ -215,7 +215,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 						if (data.token) {
 							console.log("Token recibido:", data.token);
 							return {
-								msg: "Correo enviado con las instrucciones para cambiar la contraseña.",
+								msg: "Mail send with the instructions to change password.",
 								token: data.token
 							};
 						} else {
