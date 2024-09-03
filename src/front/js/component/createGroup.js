@@ -1,10 +1,14 @@
-import React, { useContext, useState, useEffect } from "react";
-import { Context } from "../store/appContext.js";
+import React, { useState, useEffect, useContext } from "react";
 import { useNavigate } from "react-router-dom";
+import Select from "react-dropdown-select";
+import { Context } from "../store/appContext";
+
 
 const CreateGroup = () => {
+
     const { store, actions } = useContext(Context)
     const navigate = useNavigate("")
+
     const [name, setname] = useState("");
     const [members_id, setMembers_id] = useState([]);
 
@@ -25,16 +29,15 @@ const CreateGroup = () => {
         }
     };
 
-    const handleSelectChange = (contact) => {
-        setMembers_id([...members_id, contact]);
-
+    const handleCancel=()=>{
+        navigate("/group") 
     };
 
     return (
         <div className="card d-flex justify-content-center my-5 p-5 mx-auto" style={{ maxWidth: '600px', fontFamily: 'Trebuchet MS', width: '100%' }}>
             <form onSubmit={handleSubmit}>
                 <div className="mb-3">
-                    <label className="form-label" />
+                    <label className="form-label">Name:</label>
                     <input
                         type="text"
                         className="form-control"
@@ -45,35 +48,38 @@ const CreateGroup = () => {
                     />
                 </div>
                 <div className="mb-3">
-                    <table className="table">
-                        <thead>
-                            <tr>
-                                <th scope="col">Username</th>
-                                <th scope="col">Paypal User</th>
-                                <th scope="col">Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {store.contacts.length > 0 ? (
-                                store.contacts.map((contact, index) => (
-                                    <tr key={index}>
-                                        <td>{contact.username}</td>
-                                        <td>{contact.fullname}</td>
-                                        <td><button onClick={()=>handleSelectChange(contact.id)}>Add</button></td>
-                                    </tr>
-                                ))
-                            ) : (
-                                <tr>
-                                    <td>.............</td>
-                                    <td>.............</td>
-                                    <td>.............</td>
-                                    <td>.............</td>
-                                </tr>
-                            )}
-                        </tbody>
-                    </table> 
+                    <p>Add yours contacts:</p>
+                    {/* <Select
+                        name="select"
+                        options={store.contacts}
+                        labelField={store.contacts.fullname}
+                        valueField={store.contacts.id}
+                        multi
+                        onChange={value => setMembers_id(value)}
+                        color="blue"
+                        dropdownPosition="bottom"
+                        searchable="true"
+                    >
+                    </Select> */}
+                    
+                    <select className="form-select" aria-label="Default select example" multiple onChange={value => setMembers_id(value)}>
+                        <option defaultValue>Open this select menu</option>
+                        {store.contacts.map((contact, index) => (
+                            <option key={index} value={contact.id}>{contact.fullname}</option>
+                        ))}
+                    </select>
+                
+                    {members_id.length > 0 ? (
+                            members_id.map(member => (
+                                <p>Id: {member.id} Value: {member.value}</p>
+                            ))
+                        ):(
+                            <p>no miembros</p>
+                        )
+                    }
                 </div>
-                <button type="submit" className="btn btn-primary">create group</button>
+                <button className="btn btn-primary">create group</button>
+                <button className="btn btn-outline-secundary" onClick={handleCancel}>Cancel</button>
             </form>
         </div>
     );
