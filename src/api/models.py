@@ -52,7 +52,7 @@ class TokenBlockedList(db.Model):
 class Contact(db.Model):
     __tablename__ = 'contacts'
     id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String(180), unique=True, nullable=False)
+    username = db.Column(db.String(180), unique=False, nullable=False)
     fullname = db.Column(db.String(180), unique=False, nullable=False)
     email = db.Column(db.String(180), unique=False, nullable=False)
     paypal_username = db.Column(db.String(180), unique=True, nullable=False)

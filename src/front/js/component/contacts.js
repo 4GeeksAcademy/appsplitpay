@@ -17,7 +17,7 @@ export const Contacts = () => {
 
     const handleAddContact = async (username, fullname, paypal_username, email) => {
         let success = await actions.addContact(username, fullname, paypal_username, email);
-        if(success){ window.location.reload(false); }
+        if (success) { window.location.reload(false); }
     }
 
     const handleDelete = async (contactId) => {
@@ -31,7 +31,7 @@ export const Contacts = () => {
 
     return (
         <div className="table-responsive">
-            <h1>Estas en el componente Contacts</h1>
+            <h1 className="contactTitle">Estas en el componente Contacts</h1>
             <form className="d-flex" role="search" onSubmit={handleSearchSubmit}>
                 <input
                     className="form-control me-2"
@@ -43,7 +43,7 @@ export const Contacts = () => {
                 <button className="btn btn-outline-success" type="submit">Search</button>
             </form>
             <table className="table">
-                <thead>
+                <thead className="table-contactInfo">
                     <tr>
                         <th scope="col">Username</th>
                         <th scope="col">Paypal User</th>
@@ -52,7 +52,7 @@ export const Contacts = () => {
                         <th scope="col">Actions</th>
                     </tr>
                 </thead>
-                <tbody>
+                <tbody className="table-contactInfoResult">
                     {store.userContact != null ? (
                         <tr>
                             <td>{store.userContact.username}</td>
@@ -77,10 +77,10 @@ export const Contacts = () => {
                     )}
                 </tbody>
             </table>
-            <h1>Tus contactos</h1>
-            <table className="table">
+            <h1 className="contactAddTittle">Tus contactos</h1>
+            <table className="table-contactsAdditions">
                 <thead>
-                    <tr>
+                    <tr className="table-contactsAdditionsInfo">
                         <th scope="col">Username</th>
                         <th scope="col">Paypal User</th>
                         <th scope="col">Fullname</th>
@@ -88,7 +88,7 @@ export const Contacts = () => {
                         <th scope="col">Actions</th>
                     </tr>
                 </thead>
-                <tbody>
+                <tbody className="table-singelContactsAdd" >
                     {store.contacts.length > 0 ? (
                         store.contacts.map((contact, index) => (
                             <tr key={index}>

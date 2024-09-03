@@ -4,7 +4,7 @@ import Select from "react-dropdown-select";
 import { Context } from "../store/appContext";
 
 
-const CreateGroup = () => {
+export const CreateGroup = () => {
 
     const { store, actions } = useContext(Context)
     const navigate = useNavigate("")
@@ -29,8 +29,8 @@ const CreateGroup = () => {
         }
     };
 
-    const handleCancel=()=>{
-        navigate("/group") 
+    const handleCancel = () => {
+        navigate("/group")
     };
 
     return (
@@ -61,21 +61,21 @@ const CreateGroup = () => {
                         searchable="true"
                     >
                     </Select> */}
-                    
+
                     <select className="form-select" aria-label="Default select example" multiple onChange={value => setMembers_id(value)}>
                         <option defaultValue>Open this select menu</option>
                         {store.contacts.map((contact, index) => (
                             <option key={index} value={contact.id}>{contact.fullname}</option>
                         ))}
                     </select>
-                
+
                     {members_id.length > 0 ? (
-                            members_id.map(member => (
-                                <p>Id: {member.id} Value: {member.value}</p>
-                            ))
-                        ):(
-                            <p>no miembros</p>
-                        )
+                        members_id.map(member => (
+                            <p>Id: {member.id} Value: {member.value}</p>
+                        ))
+                    ) : (
+                        <p>no miembros</p>
+                    )
                     }
                 </div>
                 <button className="btn btn-primary">create group</button>
