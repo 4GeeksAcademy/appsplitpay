@@ -29,47 +29,43 @@ const Records = () => {
     // };
   
     return (
-        <div className="container">
+      <div className="container border">
       <h1>Estas en el componente Records</h1>
-      {payments.length > 0 ? (
-        payments.map((payment, index) => (
-          <div key={index} className="row mb-2">
-            <div className="col-md-2">
-              <strong>ID:</strong> {payment.id}
-            </div>
-            <div className="col-md-2">
-              <strong>Monto:</strong> {payment.amount}
-            </div>
-            <div className="col-md-2">
-              <strong>Usuario:</strong> {payment.user_id}
-            </div>
-            <div className="col-md-2">
-              <strong>Grupo:</strong> {payment.group_id}
-            </div>
-            <div className="col-md-2">
-              <strong>Paypal:</strong> {payment.paypal_username}
-            </div>
-          </div>
-        ))
-      ) : (
-        <div className="row mb-2">
-          <div className="col-md-2">
-            <strong>ID:</strong> .............
-          </div>
-          <div className="col-md-2">
-            <strong>Monto:</strong> .............
-          </div>
-          <div className="col-md-2">
-            <strong>Usuario:</strong> .............
-          </div>
-          <div className="col-md-2">
-            <strong>Grupo:</strong> .............
-          </div>
-          <div className="col-md-2">
-            <strong>Paypal:</strong> .............
-          </div>
-        </div>
-      )}
+      <table className="table">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Monto</th>
+            <th>Usuario</th>
+            <th>Grupo</th>
+            <th>Event</th>
+            <th>Paypal</th>
+          </tr>
+        </thead>
+        <tbody>
+          {payments.length > 0 ? (
+            payments.map((payment, index) => (
+              <tr key={index}>
+                <td><strong>{payment.id}</strong></td>
+                <td><strong>{payment.amount}</strong></td>
+                <td><strong>{payment.user_id}</strong></td>
+                <td><strong>{payment.group_id}</strong></td>
+                <td><strong>{payment.event_id}</strong></td>
+                <td><strong>{payment.paypal_username}</strong></td>
+              </tr>
+            ))
+          ) : (
+            <tr>
+              <td><strong>.............</strong></td>
+              <td><strong>.............</strong></td>
+              <td><strong>.............</strong></td>
+              <td><strong>.............</strong></td>
+              <td><strong>.............</strong></td>
+              <td><strong>.............</strong></td>
+            </tr>
+          )}
+        </tbody>
+      </table>
     </div>
     );
   };

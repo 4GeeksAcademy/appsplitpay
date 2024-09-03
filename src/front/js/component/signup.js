@@ -49,7 +49,7 @@ const SignUp = () => {
     const success = await actions.signup(username, email, password, first_name, last_name, age, address, paypal_username);
 
     if (success) {
-      navigate("/homeUser"); // Redirigir a la página de inicio o a otra página después del registro exitoso
+      navigate("/login"); // Redirigir a la página de inicio o a otra página después del registro exitoso
     } else {
       setErrorMessage(store.errorMessage || "An error occurred during signup.");
     }
