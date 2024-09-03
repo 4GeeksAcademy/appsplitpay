@@ -9,27 +9,21 @@ export const Contacts = () => {
 
     const handleSearchSubmit = async (e) => {
         e.preventDefault();
-
         const contact = await actions.getSingleUser(username);
-
         if (!contact) {
             alert("Contacto no encontrado.");
         }
     };
 
-    /*  const contactInfo = {
-         "username": store.userContact.username,
-         "paypal_username": store.userContact.paypal_username,
-         "fullname": store.userContact.first_name + " " + store.userContact.last_name,
-         "email": store.userContact.email
- 
-     } */
-
     const handleAddContact = async (username, fullname, paypal_username, email) => {
-        await actions.addContact(username, fullname, paypal_username, email);
-
+        let success = await actions.addContact(username, fullname, paypal_username, email);
+        if(success){ window.location.reload(false); }
     }
 
+    const handleDelete = async (contactId) => {
+        const success = await actions.deleteContact(contactId);
+        if (success) { window.location.reload(false); }
+    }
 
     useEffect(() => {
         actions.getContacts()
@@ -65,12 +59,12 @@ export const Contacts = () => {
                             <td>{store.userContact.paypal_username}</td>
                             <td>{store.userContact.first_name + " " + store.userContact.last_name}</td>
                             <td>{store.userContact.email}</td>
-                            <button onClick={handleAddContact({
-                                "username": store.userContact.username,
-                                "fullname": store.userContact.first_name + " " + store.userContact.last_name,
-                                "paypal_username": store.userContact.paypal_username,
-                                "email": store.userContact.email
-                            })} className="btn btn-outline-success" type="submit"> + add this contact </button>
+                            <button onClick={() => handleAddContact(
+                                store.userContact.username,
+                                store.userContact.first_name + " " + store.userContact.last_name,
+                                store.userContact.paypal_username,
+                                store.userContact.email
+                            )} className="btn btn-outline-success" type="buttom"> + add this contact </button>
                         </tr>
                     ) : (
                         <tr>
@@ -78,11 +72,9 @@ export const Contacts = () => {
                             <td>.............</td>
                             <td>.............</td>
                             <td>.............</td>
-
+                            <td>.............</td>
                         </tr>
                     )}
-
-
                 </tbody>
             </table>
             <h1>Tus contactos</h1>
@@ -91,24 +83,25 @@ export const Contacts = () => {
                     <tr>
                         <th scope="col">Username</th>
                         <th scope="col">Paypal User</th>
-                        <th scope="col">Name</th>
+                        <th scope="col">Fullname</th>
                         <th scope="col">Email</th>
+                        <th scope="col">Actions</th>
                     </tr>
                 </thead>
                 <tbody>
                     {store.contacts.length > 0 ? (
-
                         store.contacts.map((contact, index) => (
                             <tr key={index}>
                                 <td>{contact.username}</td>
-                                <td>{contact.paypal_user}</td>
-                                <td>{contact.first_name}</td>
+                                <td>{contact.paypal_username}</td>
+                                <td>{contact.fullname}</td>
                                 <td>{contact.email}</td>
+                                <td><button onClick={() => handleDelete(contact.id)} className="btn btn-outline-danger" type="buttom"> - Delete contact </button></td>
                             </tr>
                         ))
-
                     ) : (
                         <tr>
+                            <td>.............</td>
                             <td>.............</td>
                             <td>.............</td>
                             <td>.............</td>
@@ -117,9 +110,6 @@ export const Contacts = () => {
                     )}
                 </tbody>
             </table>
-
-
-
         </div>
     );
 };

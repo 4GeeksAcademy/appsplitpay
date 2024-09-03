@@ -82,7 +82,6 @@ const getState = ({ getStore, getActions, setStore }) => {
 						},
 						body: JSON.stringify({ username, email, password, first_name, last_name, age, address, paypal_username })
 					});
-						console.log(response)
 					if (response.ok) {
 						const data = await response.json();
 						setStore({
@@ -199,44 +198,6 @@ const getState = ({ getStore, getActions, setStore }) => {
 				}
 			},
 
-			getContacts: async () => {
-                const { token } = getStore();
-                setStore({ loading: true });
-                try {
-                    const response = await fetch(apiUrl + "/contact", {
-                        method: "GET",
-                        headers: {
-                            "Authorization": `Bearer ${token}`,
-                            "Content-Type": "application/json",
-                        },
-                    });
-                    if (!response.ok) {
-                        const errorData = await response.json();
-                        setStore({
-                            errorMessage: errorData.error || "Failed to fetch contacts",
-                            loading: false,
-                        });
-                        return [];
-                    }
-                    const data = await response.json();
-                    setStore({
-                        contacts: data.contacts,
-                        loading: false,
-                        errorMessage: null,
-                    });
-                    return data.contacts;
-                } catch (error) {
-                    console.error("Error fetching contacts:", error);
-                    setStore({
-                        errorMessage: "An error occurred while fetching contacts.",
-                        loading: false,
-                    });
-                    return [];
-                }
-            },
-
-
-
 			// Función para solicitar un enlace de recuperación de contraseña
 			requestPasswordRecovery: async (email) => {
 				try {
@@ -254,7 +215,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 						if (data.token) {
 							console.log("Token recibido:", data.token);
 							return {
-								msg: "Correo enviado con las instrucciones para cambiar la contraseña.",
+								msg: "Mail send with the instructions to change password.",
 								token: data.token
 							};
 						} else {
@@ -274,6 +235,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 					throw error;
 				}
 			},
+
 			getSingleUser: async (username) => {
 				const store = getStore();
 				try {
@@ -296,6 +258,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 					setStore({ errorMessage: error.message || "Error al obtener el usuario" });
 				}
 			},
+
 			getContacts: async () => {
 				const { token } = getStore();
 				setStore({ loading: true });
@@ -331,7 +294,15 @@ const getState = ({ getStore, getActions, setStore }) => {
 					return [];
 				}
 			},
+			
 			addContact: async (username, fullname, paypal_username, email) => {
+				const requestBody = {
+					username,
+					fullname,
+					paypal_username,
+					email
+				};
+				console.log("requestBody: ",requestBody)
 				const { token } = getStore();
 				setStore({ loading: true });
 				try {
@@ -341,7 +312,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 							"Content-Type": "application/json",
 							"Authorization": `Bearer ${token}`,
 						},
-						body: JSON.stringify(username, fullname, paypal_username, email),
+						body: JSON.stringify(requestBody),
 					});
 					if (!response.ok) {
 						const errorData = await response.json();
@@ -364,6 +335,39 @@ const getState = ({ getStore, getActions, setStore }) => {
 						loading: false,
 					});
 					return null;
+				}
+			},
+
+			deleteContact: async (contactId) => {
+				const { token } = getStore();
+				setStore({ loading: true });
+
+				try {
+					const response = await fetch(`${apiUrl}/contact/${contactId}`, {
+						method: "DELETE",
+						headers: {
+							"Authorization": `Bearer ${token}`,
+						},
+					});
+
+					if (!response.ok) {
+						const errorData = await response.json();
+						setStore({
+							errorMessage: errorData.error || "Failed to delete contact",
+							loading: false,
+						});
+						return false;
+					}
+
+					setStore({ loading: false, errorMessage: null });
+					return true; // Confirma que el contacto fue eliminado
+				} catch (error) {
+					console.error("Error deleting contact:", error);
+					setStore({
+						errorMessage: "An error occurred while deleting contact.",
+						loading: false,
+					});
+					return false;
 				}
 			},
 
