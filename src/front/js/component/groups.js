@@ -1,34 +1,59 @@
 import React, { useContext, useState, useEffect } from "react";
 import { Context } from "../store/appContext.js";
 import { useNavigate } from "react-router-dom";
+import createGroup from "./createGroup.js";
 import "../../styles/groups.css";
 
 const Groups = () => {
+
+const {store, actions}= useContext(Context);
+const navigate = useNavigate("");
+
+const [name, setName]=useState("");
+const [members_id, setMembers_id]=useState([]);
+
+
+const handleButton=()=>{
+    navigate("/createGroup") 
+};
+
+const handleDelete=(groupId)=>{
+    actions.deletegroup(groupId)
+}
+
+
   return (
-    <div className="table-responsive">
-        <h1>Estas en el component Groups</h1>
+    <div>
+        <button onClick={handleButton} className="btn btn-outline-primary">+ Create new group</button>
+        <tr/>
+        <h2>Tus Grupos</h2>
         <table className="table">
             <thead>
-            <tr>
-                <th scope="col">#</th>
-                <th scope="col">First</th>
-                <th scope="col">Last</th>
-                <th scope="col">Handle</th>
-            </tr>
+                <tr>
+                    <th scope="col">Name</th>
+                    <th scope="col">Nº Members</th>
+                    <th scope="col">Nº Eventos</th>
+                    <th scope="col">Actions</th>
+                </tr>
             </thead>
             <tbody>
-            <tr>
-                <th scope="row">1</th>
-                <td>Mark</td>
-                <td>Otto</td>
-                <td>@mdo</td>
-            </tr>
-            <tr>
-                <th scope="row">2</th>
-                <td>Jacob</td>
-                <td>Thornton</td>
-                <td>@fat</td>
-            </tr>
+                {store.groups.length > 0 ? (
+                    store.groups.map((group, index) => (
+                        <tr key={index}>
+                            <td>{group.name}</td>
+                            <td>{group.members_id.length}</td>
+                            <td>..........</td>
+                            <td><button onClick={() => handleDelete(group.id)} className="btn btn-outline-danger" type="buttom"> - Delete group </button></td>
+                        </tr>
+                    ))
+                ) : (
+                    <tr>
+                        <td>.............</td>
+                        <td>.............</td>
+                        <td>.............</td>
+                        <td>.............</td>
+                    </tr>
+                )}
             </tbody>
         </table>
     </div>

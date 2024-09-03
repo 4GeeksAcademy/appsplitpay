@@ -9,17 +9,20 @@ export const Contacts = () => {
 
     const handleSearchSubmit = async (e) => {
         e.preventDefault();
-
         const contact = await actions.getSingleUser(username);
-
         if (!contact) {
             alert("Contacto no encontrado.");
         }
     };
 
     const handleAddContact = async (username, fullname, paypal_username, email) => {
-        console.log(username, fullname, paypal_username, email);
-        await actions.addContact(username, fullname, paypal_username, email);
+        let success = await actions.addContact(username, fullname, paypal_username, email);
+        if(success){ window.location.reload(false); }
+    }
+
+    const handleDelete = async (contactId) => {
+        const success = await actions.deleteContact(contactId);
+        if (success) { window.location.reload(false); }
     }
 
     useEffect(() => {
@@ -69,6 +72,7 @@ export const Contacts = () => {
                             <td>.............</td>
                             <td>.............</td>
                             <td>.............</td>
+                            <td>.............</td>
                         </tr>
                     )}
                 </tbody>
@@ -79,8 +83,9 @@ export const Contacts = () => {
                     <tr>
                         <th scope="col">Username</th>
                         <th scope="col">Paypal User</th>
-                        <th scope="col">Name</th>
+                        <th scope="col">Fullname</th>
                         <th scope="col">Email</th>
+                        <th scope="col">Actions</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -88,13 +93,15 @@ export const Contacts = () => {
                         store.contacts.map((contact, index) => (
                             <tr key={index}>
                                 <td>{contact.username}</td>
-                                <td>{contact.paypal_user}</td>
-                                <td>{contact.first_name}</td>
+                                <td>{contact.paypal_username}</td>
+                                <td>{contact.fullname}</td>
                                 <td>{contact.email}</td>
+                                <td><button onClick={() => handleDelete(contact.id)} className="btn btn-outline-danger" type="buttom"> - Delete contact </button></td>
                             </tr>
                         ))
                     ) : (
                         <tr>
+                            <td>.............</td>
                             <td>.............</td>
                             <td>.............</td>
                             <td>.............</td>

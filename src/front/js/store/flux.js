@@ -73,6 +73,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 
 			signup: async (username, email, password, first_name, last_name, age, address, paypal_username) => {
 				setStore({ loading: true });
+				console.log(username)	
 				try {
 					const response = await fetch(apiUrl + "/signup", {
 						method: "POST",
@@ -81,7 +82,6 @@ const getState = ({ getStore, getActions, setStore }) => {
 						},
 						body: JSON.stringify({ username, email, password, first_name, last_name, age, address, paypal_username })
 					});
-
 					if (response.ok) {
 						const data = await response.json();
 						setStore({
@@ -168,6 +168,36 @@ const getState = ({ getStore, getActions, setStore }) => {
 			setMessage: (msg) => {
 				setStore({ message: msg });
 			},
+
+
+			createGroup: async(name, members_id)=>{
+				const {token} = getStore() 
+				try{
+					const response = await fetch (apiUrl + "/group",{
+						method : "POST",
+						headers: {
+							"Content-Type": "application/json", 
+							"Authorization": "Bearer " + token
+						},
+						body: JSON.stringify({name, members_id})
+					});
+					if (response.ok){
+					const data = await response.json();
+					alert ("group succesfully created ")
+					
+					setStore({
+						groups: [...getStore().groups, data.group]
+					});
+					}else {
+						const errorData= await response.json(); 
+						alert (`Error: ${errorData.error}`);
+					}
+				} catch(error){
+					console.error("Error in createGroup:", error)
+					alert("there was an error creating group")
+				}
+			},
+
 			// Función para solicitar un enlace de recuperación de contraseña
 			requestPasswordRecovery: async (email) => {
 				try {
@@ -222,7 +252,6 @@ const getState = ({ getStore, getActions, setStore }) => {
 					}
 					const data = await response.json();
 					setStore({ userContact: data.user });
-					console.log(data.user);
 					return data;
 				} catch (error) {
 					console.error("Error fetching single usuario:", error);
@@ -273,6 +302,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 					paypal_username,
 					email
 				};
+				console.log("requestBody: ",requestBody)
 				const { token } = getStore();
 				setStore({ loading: true });
 				try {
@@ -305,6 +335,39 @@ const getState = ({ getStore, getActions, setStore }) => {
 						loading: false,
 					});
 					return null;
+				}
+			},
+
+			deleteContact: async (contactId) => {
+				const { token } = getStore();
+				setStore({ loading: true });
+
+				try {
+					const response = await fetch(`${apiUrl}/contact/${contactId}`, {
+						method: "DELETE",
+						headers: {
+							"Authorization": `Bearer ${token}`,
+						},
+					});
+
+					if (!response.ok) {
+						const errorData = await response.json();
+						setStore({
+							errorMessage: errorData.error || "Failed to delete contact",
+							loading: false,
+						});
+						return false;
+					}
+
+					setStore({ loading: false, errorMessage: null });
+					return true; // Confirma que el contacto fue eliminado
+				} catch (error) {
+					console.error("Error deleting contact:", error);
+					setStore({
+						errorMessage: "An error occurred while deleting contact.",
+						loading: false,
+					});
+					return false;
 				}
 			},
 
