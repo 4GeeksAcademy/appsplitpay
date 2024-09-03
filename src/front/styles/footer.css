@@ -6,3 +6,10 @@
 
 @media (max-width: 645px) {
 }
+.text-center.text-lg-start.bg-body-tertiary.text-muted{
+  position: absolute;
+  padding: 1rem 0;
+  width: 100%;
+  
+}
+
