@@ -5,9 +5,9 @@ import "../../styles/homeUser.css";
 
 const HomeUser = () => {
   return (
-    <div className="table-responsive">
-      <h1>Estas en el component Home user</h1>
-      <table className="table">
+    <div className="table-responsive rounded-3" id="tableHomeUser">
+      <h1 className="tittleHomeUser">Estas en el component Home user</h1>
+      <table className="table rounded-3" id="tableHomeUser">
         <thead>
           <tr>
             <th scope="col">#</th>

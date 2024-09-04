@@ -78,8 +78,8 @@ export const CreateGroup = () => {
                     )
                     }
                 </div>
-                <button className="btn btn-primary">create group</button>
-                <button className="btn btn-outline-secundary" onClick={handleCancel}>Cancel</button>
+                <button className="btn btn-success">create group</button>
+                <button className="btn btn-danger" onClick={handleCancel}>Cancel</button>
             </form>
         </div>
     );

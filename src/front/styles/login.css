@@ -1,4 +1,8 @@
+.h-100{
+   background-color: #ffffff  ; 
+  /* backdrop-filter: blur(30px); */
  
+}
  /* Login.css
 .login-container {
     display: flex;

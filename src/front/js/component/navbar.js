@@ -31,7 +31,7 @@ const Navbar = () => {
     <nav className="navbar navbar-expand-lg navbar-dark bg-dark ">
       <div className="container-fluid bg-dark">
         {/* Logo */}
-        <div onClick={handleLogoClick} className="navbar-brand d-flex align-items-center me-auto" style={{ cursor: "pointer" }}>
+        <div onClick={handleLogoClick} className="navbar-brand d-flex align-items-center me-auto" style={{ cursor: "pointer", width: "300px" }}>
           <h1 style={{ color: "white" }}>AppSplitPay</h1>
         </div>
         {/* Toggle Buttom */}
@@ -46,7 +46,7 @@ const Navbar = () => {
           </div>
           {store.isAuthenticated ? (
             <div className="offcanvas-body d-flex flex-column flex-lg-row p-4 p-lg-0">
-              <ul className="navbar-nav justify-content-center align-items-center fs-5 flex-grow-1 pe-3">
+              <ul className="navbar-nav justify-content-center align-items-center fs-5 flex-grow-1 pe-3" id="navButtons">
                 <li className="nav-item mx-2">
                   <Link to="/homeUser" className="nav-link active" aria-current="page">Home</Link>
                 </li>
@@ -60,7 +60,7 @@ const Navbar = () => {
                   <Link to="/records" className="nav-link">Records</Link>
                 </li>
               </ul>
-              <div className="d-flex flex-column flex-lg-row justify-content-center align-items-center gap-3">
+              <div className="d-flex flex-column flex-lg-row justify-content-center align-items-center gap-3" id="UserLogout">
                 <p style={{ color: "white", margin: "2px 2px" }}>{store.userInfo.first_name} {store.userInfo.last_name}</p>
                 <button className="text-white text-decoration-none px-3 py-1 bg-primary rounded-4" onClick={handleLogout}>
                   Logout

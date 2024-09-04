@@ -30,20 +30,26 @@ export const Contacts = () => {
     }, [])
 
     return (
-        <div className="table-responsive">
-            <h1 className="contactTitle">Estas en el componente Contacts</h1>
-            <form className="d-flex" role="search" onSubmit={handleSearchSubmit}>
-                <input
-                    className="form-control me-2"
-                    type="search"
-                    onChange={(e) => setUsername(e.target.value)}
-                    placeholder="Username"
-                    aria-label="Username"
-                />
-                <button className="btn btn-outline-success" type="submit">Search</button>
+        <div className="table-responsive" id="table-general">
+            <h1 className="contactTitle">"Connect with your Contacts"</h1>
+
+            <div className="alert alert-dark" role="alert" id="text">
+                In this area you can search for your best friends and add them to your contacts so that you can use their information to make fast and secure payments.
+                Remember that our account is the only one that allows you to make group payments.
+                Add your friends, create your groups, make group payments and let the fun continue.
+            </div>
+            <form className="d-flex " role="search" onSubmit={handleSearchSubmit} id="userSearch">
+
+                <label for="inputPassword5" id="form-label">Search a Friend</label>
+                <input type="search" class="form-control me-2" aria-label="Username" onChange={(e) => setUsername(e.target.value)}
+                    placeholder="Username" />
+                <div id="searchHelpBlock" class="form-text">
+                    remember to search for your friends with their Username.
+                </div>
+                <button className="btn btn-success" type="submit" id="searchBtn">Search</button>
             </form>
-            <table className="table">
-                <thead className="table-contactInfo">
+            <table className="table rounded-3" id="contactInfo">
+                <thead className="table">
                     <tr>
                         <th scope="col">Username</th>
                         <th scope="col">Paypal User</th>
@@ -52,14 +58,14 @@ export const Contacts = () => {
                         <th scope="col">Actions</th>
                     </tr>
                 </thead>
-                <tbody className="table-contactInfoResult">
+                <tbody className="table-contactInfoResult rounded-3">
                     {store.userContact != null ? (
                         <tr>
                             <td>{store.userContact.username}</td>
                             <td>{store.userContact.paypal_username}</td>
                             <td>{store.userContact.first_name + " " + store.userContact.last_name}</td>
                             <td>{store.userContact.email}</td>
-                            <button onClick={() => handleAddContact(
+                            <button id="addContactBtn" onClick={() => handleAddContact(
                                 store.userContact.username,
                                 store.userContact.first_name + " " + store.userContact.last_name,
                                 store.userContact.paypal_username,
@@ -77,8 +83,8 @@ export const Contacts = () => {
                     )}
                 </tbody>
             </table>
-            <h1 className="contactAddTittle">Tus contactos</h1>
-            <table className="table-contactsAdditions">
+            <h1 className="contactAddTittle">"your Contacts"</h1>
+            <table className="table rounded-3 " id="contactsAdditions"  >
                 <thead>
                     <tr className="table-contactsAdditionsInfo">
                         <th scope="col">Username</th>
@@ -96,7 +102,7 @@ export const Contacts = () => {
                                 <td>{contact.paypal_username}</td>
                                 <td>{contact.fullname}</td>
                                 <td>{contact.email}</td>
-                                <td><button onClick={() => handleDelete(contact.id)} className="btn btn-outline-danger" type="buttom"> - Delete contact </button></td>
+                                <td><button id="delateContactBtn" onClick={() => handleDelete(contact.id)} className="btn btn-outline-danger" type="buttom"> - Delete contact </button></td>
                             </tr>
                         ))
                     ) : (
