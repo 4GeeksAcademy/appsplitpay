@@ -44,7 +44,9 @@ const Login = () => {
 
         {errorMessage && <div className="alert alert-danger">{errorMessage}</div>}
 
-
+        <div className="form-outline mb-4">
+          <h2>Welcome back!</h2>
+        </div>
         <div className="form-outline mb-4">
           <input
             onChange={(e) => setEmail(e.target.value)}
@@ -97,10 +99,10 @@ const Login = () => {
         </div>
 
         <div className="d-grid gap-2 col-6 mx-auto">
-          <button type="submit" className="btn btn-primary btn-block ">
+          <button type="submit" className="btn btn-success btn-block ">
             Login
           </button>
-          <button type="submit" className="btn btn-outline-secondary" onClick={handleCancelButton}>
+          <button type="submit" className="btn btn-outline-danger" onClick={handleCancelButton}>
             Cancel
           </button>
         </div>

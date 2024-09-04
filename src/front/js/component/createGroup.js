@@ -2,6 +2,7 @@ import React, { useState, useEffect, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import Select from "react-dropdown-select";
 import { Context } from "../store/appContext";
+import "../../styles/createGroup.css";
 
 
 export const CreateGroup = () => {
@@ -78,8 +79,10 @@ export const CreateGroup = () => {
                     )
                     }
                 </div>
-                <button className="btn btn-success">create group</button>
-                <button className="btn btn-danger" onClick={handleCancel}>Cancel</button>
+                <div className="containerBtn">
+                    <button className="btn btn-success" id="btn-successCreateGroup" >+ Create Group</button>
+                    <button className="btn btn-danger" id="btn-dangerCreateGroup" onClick={handleCancel}>Cancel</button>
+                </div>
             </form>
         </div>
     );

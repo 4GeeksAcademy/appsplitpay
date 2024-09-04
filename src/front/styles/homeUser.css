@@ -6,7 +6,7 @@
   border-radius: 5px;
   box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.2);
 }
-#tableHomeUser{
+#tableRecordHomeUserr{
   
     
     box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.2);
@@ -20,13 +20,13 @@
   align-content: center;
   color: black;
 }
-th{
+.thHomeUser{
   width: 190px;
   height: 45px;
   padding-left: 10px;
   color: black;
 }
-td{
+.tdHomeUser{
   width: 190px;
   height: 45px;
   padding-left: 10px;

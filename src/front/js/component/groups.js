@@ -37,28 +37,28 @@ const Groups = () => {
             <table className="tableGroupsCreated rounded-3">
                 <thead>
                     <tr>
-                        <th scope="col">Name</th>
-                        <th scope="col">Nº Members</th>
-                        <th scope="col">Nº Eventos</th>
-                        <th scope="col">Actions</th>
+                        <th className="thGroups" scope="col">Name</th>
+                        <th className="thGroups" scope="col">Nº Members</th>
+                        <th className="thGroups" scope="col">Nº Eventos</th>
+                        <th className="thGroups" scope="col">Actions</th>
                     </tr>
                 </thead>
                 <tbody>
                     {store.groups.length > 0 ? (
                         store.groups.map((group, index) => (
                             <tr key={index}>
-                                <td>{group.name}</td>
-                                <td>{group.members_id.length}</td>
-                                <td>..........</td>
-                                <td><button onClick={() => handleDelete(group.id)} className="btn btn-outline-danger" type="buttom"> - Delete group </button></td>
+                                <td className="tdGroups">{group.name}</td>
+                                <td className="tdGroups">{group.members_id.length}</td>
+                                <td className="tdGroups">..........</td>
+                                <td className="tdGroups"><button onClick={() => handleDelete(group.id)} className="btn btn-outline-danger" type="buttom"> - Delete group </button></td>
                             </tr>
                         ))
                     ) : (
                         <tr>
-                            <td>.............</td>
-                            <td>.............</td>
-                            <td>.............</td>
-                            <td>.............</td>
+                            <td className="tdGroups">.............</td>
+                            <td className="tdGroups">.............</td>
+                            <td className="tdGroups">.............</td>
+                            <td className="tdGroups">.............</td>
                         </tr>
                     )}
                 </tbody>

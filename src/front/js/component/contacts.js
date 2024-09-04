@@ -48,23 +48,23 @@ export const Contacts = () => {
                 </div>
                 <button className="btn btn-success" type="submit" id="searchBtn">Search</button>
             </form>
-            <table className="table rounded-3" id="contactInfo">
+            <table id="contactInfo" className="table rounded-3">
                 <thead className="table">
                     <tr>
-                        <th scope="col">Username</th>
-                        <th scope="col">Paypal User</th>
-                        <th scope="col">Name</th>
-                        <th scope="col">Email</th>
-                        <th scope="col">Actions</th>
+                        <th className="thConstacts" scope="col">Username</th>
+                        <th className="thConstacts" scope="col">Paypal User</th>
+                        <th className="thConstacts" scope="col">Name</th>
+                        <th className="thConstacts" scope="col">Email</th>
+                        <th className="thConstacts" scope="col">Actions</th>
                     </tr>
                 </thead>
                 <tbody className="table-contactInfoResult rounded-3">
                     {store.userContact != null ? (
                         <tr>
-                            <td>{store.userContact.username}</td>
-                            <td>{store.userContact.paypal_username}</td>
-                            <td>{store.userContact.first_name + " " + store.userContact.last_name}</td>
-                            <td>{store.userContact.email}</td>
+                            <td className="tdContacts">{store.userContact.username}</td>
+                            <td className="tdContacts" >{store.userContact.paypal_username}</td>
+                            <td className="tdContacts">{store.userContact.first_name + " " + store.userContact.last_name}</td>
+                            <td className="tdContacts">{store.userContact.email}</td>
                             <button id="addContactBtn" onClick={() => handleAddContact(
                                 store.userContact.username,
                                 store.userContact.first_name + " " + store.userContact.last_name,
@@ -74,44 +74,44 @@ export const Contacts = () => {
                         </tr>
                     ) : (
                         <tr>
-                            <td>.............</td>
-                            <td>.............</td>
-                            <td>.............</td>
-                            <td>.............</td>
-                            <td>.............</td>
+                            <td className="tdContacts">.............</td>
+                            <td className="tdContacts">.............</td>
+                            <td className="tdContacts">.............</td>
+                            <td className="tdContacts">.............</td>
+                            <td className="tdContacts">.............</td>
                         </tr>
                     )}
                 </tbody>
             </table>
-            <h1 className="contactAddTittle">"your Contacts"</h1>
-            <table className="table rounded-3 " id="contactsAdditions"  >
+            <h1 className="contactAddTittle" >"your Contacts"</h1>
+            <table className="table rounded-3" id="contactsAdditions">
                 <thead>
                     <tr className="table-contactsAdditionsInfo">
-                        <th scope="col">Username</th>
-                        <th scope="col">Paypal User</th>
-                        <th scope="col">Fullname</th>
-                        <th scope="col">Email</th>
-                        <th scope="col">Actions</th>
+                        <th className="thConstacts" scope="col">Username</th>
+                        <th className="thConstacts" scope="col">Paypal User</th>
+                        <th className="thConstacts" scope="col">Fullname</th>
+                        <th className="thConstacts" scope="col">Email</th>
+                        <th className="thConstacts" scope="col">Actions</th>
                     </tr>
                 </thead>
                 <tbody className="table-singelContactsAdd" >
                     {store.contacts.length > 0 ? (
                         store.contacts.map((contact, index) => (
                             <tr key={index}>
-                                <td>{contact.username}</td>
-                                <td>{contact.paypal_username}</td>
-                                <td>{contact.fullname}</td>
-                                <td>{contact.email}</td>
-                                <td><button id="delateContactBtn" onClick={() => handleDelete(contact.id)} className="btn btn-outline-danger" type="buttom"> - Delete contact </button></td>
+                                <td className="tdContacts">{contact.username}</td>
+                                <td className="tdContacts">{contact.paypal_username}</td>
+                                <td className="tdContacts">{contact.fullname}</td>
+                                <td className="tdContacts">{contact.email}</td>
+                                <td className="tdContacts"><button id="delateContactBtn" onClick={() => handleDelete(contact.id)} className="btn btn-outline-danger" type="buttom"> - Delete contact </button></td>
                             </tr>
                         ))
                     ) : (
                         <tr>
-                            <td>.............</td>
-                            <td>.............</td>
-                            <td>.............</td>
-                            <td>.............</td>
-                            <td>.............</td>
+                            <td className="tdContacts">.............</td>
+                            <td className="tdContacts">.............</td>
+                            <td className="tdContacts">.............</td>
+                            <td className="tdContacts">.............</td>
+                            <td className="tdContacts">.............</td>
                         </tr>
                     )}
                 </tbody>
