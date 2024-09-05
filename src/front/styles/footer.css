@@ -12,4 +12,13 @@
   width: 100%;
   
 }
+#footerContainer{
+  background-color: rgb(31, 30, 30) !important;
+  color:rgb(230, 230, 230) !important;
+  /* background: linear-gradient(to bottom right, #ffffff,  rgb(0, 0, 0) 2000px); */
+  /* background-image: linear-gradient(to right, #4facfe 0%, #00f2fe 100%); */
+  /* background-image: linear-gradient(135deg, #fdfcfb 0%, #e2d1c3 100%); */
+   /* background-image: linear-gradient(135deg, #fdfcfb 0%, #e2d1c3 100%);  */
+  /* background-image: linear-gradient(to top, #ff0844 0%, #ffb199 100%); */
+}
 
