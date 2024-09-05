@@ -52,7 +52,7 @@ class TokenBlockedList(db.Model):
 class Contact(db.Model):
     __tablename__ = 'contacts'
     id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String(180), unique=True, nullable=False)
+    username = db.Column(db.String(180), unique=False, nullable=False)
     fullname = db.Column(db.String(180), unique=False, nullable=False)
     email = db.Column(db.String(180), unique=False, nullable=False)
     paypal_username = db.Column(db.String(180), unique=True, nullable=False)
@@ -98,28 +98,26 @@ class GroupMember(db.Model):
         return f'<GroupMember {self.group_id} - {self.user_id}>'
 
 class Payment(db.Model):
-
     __tablename__ = 'payments'
     id = db.Column(db.Integer, primary_key=True)
-    # date = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
-    # created_at = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
     amount = db.Column(db.Float)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     user = db.relationship('User', backref='payments')
     group_id = db.Column(db.Integer, db.ForeignKey('groups.id'))
     group = db.relationship('Group', backref='payments')
-    
-
+    event_id = db.Column(db.Integer, db.ForeignKey('events.id'))
+    event = db.relationship('Event', backref='payments')
+    paypal_username = db.Column(db.String)
     def __repr__(self):
         return f'<Payment {self.id} - {self.date} - {self.amount}>'
-
     def serialize(self):
         return {
             "id": self.id,
-            # "date": self.date.strftime('%d-%m-%Y %H:%M:%S'),
             "amount": self.amount,
             "user_id": self.user_id,
             "group_id": self.group_id,
+            "event_id": self.event_id,
+            "paypal_username": self.paypal_username
         }
 
 

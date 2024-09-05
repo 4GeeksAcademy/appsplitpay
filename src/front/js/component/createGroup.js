@@ -2,9 +2,10 @@ import React, { useState, useEffect, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import Select from "react-dropdown-select";
 import { Context } from "../store/appContext";
+import "../../styles/createGroup.css";
 
 
-const CreateGroup = () => {
+export const CreateGroup = () => {
 
     const { store, actions } = useContext(Context)
     const navigate = useNavigate("")
@@ -29,8 +30,8 @@ const CreateGroup = () => {
         }
     };
 
-    const handleCancel=()=>{
-        navigate("/group") 
+    const handleCancel = () => {
+        navigate("/group")
     };
 
     return (
@@ -61,25 +62,27 @@ const CreateGroup = () => {
                         searchable="true"
                     >
                     </Select> */}
-                    
+
                     <select className="form-select" aria-label="Default select example" multiple onChange={value => setMembers_id(value)}>
                         <option defaultValue>Open this select menu</option>
                         {store.contacts.map((contact, index) => (
                             <option key={index} value={contact.id}>{contact.fullname}</option>
                         ))}
                     </select>
-                
+
                     {members_id.length > 0 ? (
-                            members_id.map(member => (
-                                <p>Id: {member.id} Value: {member.value}</p>
-                            ))
-                        ):(
-                            <p>no miembros</p>
-                        )
+                        members_id.map(member => (
+                            <p>Id: {member.id} Value: {member.value}</p>
+                        ))
+                    ) : (
+                        <p>no miembros</p>
+                    )
                     }
                 </div>
-                <button className="btn btn-primary">create group</button>
-                <button className="btn btn-outline-secundary" onClick={handleCancel}>Cancel</button>
+                <div className="containerBtn">
+                    <button className="btn btn-success" id="btn-successCreateGroup" >+ Create Group</button>
+                    <button className="btn btn-danger" id="btn-dangerCreateGroup" onClick={handleCancel}>Cancel</button>
+                </div>
             </form>
         </div>
     );
