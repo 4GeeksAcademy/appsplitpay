@@ -421,10 +421,17 @@ const getState = ({ getStore, getActions, setStore }) => {
 						return true;
 					} else {
 						const errorData = await response.json();
-						setStore({
-							errorMessage: errorData.error || "Error creating payment",
-							loading: false,
-						});
+						if (errorData.error === "Contact not found") {
+							setStore({
+								errorMessage: "El contacto no existe",
+								loading: false,
+							});
+						} else {
+							setStore({
+								errorMessage: errorData.error || "Error creating payment",
+								loading: false,
+							});
+						}
 						return false;
 					}
 				} catch (error) {
@@ -436,6 +443,76 @@ const getState = ({ getStore, getActions, setStore }) => {
 					return false;
 				}
 			},
+
+			// ----------------------------------------------------------------------------
+
+			getUserGroups: async () => {
+				const { token } = getStore();
+				setStore({ loading: true });
+				try {
+					const response = await fetch(`${apiUrl}/groups`, {
+						method: "GET",
+						headers: {
+							"Authorization": `Bearer ${token}`,
+							"Content-Type": "application/json",
+						},
+					});
+					if (!response.ok) {
+						const errorData = await response.json();
+						setStore({
+							errorMessage: errorData.error || "Failed to fetch user groups",
+							loading: false,
+						});
+						return [];
+					}
+					const data = await response.json();
+					setStore({
+						groups: data.groups,
+						loading: false,
+						errorMessage: null,
+					});
+					return data.groups;
+				} catch (error) {
+					console.error("Error fetching user groups:", error);
+					setStore({
+						errorMessage: "An error occurred while fetching user groups.",
+						loading: false,
+					});
+					return [];
+				}
+			},
+
+			getAllEvents: async (groupId) => {
+				const store = getStore();
+				try {
+					const resp = await fetch(`${apiUrl}/group/${groupId}/events`, {
+						method: "GET",
+						headers: {
+							"Authorization": `Bearer ${store.token}`
+						}
+					});
+					if (resp.ok) {
+						const data = await resp.json();
+						setStore({ events: data.events });
+						return data;
+					} else {
+						const error = await resp.json();
+						setStore({ errorMessage: error.error });
+						return null;
+					}
+				} catch (error) {
+					console.error("Error getting all events:", error);
+					setStore({ errorMessage: "An unexpected error occurred" });
+					return null;
+				}
+			},
+
+
+
+
+
+
+
 
 		},
 	};

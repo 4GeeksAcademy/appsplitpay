@@ -11,12 +11,44 @@ const Records = () => {
     useEffect(() => {
       actions.getPayments()
         .then((payments) => {
-          setPayments(payments);
+           setPayments(payments) //.map((payment) => {
+          //   return {
+          //     ...payment,
+          //     group_name: payment.group ? payment.group.name : '',
+          //     event_name: payment.event ? payment.event.name : ''
+          //   };
+          // }));
         })
         .catch((error) => {
           console.error(error);
         });
     }, []);
+
+
+    // useEffect(() => { UNA VEZ QUE FUNCIONE GROUP Y EVENT ESTE USEEFFECT PUEDE SERVIR PARA QUE LA LISTA MUESTRE EL NOMBRE DE GRUPO Y EVENTO Y NO SU ID
+    //   actions.getPayments()
+    //     .then((payments) => {
+    //       const promises = payments.map((payment) => {
+    //         return Promise.all([
+    //           actions.getGroup(payment.group_id),
+    //           actions.getEvent(payment.event_id)
+    //         ]).then(([group, event]) => {
+    //           return {
+    //             ...payment,
+    //             group_name: group.name,
+    //             event_name: event.name
+    //           };
+    //         });
+    //       });
+    //       Promise.all(promises).then((paymentsWithNames) => {
+    //         setPayments(paymentsWithNames);
+    //       });
+    //     })
+    //     .catch((error) => {
+    //       console.error(error);
+    //     });
+    // }, []);
+
   
     // const handleGetPayment = async (paymentId) => { SE MANTIENE EL HANDLE EN CASO DE QUERER AGREGAR UN BOTON VER DETALLES
     //   try {
@@ -49,8 +81,8 @@ const Records = () => {
                 <td><strong>{payment.id}</strong></td>
                 <td><strong>{payment.amount}</strong></td>
                 <td><strong>{payment.user_id}</strong></td>
-                <td><strong>{payment.group_id}</strong></td>
-                <td><strong>{payment.event_id}</strong></td>
+                <td><strong>{payment.group_name}</strong></td>
+                <td><strong>{payment.event_name}</strong></td>
                 <td><strong>{payment.paypal_username}</strong></td>
               </tr>
             ))

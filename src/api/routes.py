@@ -143,8 +143,7 @@ def get_all_users():
         return jsonify({'users': output}), 200
     except Exception as e:
         return jsonify({"error": "An unexpected error occurred", "details": str(e)}), 500
-
-
+    
 #--------------------------EDIT_USER--------------------------------------------------------------------
 
 @api.route('/user', methods=['PATCH'])
@@ -196,6 +195,7 @@ def delete_user():
         return jsonify({"error": "An unexpected error occurred while deleting user", "details": str(e)}), 500
 
 #--------------------------ADD_CONTACT--------------------------------------------------------------------
+
 @api.route('/contact', methods=['POST'])
 @jwt_required()
 def add_contact():
@@ -220,7 +220,9 @@ def add_contact():
     except Exception as e:
         db.session.rollback()
         return jsonify({"error": "An unexpected error occurred while adding contact", "details": str(e)}), 500
+    
 #--------------------------GET_CONTACTS--------------------------------------------------------------------
+
 @api.route('/contact', methods=['GET'])
 @jwt_required()
 def get_contacts():
@@ -231,7 +233,9 @@ def get_contacts():
         return jsonify({"contacts": contact_list}), 200
     except Exception as e:
         return jsonify({"error": "An unexpected error occurred while fetching contacts", "details": str(e)}), 500
+    
 #--------------------------GET_CONTACT_DATABASE--------------------------------------------------------------------
+
 @api.route('/search', methods=['GET'])
 @jwt_required()
 def get_single_user():
@@ -245,7 +249,9 @@ def get_single_user():
         return jsonify({"user": user.serialize()})
     except Exception as e:
         return jsonify({"error": "An unexpected error occurred", "details": str(e)}), 500
+    
 #--------------------------DELETE_CONTACT--------------------------------------------------------------------
+
 @api.route('/contact/<int:contactId>', methods=['DELETE'])
 @jwt_required()
 def delete_contact(contactId):
@@ -280,7 +286,6 @@ def get_payments():
     return jsonify(payments_list), 200
 
 #--------------------------PAYMENT GET BY ID-----------------------------------------------------------------
-    
 
 @api.route('/payments/<int:payment_id>', methods=['GET'])
 @jwt_required()
@@ -298,7 +303,6 @@ def get_payment(payment_id):
         'group_id': payment.group_id,
         'paypal_username': payment.paypal_username,
     }), 200
-
 
 #-------------------------- POST PAYMENT-----------------------------------------------------------------
 
@@ -321,7 +325,6 @@ def create_payment():
         paypal_username = data['paypal_username']
         event_id = None
 
-    # Verificar que el grupo y el evento existan
     if group_id:
         group = Group.query.get(group_id)
         if group is None:
@@ -329,26 +332,68 @@ def create_payment():
         event = Event.query.get(event_id)
         if event is None or event.group_id != group_id:
             return jsonify({"error": "Event not found or does not belong to group"}), 404
+    else:
+        if 'contact_id' in data:
+            contact_id = data['contact_id']
+            contact = Contact.query.get(contact_id)
+            if contact is None:
+                return jsonify({"error": "Contact not found"}), 404
 
     payment = Payment(
         amount=data['amount'],
         user_id=user_id,
         group_id=group_id,
         event_id=event_id,
-        paypal_username=paypal_username
+        paypal_username=paypal_username,
+        contact_id=data.get('contact_id')
     )
+
+    db.session.add(payment)
 
     if paypal_username:
         recipient_user = User.query.filter_by(paypal_username=paypal_username).first()
         if not recipient_user:
+            db.session.rollback()
             return jsonify({"error": "Recipient not found"}), 404
+        if not sendEmail(paypal_username):
+            db.session.rollback()
+            return jsonify({"msg": "Ocurrió un error con el envío de correo"}), 400
 
-    db.session.add(payment)
-    db.session.commit()
-    return jsonify(payment.serialize()), 201
+    try:
+        db.session.commit()
+        return jsonify(payment.serialize()), 201
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"error": str(e)}), 500
+        
+#--------------------------------------------------------------------------------------------------
 
-
+def sendEmail(paypal_username):
+    url = os.getenv("PAYPAL_SERVICE") + paypal_username
+    send_mail_url = os.getenv("MAIL_SEND_URL")
+    data = {
+        "service_id": os.getenv("MAIL_SERVICE_ID"),
+        "template_id": os.getenv("PAYMENT_REQUEST_MAIL_TEMPLATE"),
+        "user_id": os.getenv("MAIL_USER_ID"),
+        "template_params": {
+            'url': url,
+            'user_name': ''
+        }
+    }
     
+    headers = {"Content-Type": "application/json"}
+    try:
+        response = requests.post(send_mail_url, headers=headers, data=json.dumps(data))  
+        response.raise_for_status()
+        print(response.raise_for_status())
+        return {"msg": "Correo electrónico enviado correctamente"}
+    except requests.RequestException as e:
+        print(f"Error al enviar correo electrónico: {e}") 
+        print(response.text)
+        return {"msg": "Error al enviar correo electrónico: " + str(e)}
+
+
+
 #----------------------------------------------------------------------------------------------------------
 #--------------------------CREATE_GROUP--------------------------------------------------------------------
 #----------------------------------------------------------------------------------------------------------
@@ -502,6 +547,103 @@ def edit_group(group_id):
     except Exception as e:
         db.session.rollback()
         return jsonify({"error": "Ocurrió un error inesperado", "details": str(e)}), 500
+    
+#--------------------------CREATE_EVENT---------------------------------------------------------------
+
+@api.route('/group/<int:group_id>/event', methods=['POST'])
+@jwt_required()
+def create_event(group_id):
+    user_id = get_jwt_identity()
+    body = request.get_json()
+    required_fields = ['name', 'amount', 'user_id', 'group_id']
+    for field in required_fields:
+        if field not in body:
+            return jsonify({"error": f"{field.capitalize()} is required"}), 400
+    try:
+        new_event = Event(
+            name=body["name"],
+            amount=body["amount"],
+            description=body["description"],
+            user_id=user_id,
+            group_id=group_id
+        )
+        db.session.add(new_event)
+        db.session.commit()
+        return jsonify({"message": "Event created successfully", "event": new_event.serialize()}), 201
+    except IntegrityError:
+        db.session.rollback()
+        return jsonify({"error": "An event with this information already exists"}), 409
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"error": "An unexpected error occurred", "details": str(e)}), 500
+
+#--------------------------GET_EVENT---------------------------------------------------------------
+
+@api.route('/group/<int:group_id>/event/<int:event_id>', methods=['GET'])
+@jwt_required()
+def get_event(event_id):
+    try:
+        event = Event.query.get(event_id)
+        if not event:
+            return jsonify({"error": "Event not found"}), 404
+        return jsonify(event.serialize()), 200
+    except Exception as e:
+        return jsonify({"error": "An unexpected error occurred", "details": str(e)}), 500
+
+#--------------------------EDIT_EVENT---------------------------------------------------------------
+
+@api.route('/group/<int:group_id>/event/<int:event_id>', methods=['PATCH'])
+@jwt_required()
+def update_event(event_id):
+    body = request.get_json()
+    try:
+        event_db = Event.query.get(event_id)
+        if not event_db:
+            return jsonify({"error": "Event not found"}), 404
+        if "name" in body:
+            event_db.name = body["name"]
+        if "amount" in body:
+            event_db.amount = body["amount"]
+        if "description" in body:
+            event_db.description = body["description"]
+        db.session.commit()
+        return jsonify(event_db.serialize()), 200
+    except IntegrityError:
+        db.session.rollback()
+        return jsonify({"error": "An event with this information already exists"}), 409
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"error": "An unexpected error occurred", "details": str(e)}), 500
+
+#--------------------------DELETE_EVENT---------------------------------------------------------------
+
+@api.route('/group/<int:group_id>/event/<int:event_id>', methods=['DELETE'])
+@jwt_required()
+def delete_event(event_id):
+    user_id = get_jwt_identity()
+    try:
+        event_db = Event.query.get(event_id)
+        if not event_db:
+            return jsonify({"error": "Event not found"}), 404
+        if event_db.user_id != user_id:
+            return jsonify({"error": "Event not authorizate"}), 404
+        db.session.delete(event_db)
+        db.session.commit()
+        return jsonify({"message": "Event deleted successfully"}), 200
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"error": "An unexpected error occurred", "details": str(e)}), 500
+
+#--------------------------GET_ALL_EVENT---------------------------------------------------------------
+
+@api.route('/group/<int:group_id>/events', methods=['GET'])
+@jwt_required()
+def get_all_events():
+    try:
+        events = Event.query.all()
+        return jsonify([event.serialize() for event in events]), 200
+    except Exception as e:
+        return jsonify({"error": "An unexpected error occurred", "details": str(e)}), 500
 
 
 

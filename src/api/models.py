@@ -98,7 +98,6 @@ class GroupMember(db.Model):
         return f'<GroupMember {self.group_id} - {self.user_id}>'
 
 class Payment(db.Model):
-
     __tablename__ = 'payments'
     id = db.Column(db.Integer, primary_key=True)
     amount = db.Column(db.Float)
@@ -108,6 +107,8 @@ class Payment(db.Model):
     group = db.relationship('Group', backref='payments')
     event_id = db.Column(db.Integer, db.ForeignKey('events.id'))
     event = db.relationship('Event', backref='payments')
+    contact_id = db.Column(db.Integer, db.ForeignKey('contacts.id'))  # <--- Agrega esta columna
+    contact = db.relationship('Contact', backref='payments')  # <--- Modifica la relación
     paypal_username = db.Column(db.String)
 
     def __repr__(self):
@@ -120,6 +121,7 @@ class Payment(db.Model):
             "user_id": self.user_id,
             "group_id": self.group_id,
             "event_id": self.event_id,
+            "contact_id": self.contact_id,
             "paypal_username": self.paypal_username
         }
 
