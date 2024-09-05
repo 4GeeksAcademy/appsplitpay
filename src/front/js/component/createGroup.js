@@ -2,9 +2,10 @@ import React, { useState, useEffect, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import Select from "react-dropdown-select";
 import { Context } from "../store/appContext";
+import "../../styles/createGroup.css";
 
 
-const CreateGroup = () => {
+export const CreateGroup = () => {
 
     const { store, actions } = useContext(Context);
     const navigate = useNavigate();
@@ -29,8 +30,8 @@ const CreateGroup = () => {
         }
     };
 
-    const handleCancel=()=>{
-        navigate("/group") 
+    const handleCancel = () => {
+        navigate("/group")
     };
 
     return (

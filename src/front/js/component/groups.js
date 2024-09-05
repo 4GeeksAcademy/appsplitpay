@@ -50,21 +50,18 @@ const Groups = () => {
                     {store.groups.length > 0 ? (
                         store.groups.map((group, index) => (
                             <tr key={index}>
-                                <td>{group.name}</td>
-                                <td>{group.members.length}</td>
-                                <td>..........</td>
-                                <td>
-                                    <button onClick={() => handleDelete(group.id)} className="btn btn-outline-danger" type="buttom"> - Delete group </button>
-                                    <button onClick={() => handleDetails(group.id)} className="btn btn-outline-primary" type="buttom"> - Details group </button>
-                                </td>
+                                <td className="tdGroups">{group.name}</td>
+                                <td className="tdGroups">{group.members_id.length}</td>
+                                <td className="tdGroups">..........</td>
+                                <td className="tdGroups"><button onClick={() => handleDelete(group.id)} className="btn btn-outline-danger" type="buttom"> - Delete group </button></td>
                             </tr>
                         ))
                     ) : (
                         <tr>
-                            <td>.............</td>
-                            <td>.............</td>
-                            <td>.............</td>
-                            <td>.............</td>
+                            <td className="tdGroups">.............</td>
+                            <td className="tdGroups">.............</td>
+                            <td className="tdGroups">.............</td>
+                            <td className="tdGroups">.............</td>
                         </tr>
                     )}
                 </tbody>

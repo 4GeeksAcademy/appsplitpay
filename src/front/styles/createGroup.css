@@ -1,0 +1,22 @@
+.containerBtn{
+    display: flex;
+    flex-direction: column;
+    height: 200px;
+
+}
+#btn-successCreateGroup{
+    width: 200px;
+    margin-left: 30%;
+    padding-top: 10px;
+    margin-bottom: 20px;
+    margin-top: 20px;
+    margin-top: 50px;
+   
+    
+}
+#btn-dangerCreateGroup{
+    width: 200px;
+    margin-left: 30%;
+    
+
+}
