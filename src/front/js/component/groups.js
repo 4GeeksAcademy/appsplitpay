@@ -6,41 +6,44 @@ import "../../styles/groups.css";
 
 const Groups = () => {
 
-    const { store, actions } = useContext(Context);
-    const navigate = useNavigate("");
+    const {store, actions}= useContext(Context);
+    const navigate = useNavigate();
 
-    const [name, setName] = useState("");
-    const [members_id, setMembers_id] = useState([]);
-
-
-    const handleButton = () => {
-        navigate("/createGroup")
+    const handleButton=()=>{
+        navigate("/createGroup");
     };
 
-    const handleDelete = (groupId) => {
-        actions.deletegroup(groupId)
-    }
+    const handleDetails=(groupId)=>{
+        navigate(`/group/${groupId}`);
+    };
 
+    const handleDelete=(groupId)=>{
+        const success = actions.deleteGroup(groupId);
+        if (success) {
+            console.log("bien");
+            window.location.reload(false);
+        } else {
+            console.log("mal");
+        }
+    };
+
+    useEffect(() => {
+        actions.getUserGroups();
+        actions.getUserMyGroups();
+    }, []);
 
     return (
-        <div className="groupsGeneral">
-
-            <div className="alert alert-dark" id="tittleGroupsAlert" role="alert">
-                Here you can create groups to make payments in sets.
-                Now paying for vacations among all your friends will be easy and safe.
-                Now everyone pays for vacations, meals and meetings!
-            </div>
-            <div className="conteinerButton">
-                <button onClick={handleButton} className="btn btn-success" id="createNewGroupBtn">+ Create new group</button>
-            </div>
-            <h1 className="tittleGroups">Tus Grupos</h1>
-            <table className="tableGroupsCreated rounded-3">
+        <div>
+            <button onClick={handleButton} className="btn btn-outline-primary">+ Create new group</button>
+            <tr/>
+            <h2>Yous groups</h2>
+            <table className="table">
                 <thead>
                     <tr>
-                        <th className="thGroups" scope="col">Name</th>
-                        <th className="thGroups" scope="col">Nº Members</th>
-                        <th className="thGroups" scope="col">Nº Eventos</th>
-                        <th className="thGroups" scope="col">Actions</th>
+                        <th scope="col">Name</th>
+                        <th scope="col">Nº Members</th>
+                        <th scope="col">Nº Eventos</th>
+                        <th scope="col">Actions</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -63,6 +66,7 @@ const Groups = () => {
                     )}
                 </tbody>
             </table>
+            
         </div>
     );
 };
