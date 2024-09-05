@@ -3,7 +3,7 @@ This module takes care of starting the API Server, Loading the DB and Adding the
 """
 from flask import Flask, request, jsonify, url_for, Blueprint
 from flask_jwt_extended import create_access_token, get_jwt_identity, get_jwt, jwt_required
-from api.models import db, User, TokenBlockedList, Contact, Group, GroupMember
+from api.models import db, User, TokenBlockedList, Contact, Group, GroupMember, Event, Payment
 from api.utils import generate_sitemap, APIException
 from flask_cors import CORS
 from flask_bcrypt import Bcrypt
@@ -204,15 +204,18 @@ def add_contact():
         return jsonify({"error": "Username is required"}), 400
     try:
         contact = Contact(username=body["username"], user_id=user_id)
+
         if "fullname" in body:
             contact.fullname = body["fullname"]
         if "email" in body:
             contact.email = body["email"]
         if "paypal_username" in body:
             contact.paypal_username = body["paypal_username"]
+
         db.session.add(contact)
         db.session.commit()
         return jsonify({"message": "Contact added successfully", "contact": contact.serialize()}), 201
+    
     except IntegrityError:
         db.session.rollback()
         return jsonify({"error": "A contact with this username already exists"}), 409
@@ -266,17 +269,14 @@ def delete_contact(contactId):
         db.session.rollback()
         return jsonify({"error": "An unexpected error occurred", "details": str(e)}), 500
 
-
-
-    
-#----------------------------------------------------------------------------------------------------------
 #--------------------------CREATE_GROUP--------------------------------------------------------------------
-#----------------------------------------------------------------------------------------------------------
+
 @api.route('/group', methods=['POST'])
 @jwt_required()
 def create_group():
     user_id = get_jwt_identity()
     body = request.get_json()
+    print(body)
     if "name" not in body:
         return jsonify({"error": "Group name is required"}), 400
     if "member_ids" not in body or not body["member_ids"]:
@@ -302,7 +302,9 @@ def create_group():
     except Exception as e:
         db.session.rollback()
         return jsonify({"error": "An unexpected error occurred", "details": str(e)}), 500
+
 #--------------------------GET_GROUP--------------------------------------------------------------------
+
 @api.route('/group/<int:group_id>', methods=['GET'])
 @jwt_required()
 def get_group(group_id):
@@ -317,7 +319,9 @@ def get_group(group_id):
         return jsonify(group.serialize()), 200
     except Exception as e:
         return jsonify({"error": "An unexpected error occurred", "details": str(e)}), 500
+
 #--------------------------DELETE_GROUP--------------------------------------------------------------------
+
 @api.route('/group/<int:group_id>', methods=['DELETE'])
 @jwt_required()
 def delete_group(group_id):
@@ -334,7 +338,9 @@ def delete_group(group_id):
     except Exception as e:
         db.session.rollback()
         return jsonify({"error": "An unexpected error occurred", "details": str(e)}), 500
+
 #--------------------------GET_ALL_USER_GROUPS--------------------------------------------------------------------
+
 @api.route('/groups', methods=['GET'])
 @jwt_required()
 def get_user_groups():
@@ -347,7 +353,9 @@ def get_user_groups():
         return jsonify({"groups": groups}), 200
     except Exception as e:
         return jsonify({"error": "An unexpected error occurred", "details": str(e)}), 500
+
 #--------------------------ADD_GROUP_MEMBER---------------------------------------------------------------
+
 @api.route('/group/<int:group_id>/members', methods=['POST'])
 @jwt_required()
 def add_group_member(group_id):
@@ -373,7 +381,9 @@ def add_group_member(group_id):
     except Exception as e:
         db.session.rollback()
         return jsonify({"error": "An unexpected error occurred", "details": str(e)}), 500
+
 #--------------------------DELETE_GROUP_MEMBER---------------------------------------------------------------
+
 @api.route('/group/<int:group_id>/members', methods=['DELETE'])
 @jwt_required()
 def delete_group_member(group_id):
@@ -396,7 +406,9 @@ def delete_group_member(group_id):
     except Exception as e:
         db.session.rollback()
         return jsonify({"error": "An unexpected error occurred", "details": str(e)}), 500
+
 #--------------------------EDIT_GROUP---------------------------------------------------------------
+
 @api.route('/group/<int:group_id>', methods=['PATCH'])
 @jwt_required()
 def edit_group(group_id):
@@ -419,6 +431,104 @@ def edit_group(group_id):
     except Exception as e:
         db.session.rollback()
         return jsonify({"error": "Ocurrió un error inesperado", "details": str(e)}), 500
+
+#--------------------------CREATE_EVENT---------------------------------------------------------------
+
+@api.route('/group/<int:group_id>/event', methods=['POST'])
+@jwt_required()
+def create_event(group_id):
+    user_id = get_jwt_identity()
+    body = request.get_json()
+    required_fields = ['name', 'amount', 'user_id', 'group_id']
+    for field in required_fields:
+        if field not in body:
+            return jsonify({"error": f"{field.capitalize()} is required"}), 400
+    try:
+        new_event = Event(
+            name=body["name"],
+            amount=body["amount"],
+            description=body["description"],
+            user_id=user_id,
+            group_id=group_id
+        )
+        db.session.add(new_event)
+        db.session.commit()
+        return jsonify({"message": "Event created successfully", "event": new_event.serialize()}), 201
+    except IntegrityError:
+        db.session.rollback()
+        return jsonify({"error": "An event with this information already exists"}), 409
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"error": "An unexpected error occurred", "details": str(e)}), 500
+
+#--------------------------GET_EVENT---------------------------------------------------------------
+
+@api.route('/group/<int:group_id>/event/<int:event_id>', methods=['GET'])
+@jwt_required()
+def get_event(group_id, event_id):
+    print(group_id, event_id)
+    try:
+        event = Event.query.filter_by(group_id=group_id, id=event_id).first()
+        if not event:
+            return jsonify({"error": "Event not found"}), 404
+        return jsonify({"event":event.serialize()}), 200
+    except Exception as e:
+        return jsonify({"error": "An unexpected error occurred", "details": str(e)}), 500
+
+#--------------------------EDIT_EVENT---------------------------------------------------------------
+
+@api.route('/group/<int:group_id>/event/<int:event_id>', methods=['PATCH'])
+@jwt_required()
+def update_event(group_id, event_id):
+    body = request.get_json()
+    try:
+        event_db = Event.query.filter_by(group_id=group_id, id=event_id).first()
+        if not event_db:
+            return jsonify({"error": "Event not found in this group"}), 404
+        if "name" in body:
+            event_db.name = body["name"]
+        if "amount" in body:
+            event_db.amount = body["amount"]
+        if "description" in body:
+            event_db.description = body["description"]
+        db.session.commit()
+        return jsonify(event_db.serialize()), 200
+    except IntegrityError:
+        db.session.rollback()
+        return jsonify({"error": "An event with this information already exists"}), 409
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"error": "An unexpected error occurred", "details": str(e)}), 500
+
+#--------------------------DELETE_EVENT---------------------------------------------------------------
+
+@api.route('/group/<int:group_id>/event/<int:event_id>', methods=['DELETE'])
+@jwt_required()
+def delete_event(group_id, event_id):
+    user_id = get_jwt_identity()
+    try:
+        event_db = Event.query.filter_by(group_id=group_id, id=event_id).first()
+        if not event_db:
+            return jsonify({"error": "Event not found in this group"}), 404
+        if event_db.user_id != user_id:
+            return jsonify({"error": "Event not authorizate"}), 403
+        db.session.delete(event_db)
+        db.session.commit()
+        return jsonify({"message": "Event deleted successfully"}), 200
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"error": "An unexpected error occurred", "details": str(e)}), 500
+
+#--------------------------GET_ALL_EVENT---------------------------------------------------------------
+
+@api.route('/group/<int:group_id>/events', methods=['GET'])
+@jwt_required()
+def get_group_events(group_id):
+    try:
+        events = Event.query.filter_by(group_id=group_id).all()
+        return jsonify([event.serialize() for event in events]), 200
+    except Exception as e:
+        return jsonify({"error": "An unexpected error occurred", "details": str(e)}), 500
 
 #-----------------------------------Password Recovery---------------------------------------------------
 

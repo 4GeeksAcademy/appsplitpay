@@ -15,6 +15,7 @@ import Contacts from "./component/contacts.js";
 import Groups from "./component/groups.js";
 import CreateGroup from "./component/createGroup.js";
 import Records from "./component/records.js";
+import DetailsGroup from "./component/detailsGroup.js";
 
 
 const Layout = () => {
@@ -54,6 +55,7 @@ const Content = () => {
           <Route path="/homeUser" element={<HomeUser />} />
           <Route path="/contacts" element={<Contacts />} />
           <Route path="/group" element={<Groups />} />
+          <Route path="/group/:id" element={<DetailsGroup />} />
           <Route path="/createGroup" element={<CreateGroup />} />
           <Route path="/records" element={<Records />} />
           <Route path="/changepassword" element={<PasswordRecovery />} />

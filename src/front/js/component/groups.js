@@ -6,58 +6,65 @@ import "../../styles/groups.css";
 
 const Groups = () => {
 
-const {store, actions}= useContext(Context);
-const navigate = useNavigate("");
+    const {store, actions}= useContext(Context);
+    const navigate = useNavigate();
 
-const [name, setName]=useState("");
-const [members_id, setMembers_id]=useState([]);
+    const handleButton=()=>{
+        navigate("/createGroup") 
+    };
+
+    const handleDetails=(groupId)=>{
+        navigate(`/group/${groupId}`)
+    };
+
+    const handleDelete=(groupId)=>{
+        actions.deletegroup(groupId)
+    }
+
+    useEffect(() => {
+        actions.getUserGroups()
+    }, [])
+
+    console.log(store.groups);
 
 
-const handleButton=()=>{
-    navigate("/createGroup") 
-};
-
-const handleDelete=(groupId)=>{
-    actions.deletegroup(groupId)
-}
-
-
-  return (
-    <div>
-        <button onClick={handleButton} className="btn btn-outline-primary">+ Create new group</button>
-        <tr/>
-        <h2>Tus Grupos</h2>
-        <table className="table">
-            <thead>
-                <tr>
-                    <th scope="col">Name</th>
-                    <th scope="col">Nº Members</th>
-                    <th scope="col">Nº Eventos</th>
-                    <th scope="col">Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                {store.groups.length > 0 ? (
-                    store.groups.map((group, index) => (
-                        <tr key={index}>
-                            <td>{group.name}</td>
-                            <td>{group.members_id.length}</td>
-                            <td>..........</td>
-                            <td><button onClick={() => handleDelete(group.id)} className="btn btn-outline-danger" type="buttom"> - Delete group </button></td>
-                        </tr>
-                    ))
-                ) : (
+    return (
+        <div>
+            <button onClick={handleButton} className="btn btn-outline-primary">+ Create new group</button>
+            <tr/>
+            <h2>Tus Grupos</h2>
+            <table className="table">
+                <thead>
                     <tr>
-                        <td>.............</td>
-                        <td>.............</td>
-                        <td>.............</td>
-                        <td>.............</td>
+                        <th scope="col">Name</th>
+                        <th scope="col">Nº Members</th>
+                        <th scope="col">Nº Eventos</th>
+                        <th scope="col">Actions</th>
                     </tr>
-                )}
-            </tbody>
-        </table>
-    </div>
-  );
+                </thead>
+                <tbody>
+                    {store.groups.length > 0 ? (
+                        store.groups.map((group, index) => (
+                            <tr key={index}>
+                                <td>{group.name}</td>
+                                <td>{group.members.length}</td>
+                                <td>..........</td>
+                                <td><button onClick={() => handleDelete(group.id)} className="btn btn-outline-danger" type="buttom"> - Delete group </button></td>
+                                <td><button onClick={() => handleDetails(group.id)} className="btn btn-outline-primary" type="buttom"> - Details group </button></td>
+                            </tr>
+                        ))
+                    ) : (
+                        <tr>
+                            <td>.............</td>
+                            <td>.............</td>
+                            <td>.............</td>
+                            <td>.............</td>
+                        </tr>
+                    )}
+                </tbody>
+            </table>
+        </div>
+    );
 };
 
 export default Groups;

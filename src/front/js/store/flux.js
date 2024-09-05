@@ -170,7 +170,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 			},
 
 
-			createGroup: async(name, members_id)=>{
+	/* 		createGroup: async(name, members_id)=>{
 				const {token} = getStore() 
 				try{
 					const response = await fetch (apiUrl + "/group",{
@@ -196,7 +196,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 					console.error("Error in createGroup:", error)
 					alert("there was an error creating group")
 				}
-			},
+			}, */
 
 			// Función para solicitar un enlace de recuperación de contraseña
 			requestPasswordRecovery: async (email) => {
@@ -370,6 +370,359 @@ const getState = ({ getStore, getActions, setStore }) => {
 					return false;
 				}
 			},
+
+			createGroup: async (name, member_ids) => {
+				const { token } = getStore();
+				setStore({ loading: true });
+
+				try {
+					const response = await fetch(`${apiUrl}/group`, {
+						method: "POST",
+						headers: {
+							"Content-Type": "application/json",
+							"Authorization": `Bearer ${token}`,
+						},
+						body: JSON.stringify({name,member_ids}),
+					});
+
+					if (!response.ok) {
+						const errorData = await response.json();
+						setStore({
+							errorMessage: errorData.error || "Failed to create group",
+							loading: false,
+						});
+						return null;
+					}
+
+					const data = await response.json();
+					setStore({
+						groups: data.group,
+						loading: false,
+						errorMessage: null,
+					});
+
+					return data.group; // Retorna el grupo creado
+				} catch (error) {
+					console.error("Error creating group:", error);
+					setStore({
+						errorMessage: "An error occurred while creating group.",
+						loading: false,
+					});
+					return null;
+				}
+			},
+
+			getGroupDetails: async (groupId) => {
+				const { token } = getStore();
+				setStore({ loading: true });
+
+				try {
+					const response = await fetch(`${apiUrl}/group/${groupId}`, {
+						method: "GET",
+						headers: {
+							"Authorization": `Bearer ${token}`,
+						},
+					});
+
+					if (!response.ok) {
+						const errorData = await response.json();
+						setStore({
+							errorMessage: errorData.error || "Failed to fetch group details",
+							loading: false,
+						});
+						return null;
+					}
+
+					const data = await response.json();
+					setStore({
+						groupDetails: data,
+						loading: false,
+						errorMessage: null,
+					});
+
+					return data;
+				} catch (error) {
+					console.error("Error fetching group details:", error);
+					setStore({
+						errorMessage: "An error occurred while fetching group details.",
+						loading: false,
+					});
+					return null;
+				}
+			},
+
+			getUserGroups: async () => {
+				const { token } = getStore();
+				setStore({ loading: true });
+
+				try {
+					const response = await fetch(`${apiUrl}/groups`, {
+						method: "GET",
+						headers: {
+							"Authorization": `Bearer ${token}`,
+							"Content-Type": "application/json",
+						},
+					});
+
+					if (!response.ok) {
+						const errorData = await response.json();
+						setStore({
+							errorMessage: errorData.error || "Failed to fetch user groups",
+							loading: false,
+						});
+						return [];
+					}
+
+					const data = await response.json();
+					setStore({
+						groups: data.groups,
+						loading: false,
+						errorMessage: null,
+					});
+
+					return data.groups;
+				} catch (error) {
+					console.error("Error fetching user groups:", error);
+					setStore({
+						errorMessage: "An error occurred while fetching user groups.",
+						loading: false,
+					});
+					return [];
+				}
+			},
+
+			deleteGroup: async (groupId) => {
+				const { token } = getStore();
+				setStore({ loading: true });
+
+				try {
+					const response = await fetch(`${apiUrl}/group/${groupId}`, {
+						method: "DELETE",
+						headers: {
+							"Authorization": `Bearer ${token}`,
+						},
+					});
+
+					if (!response.ok) {
+						const errorData = await response.json();
+						setStore({
+							errorMessage: errorData.error || "Failed to delete group",
+							loading: false,
+						});
+						return false;
+					}
+
+					setStore({ loading: false, errorMessage: null });
+					return true; // Confirma que el grupo fue eliminado
+				} catch (error) {
+					console.error("Error deleting group:", error);
+					setStore({
+						errorMessage: "An error occurred while deleting group.",
+						loading: false,
+					});
+					return false;
+				}
+			},
+
+			addGroupMember: async (groupId, memberId) => {
+				const { token } = getStore();
+				setStore({ loading: true });
+
+				try {
+					const response = await fetch(`${apiUrl}/group/${groupId}/members`, {
+						method: "POST",
+						headers: {
+							"Content-Type": "application/json",
+							"Authorization": `Bearer ${token}`,
+						},
+						body: JSON.stringify({ member_id: memberId }),
+					});
+
+					if (!response.ok) {
+						const errorData = await response.json();
+						setStore({
+							errorMessage: errorData.error || "Failed to add group member",
+							loading: false,
+						});
+						return false;
+					}
+
+					setStore({ loading: false, errorMessage: null });
+					return true; // Confirma que el miembro fue agregado
+				} catch (error) {
+					console.error("Error adding group member:", error);
+					setStore({
+						errorMessage: "An error occurred while adding group member.",
+						loading: false,
+					});
+					return false;
+				}
+			},
+
+			deleteGroupMember: async (groupId, memberId) => {
+				const { token } = getStore();
+				setStore({ loading: true });
+
+				try {
+					const response = await fetch(`${apiUrl}/group/${groupId}/members`, {
+						method: "DELETE",
+						headers: {
+							"Content-Type": "application/json",
+							"Authorization": `Bearer ${token}`,
+						},
+						body: JSON.stringify({ member_id: memberId }),
+					});
+
+					if (!response.ok) {
+						const errorData = await response.json();
+						setStore({
+							errorMessage: errorData.error || "Failed to remove group member",
+							loading: false,
+						});
+						return false;
+					}
+
+					setStore({ loading: false, errorMessage: null });
+					return true; // Confirma que el miembro fue eliminado
+				} catch (error) {
+					console.error("Error removing group member:", error);
+					setStore({
+						errorMessage: "An error occurred while removing group member.",
+						loading: false,
+					});
+					return false;
+				}
+			},
+
+			createEvent: async (groupId, eventData) => {
+				const store = getStore();
+				try {
+					const resp = await fetch(`${apiUrl}/group/${groupId}/event`, {
+						method: "POST",
+						headers: {
+							"Content-Type": "application/json",
+							"Authorization": `Bearer ${store.token}`
+						},
+						body: JSON.stringify(eventData)
+					});
+					if (resp.ok) {
+						const data = await resp.json();
+						setStore({
+							events: [...store.events, data]
+						});
+						return data;
+					} else {
+						const error = await resp.json();
+						setStore({ errorMessage: error.error });
+						return null;
+					}
+				} catch (error) {
+					console.error("Error creating event:", error);
+					setStore({ errorMessage: "An unexpected error occurred" });
+					return null;
+				}
+			},
+
+			getEvent: async (groupId, eventId) => {
+				const store = getStore();
+				try {
+					const resp = await fetch(`${apiUrl}/group/${groupId}/event/${eventId}`, {
+						method: "GET",
+						headers: {
+							"Authorization": `Bearer ${store.token}`
+						}
+					});
+					if (resp.ok) {
+						const data = await resp.json();
+
+						return data;
+					} else {
+						const error = await resp.json();
+						setStore({ errorMessage: error.error });
+						return null;
+					}
+				} catch (error) {
+					console.error("Error getting event:", error);
+					setStore({ errorMessage: "An unexpected error occurred" });
+					return null;
+				}
+			},
+
+			updateEvent: async (groupId, eventId, updatedData) => {
+				const store = getStore();
+				try {
+					const resp = await fetch(`${apiUrl}/group/${groupId}/event/${eventId}`, {
+						method: "PATCH",
+						headers: {
+							"Content-Type": "application/json",
+							"Authorization": `Bearer ${store.token}`
+						},
+						body: JSON.stringify(updatedData)
+					});
+					if (resp.ok) {
+						const data = await resp.json();
+						// Actualizar el store con el evento actualizado si es necesario
+						return data;
+					} else {
+						const error = await resp.json();
+						setStore({ errorMessage: error.error });
+						return null;
+					}
+				} catch (error) {
+					console.error("Error updating event:", error);
+					setStore({ errorMessage: "An unexpected error occurred" });
+					return null;
+				}
+			},
+
+			deleteEvent: async (groupId, eventId) => {
+				const store = getStore();
+				try {
+					const resp = await fetch(`${apiUrl}/group/${groupId}/event/${eventId}`, {
+						method: "DELETE",
+						headers: {
+							"Authorization": `Bearer ${store.token}`
+						}
+					});
+					if (resp.ok) {
+						return true;
+					} else {
+						const error = await resp.json();
+						setStore({ errorMessage: error.error });
+						return false;
+					}
+				} catch (error) {
+					console.error("Error deleting event:", error);
+					setStore({ errorMessage: "An unexpected error occurred" });
+					return false;
+				}
+			},
+
+			getAllEvents: async (groupId) => {
+				const store = getStore();
+				try {
+					const resp = await fetch(`${apiUrl}/group/${groupId}/events`, {
+						method: "GET",
+						headers: {
+							"Authorization": `Bearer ${store.token}`
+						}
+					});
+					if (resp.ok) {
+						const data = await resp.json();
+						setStore({ events: data });
+						return data;
+					} else {
+						const error = await resp.json();
+						setStore({ errorMessage: error.error });
+						return null;
+					}
+				} catch (error) {
+					console.error("Error getting all events:", error);
+					setStore({ errorMessage: "An unexpected error occurred" });
+					return null;
+				}
+			},
+
 
 		}
 	};
