@@ -5,8 +5,19 @@ import "../../styles/homeUser.css";
 
 const HomeUser = () => {
   return (
+
     <div className="table-responsive rounded-3" id="tableHomeUser">
-      <h1 className="tittleHomeUser">Estas en el component Home user</h1>
+      <div className="alert alert-dark" role="alert" id="text">
+        Here is a general summary of your account
+      </div>
+      <h1 className="tittleHomeUser"> Home user:</h1>
+      <div className="imageContainerHomeUser">
+        <img
+          src=""
+          alt="Groups illustration"
+          className="centeredImageHomeUser"
+        />
+      </div>
       <table className="table rounded-3 " id="tableRecordHomeUser">
         <thead>
           <tr>

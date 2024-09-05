@@ -6,18 +6,18 @@ import "../../styles/groups.css";
 
 const Groups = () => {
 
-    const {store, actions}= useContext(Context);
+    const { store, actions } = useContext(Context);
     const navigate = useNavigate();
 
-    const handleButton=()=>{
+    const handleButton = () => {
         navigate("/createGroup");
     };
 
-    const handleDetails=(groupId)=>{
+    const handleDetails = (groupId) => {
         navigate(`/group/${groupId}`);
     };
 
-    const handleDelete=(groupId)=>{
+    const handleDelete = (groupId) => {
         const success = actions.deleteGroup(groupId);
         if (success) {
             console.log("bien");
@@ -33,17 +33,31 @@ const Groups = () => {
     }, []);
 
     return (
-        <div>
-            <button onClick={handleButton} className="btn btn-outline-primary">+ Create new group</button>
-            <tr/>
-            <h2>Yous groups</h2>
-            <table className="table">
+        <div className="groupsGeneral">
+            <div className="alert alert-dark" id="tittleGroupsAlert" role="alert">
+                Here you can create groups to make payments in sets.
+                Now paying for vacations among all your friends will be easy and safe.
+                Now everyone pays for vacations, meals and meetings!
+            </div>
+            <div className="imageContainer">
+                <img
+                    src="https://euroamericanacademy.com/wp-content/uploads/2016/02/Grupos.png"
+                    alt="Groups illustration"
+                    className="centeredImage"
+                />
+            </div>
+            <div className="conteinerButton">
+                <button onClick={handleButton} className="btn btn-primary" id="createNewGroupBtn">+ Create new group</button>
+            </div>
+            <tr />
+            <h2 className="tittleGroups">Your groups:</h2>
+            <table className="table rounded-3" id="tableGroupsCreated">
                 <thead>
                     <tr>
-                        <th scope="col">Name</th>
-                        <th scope="col">Nº Members</th>
-                        <th scope="col">Nº Eventos</th>
-                        <th scope="col">Actions</th>
+                        <th className="thGroups" scope="col">Name</th>
+                        <th className="thGroups" scope="col">Nº Members</th>
+                        <th className="thGroups" scope="col">Nº Eventos</th>
+                        <th className="thGroups" scope="col">Actions</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -51,7 +65,7 @@ const Groups = () => {
                         store.groups.map((group, index) => (
                             <tr key={index}>
                                 <td className="tdGroups">{group.name}</td>
-                                <td className="tdGroups">{group.members_id.length}</td>
+                                <td className="tdGroups">..........</td>
                                 <td className="tdGroups">..........</td>
                                 <td className="tdGroups"><button onClick={() => handleDelete(group.id)} className="btn btn-outline-danger" type="buttom"> - Delete group </button></td>
                             </tr>
@@ -66,7 +80,7 @@ const Groups = () => {
                     )}
                 </tbody>
             </table>
-            
+
         </div>
     );
 };
