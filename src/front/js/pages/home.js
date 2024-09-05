@@ -14,15 +14,15 @@ function Home() {
       <section className="hero-section p-5 d-flex align-items-center justify-content-center flex-column">
         <div className="hero-text text-center mb-5 mt-5 d-flex align-items-center justify-content-center flex-column">
           <h1 className="hero-title mb-4 mt-5">
-            <strong>TU DINERO, DONDE Y CUANDO QUIERAS</strong>
+            <strong>YOUR MONEY WHEN AND WHEREVER YOU NEED IT</strong>
           </h1>
           <h3 className="hero-subtitle w-50 mb-4">
-            La cuenta diseñada para hacerte ahorrar tiempo en todo el mundo.
+          The account designed to save you time around the world.
           </h3>
           <button
             className="btn text-white signup-button mb-5"
             onClick={handleSignUp}>
-            Crear cuenta
+            Create Account
           </button>
         </div>
         <div className="hero-image-container w-100 mb-5">
@@ -36,16 +36,14 @@ function Home() {
         <div className="d-flex align-items-center justify-content-between">
           <div className="features-text">
             <h1 className="features-title mb-4 mt-5">
-              <strong>tu vida financiera, descarga nuestra app hoy mismo.</strong>
+              <strong>Your financial life, download our app today.</strong>
             </h1>
             <h2 className="features-subtitle mb-4">
-              <strong>¿Estás cansado de lidiar con comisiones altas y procesos complicados para enviar dinero
-                al extranjero?</strong>
+              <strong>Tired of having to generate pending charges to friends for old bills ?</strong>
             </h2>
-            <h3 className="mb-4">Con nuestra app, enviar y recibir dinero entre amigos o colegas nunca ha sido tan
-              fácil. Conéctate con tus amigos en todo el mundo, comparte gastos y ahorra tiempo y dinero.
-              Nuestra plataforma te ofrece tarifas transparentes y sin sorpresas, sin importar si envías 10
-              dólares o 10,000 euros. Olvídate de las complicaciones y descubre una nueva forma de enviar dinero.
+            <h3 className="mb-4">With our app, sending and receiving money between friends or colleagues has never been easier.
+              easy. Connect with your friends around the world, share expenses and save time and money.
+              Our platform offers you transparent fees with no surprises, no matter if you send $10 or 10,000 euros.Forget the hassle and discover a new way to send money.
             </h3>
             <button
               className="btn text-white signup-button mb-5"
