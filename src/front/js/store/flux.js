@@ -11,6 +11,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 			loading: false,
 			contacts: [],
 			groups: [],
+			events: [],
 			groupDetails: null,
 			userContact: null,
 		},
@@ -493,7 +494,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 					});
 					if (resp.ok) {
 						const data = await resp.json();
-						setStore({ events: data.events });
+						setStore({ events: data });
 						return data;
 					} else {
 						const error = await resp.json();

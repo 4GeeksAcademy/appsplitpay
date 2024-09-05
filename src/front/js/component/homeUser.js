@@ -9,7 +9,7 @@ const HomeUser = () => {
   const [amount, setAmount] = useState("");
   const [userAllGroup, setUserAllGroup] = useState([]);
   const [selectedGroup, setSelectedGroup] = useState([]);
-  const [groupAllEvents, setgroupAllEvents] = useState([]);
+  const [groupAllEvents, setGroupAllEvents] = useState([]);
   const [selectedEvent, setSelectedEvent] = useState([]);
   const [contactsUserNames, setContactsUserNames] = useState("");
   const [selectedContact, setSelectedContact] = useState(null);
@@ -55,7 +55,7 @@ const HomeUser = () => {
           value: event.id, label: event.name
         }
       })
-      setUserAllGroup(events)
+      setGroupAllEvents(events)
     }
   }, [store.events])
 
@@ -145,35 +145,6 @@ const HomeUser = () => {
         {error && <div className="alert alert-danger">{error}</div>}
         {success && <div className="alert alert-success">{success}</div>}
       </form>
-
-// --------------------------------------------------------------------------------------------------------
-      <div className="table-responsive">
-        <h1>Estas en el component Home user</h1>
-        <table className="table">
-          <thead>
-            <tr>
-              <th scope="col">#</th>
-              <th scope="col">First</th>
-              <th scope="col">Last</th>
-              <th scope="col">Handle</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <th scope="row">1</th>
-              <td>Mark</td>
-              <td>Otto</td>
-              <td>@mdo</td>
-            </tr>
-            <tr>
-              <th scope="row">2</th>
-              <td>Jacob</td>
-              <td>Thornton</td>
-              <td>@fat</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
     </div>
   );
 };
