@@ -15,6 +15,8 @@ import Contacts from "./component/contacts.js";
 import Groups from "./component/groups.js";
 import CreateGroup from "./component/createGroup.js";
 import Records from "./component/records.js";
+import Payment from "./component/payment.js";
+import ProductsInfo from "./component/products_info.js";
 
 
 const Layout = () => {
@@ -58,6 +60,8 @@ const Content = () => {
           <Route path="/records" element={<Records />} />
           <Route path="/changepassword" element={<PasswordRecovery />} />
           <Route path="/requestpasswordrecovery" element={<RequestPasswordRecovery />} />
+          <Route path="/payment" element={<Payment/>} />
+          <Route path= "/productsInfo" element={<ProductsInfo/>}/>
         </Routes>
       </ScrollToTop>
       {!shouldHideNavbarAndFooter && <Footer />}

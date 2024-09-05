@@ -4,8 +4,17 @@ import { useNavigate } from "react-router-dom";
 import "../../styles/homeUser.css";
 
 const HomeUser = () => {
+  const navigate = useNavigate();
+
+  const handleNavigate = () => {
+    navigate("/payment");
+  };
+
   return (
     <div className="table-responsive">
+      <button type="button" onClick={handleNavigate} className="btn btn-danger">
+        click here to make a new payment
+      </button>
       <h1>Estas en el component Home user</h1>
       <table className="table">
         <thead>
