@@ -10,29 +10,33 @@ const Groups = () => {
     const navigate = useNavigate();
 
     const handleButton=()=>{
-        navigate("/createGroup") 
+        navigate("/createGroup");
     };
 
     const handleDetails=(groupId)=>{
-        navigate(`/group/${groupId}`)
+        navigate(`/group/${groupId}`);
     };
 
     const handleDelete=(groupId)=>{
-        actions.deletegroup(groupId)
-    }
+        const success = actions.deleteGroup(groupId);
+        if (success) {
+            console.log("bien");
+            window.location.reload(false);
+        } else {
+            console.log("mal");
+        }
+    };
 
     useEffect(() => {
-        actions.getUserGroups()
-    }, [])
-
-    console.log(store.groups);
-
+        actions.getUserGroups();
+        actions.getUserMyGroups();
+    }, []);
 
     return (
         <div>
             <button onClick={handleButton} className="btn btn-outline-primary">+ Create new group</button>
             <tr/>
-            <h2>Tus Grupos</h2>
+            <h2>Yous groups</h2>
             <table className="table">
                 <thead>
                     <tr>
@@ -49,8 +53,10 @@ const Groups = () => {
                                 <td>{group.name}</td>
                                 <td>{group.members.length}</td>
                                 <td>..........</td>
-                                <td><button onClick={() => handleDelete(group.id)} className="btn btn-outline-danger" type="buttom"> - Delete group </button></td>
-                                <td><button onClick={() => handleDetails(group.id)} className="btn btn-outline-primary" type="buttom"> - Details group </button></td>
+                                <td>
+                                    <button onClick={() => handleDelete(group.id)} className="btn btn-outline-danger" type="buttom"> - Delete group </button>
+                                    <button onClick={() => handleDetails(group.id)} className="btn btn-outline-primary" type="buttom"> - Details group </button>
+                                </td>
                             </tr>
                         ))
                     ) : (
@@ -63,6 +69,7 @@ const Groups = () => {
                     )}
                 </tbody>
             </table>
+            
         </div>
     );
 };

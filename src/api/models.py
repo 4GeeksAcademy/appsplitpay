@@ -82,11 +82,12 @@ class Group(db.Model):
         return f'<Group {self.id} - {self.name}>'
 
     def serialize(self):
+        members = [member.serialize() for member in self.members]
         return {
             "id": self.id,
             "name": self.name,
             "creator_id": self.creator_id,
-            "members": [member.serialize() for member in self.members],
+            "members": members,  
         }
 
 class GroupMember(db.Model):
@@ -133,8 +134,10 @@ class Event(db.Model):
     user = db.relationship('User', backref='events')
     group_id = db.Column(db.Integer, db.ForeignKey('groups.id'))
     group = db.relationship('Group', backref='events')
+
     def __repr__(self):
         return f'<Event {self.id} - {self.amount} - {self.description}>'
+    
     def serialize(self):
         return {
             "id": self.id,

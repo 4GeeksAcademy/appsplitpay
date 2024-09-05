@@ -11,8 +11,11 @@ const getState = ({ getStore, getActions, setStore }) => {
 			loading: false,
 			contacts: [],
 			groups: [],
+			myGroups: [],
+			events: [],
 			groupDetails: null,
 			userContact: null,
+			corsEnabled: { "Access-Control-Allow-Origin": "*" },
 		},
 		actions: {
 			login: async (email, password) => {
@@ -169,35 +172,6 @@ const getState = ({ getStore, getActions, setStore }) => {
 				setStore({ message: msg });
 			},
 
-
-	/* 		createGroup: async(name, members_id)=>{
-				const {token} = getStore() 
-				try{
-					const response = await fetch (apiUrl + "/group",{
-						method : "POST",
-						headers: {
-							"Content-Type": "application/json", 
-							"Authorization": "Bearer " + token
-						},
-						body: JSON.stringify({name, members_id})
-					});
-					if (response.ok){
-					const data = await response.json();
-					alert ("group succesfully created ")
-					
-					setStore({
-						groups: [...getStore().groups, data.group]
-					});
-					}else {
-						const errorData= await response.json(); 
-						alert (`Error: ${errorData.error}`);
-					}
-				} catch(error){
-					console.error("Error in createGroup:", error)
-					alert("there was an error creating group")
-				}
-			}, */
-
 			// Función para solicitar un enlace de recuperación de contraseña
 			requestPasswordRecovery: async (email) => {
 				try {
@@ -303,14 +277,15 @@ const getState = ({ getStore, getActions, setStore }) => {
 					email
 				};
 				console.log("requestBody: ",requestBody)
-				const { token } = getStore();
+				const store = getStore();
 				setStore({ loading: true });
 				try {
 					const response = await fetch(apiUrl + "/contact", {
 						method: "POST",
 						headers: {
 							"Content-Type": "application/json",
-							"Authorization": `Bearer ${token}`,
+							"Authorization": `Bearer ${store.token}`,
+							...store.corsEnabled,
 						},
 						body: JSON.stringify(requestBody),
 					});
@@ -372,7 +347,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 			},
 
 			createGroup: async (name, member_ids) => {
-				const { token } = getStore();
+				const store = getStore();
 				setStore({ loading: true });
 
 				try {
@@ -380,13 +355,15 @@ const getState = ({ getStore, getActions, setStore }) => {
 						method: "POST",
 						headers: {
 							"Content-Type": "application/json",
-							"Authorization": `Bearer ${token}`,
+							"Authorization": `Bearer ${store.token}`,
+							...store.corsEnabled,
 						},
 						body: JSON.stringify({name,member_ids}),
 					});
 
 					if (!response.ok) {
 						const errorData = await response.json();
+						console.log("Error al crear grupo: ",errorData);
 						setStore({
 							errorMessage: errorData.error || "Failed to create group",
 							loading: false,
@@ -396,7 +373,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 
 					const data = await response.json();
 					setStore({
-						groups: data.group,
+						groups: [...getStore().groups, data.group],
 						loading: false,
 						errorMessage: null,
 					});
@@ -415,7 +392,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 			getGroupDetails: async (groupId) => {
 				const { token } = getStore();
 				setStore({ loading: true });
-
+				
 				try {
 					const response = await fetch(`${apiUrl}/group/${groupId}`, {
 						method: "GET",
@@ -423,7 +400,6 @@ const getState = ({ getStore, getActions, setStore }) => {
 							"Authorization": `Bearer ${token}`,
 						},
 					});
-
 					if (!response.ok) {
 						const errorData = await response.json();
 						setStore({
@@ -435,7 +411,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 
 					const data = await response.json();
 					setStore({
-						groupDetails: data,
+						groupDetails: data.group,
 						loading: false,
 						errorMessage: null,
 					});
@@ -494,7 +470,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 			deleteGroup: async (groupId) => {
 				const { token } = getStore();
 				setStore({ loading: true });
-
+				console.log("estas en el action:" ,groupId);
 				try {
 					const response = await fetch(`${apiUrl}/group/${groupId}`, {
 						method: "DELETE",
@@ -525,7 +501,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 			},
 
 			addGroupMember: async (groupId, memberId) => {
-				const { token } = getStore();
+				const store = getStore();
 				setStore({ loading: true });
 
 				try {
@@ -533,7 +509,8 @@ const getState = ({ getStore, getActions, setStore }) => {
 						method: "POST",
 						headers: {
 							"Content-Type": "application/json",
-							"Authorization": `Bearer ${token}`,
+							"Authorization": `Bearer ${store.token}`,
+							...store.corsEnabled,
 						},
 						body: JSON.stringify({ member_id: memberId }),
 					});
@@ -594,16 +571,57 @@ const getState = ({ getStore, getActions, setStore }) => {
 				}
 			},
 
-			createEvent: async (groupId, eventData) => {
+			getUserMyGroups: async () => {
+				const { token } = getStore();
+				setStore({ loading: true });
+			
+				try {
+					const response = await fetch(`${apiUrl}/my-groups`, {
+						method: "GET",
+						headers: {
+							"Authorization": `Bearer ${token}`,
+							"Content-Type": "application/json",
+						},
+					});
+			
+					if (!response.ok) {
+						const errorData = await response.json();
+						setStore({
+							errorMessage: errorData.error || "Failed to fetch user groups",
+							loading: false,
+						});
+						return [];
+					}
+			
+					const data = await response.json();
+					setStore({
+						myGroups: data.groups,
+						loading: false,
+						errorMessage: null,
+					});
+			
+					return data.groups;
+				} catch (error) {
+					console.error("Error fetching user groups:", error);
+					setStore({
+						errorMessage: "An error occurred while fetching user groups.",
+						loading: false,
+					});
+					return [];
+				}
+			},
+
+			createEvent: async (groupId, name, amount, description) => {
 				const store = getStore();
 				try {
 					const resp = await fetch(`${apiUrl}/group/${groupId}/event`, {
 						method: "POST",
 						headers: {
 							"Content-Type": "application/json",
-							"Authorization": `Bearer ${store.token}`
+							"Authorization": `Bearer ${store.token}`,
+							...store.corsEnabled,
 						},
-						body: JSON.stringify(eventData)
+						body: JSON.stringify({name, amount, description})
 					});
 					if (resp.ok) {
 						const data = await resp.json();
@@ -655,7 +673,8 @@ const getState = ({ getStore, getActions, setStore }) => {
 						method: "PATCH",
 						headers: {
 							"Content-Type": "application/json",
-							"Authorization": `Bearer ${store.token}`
+							"Authorization": `Bearer ${store.token}`,
+							...store.corsEnabled,
 						},
 						body: JSON.stringify(updatedData)
 					});
@@ -709,7 +728,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 					});
 					if (resp.ok) {
 						const data = await resp.json();
-						setStore({ events: data });
+						setStore({ events: data.events });
 						return data;
 					} else {
 						const error = await resp.json();
@@ -722,7 +741,6 @@ const getState = ({ getStore, getActions, setStore }) => {
 					return null;
 				}
 			},
-
 
 		}
 	};
