@@ -1,6 +1,8 @@
 import React, { useState, useContext, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { Context } from "../store/appContext";
+import "../../styles/login.css"
+
 
 const Login = () => {
   const { store, actions } = useContext(Context);
@@ -34,15 +36,17 @@ const Login = () => {
       }
     }, [errorMessage]); */
   };
-  
+
 
   return (
-    <div className="card d-flex justify-content-center my-5 p-5 mx-auto" style={{ maxWidth: '600px', fontFamily: 'Trebuchet MS', width: '100%' }}>
+    <div id="table-login" className="card d-flex justify-content-center my-5 p-5 mx-auto" style={{ maxWidth: '600px', fontFamily: 'Trebuchet MS', width: '100%' }}>
       <form onSubmit={handleSubmit}>
 
         {errorMessage && <div className="alert alert-danger">{errorMessage}</div>}
 
-
+        <div className="form-outline mb-4">
+          <h2>Welcome back!</h2>
+        </div>
         <div className="form-outline mb-4">
           <input
             onChange={(e) => setEmail(e.target.value)}
@@ -95,10 +99,10 @@ const Login = () => {
         </div>
 
         <div className="d-grid gap-2 col-6 mx-auto">
-          <button type="submit" className="btn btn-primary btn-block ">
+          <button type="submit" className="btn btn-success btn-block ">
             Login
           </button>
-          <button type="submit" className="btn btn-outline-secondary" onClick={handleCancelButton}>
+          <button type="submit" className="btn btn-outline-danger" onClick={handleCancelButton}>
             Cancel
           </button>
         </div>

@@ -22,7 +22,7 @@ const Footer = () => {
         }
     }, [location]);
     return (
-        <footer className="text-center text-lg-start bg-body-tertiary text-muted">
+        <footer className="text-center text-lg-start bg-body-tertiary text-muted" id='footerContainer'>
             <section className="d-flex justify-content-center justify-content-lg-between p-4 border-bottom">
                 <div className="me-5 d-none d-lg-block">
                     <span>Take a look into our social media:</span>

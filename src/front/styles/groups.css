@@ -1,0 +1,65 @@
+.groupsGeneral{
+    padding: 40px 40px;
+    color: black;
+    border: solid 1px black;
+    margin: 40px;
+    border-radius: 5px;
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.2);
+}
+#createNewGroupBtn{
+   
+    width: 50%;
+    
+
+}
+.conteinerButton{
+    padding: 40px 40px;
+    display: flex;
+    justify-content: center;
+}
+.tittleGroups{
+    margin-bottom: 40px;
+    align-content: center;
+    color: black;
+}
+#tittleGroupsAlert{
+    margin-bottom: 40px;
+    align-content: center;
+    color: black;
+}
+#tableGroupsCreated{
+    background-color: white;
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.2);
+    width: 100%;
+    margin-bottom: 40px;
+    margin-top: 40px;
+}
+.thGroups{
+    width: 190px;
+    height: 45px;
+    padding-left: 10px;
+    color: black;
+}
+.tdGroups{
+    width: 190px;
+    height: 45px;
+    padding-left: 10px;
+    color: black;
+}
+.imageContainer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 200px; 
+    margin-bottom: 20px; 
+}
+
+.centeredImage {
+    width: 250px;
+    height: 250px;
+    margin: 40px;
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.2);
+    border-radius: 10px;
+    
+    
+}

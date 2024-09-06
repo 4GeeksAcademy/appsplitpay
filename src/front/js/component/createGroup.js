@@ -2,35 +2,53 @@ import React, { useState, useEffect, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import Select from "react-dropdown-select";
 import { Context } from "../store/appContext";
+import "../../styles/createGroup.css";
 
 
-const CreateGroup = () => {
+export const CreateGroup = () => {
 
-    const { store, actions } = useContext(Context)
-    const navigate = useNavigate("")
+    const { store, actions } = useContext(Context);
+    const navigate = useNavigate();
 
     const [name, setname] = useState("");
     const [members_id, setMembers_id] = useState([]);
 
     useEffect(() => {
         actions.getContacts();
+        actions.getAllUsers();
     }, []);
+
+    const usernames = [];
+    members_id.forEach((member) => usernames.push(member.username));
+
+    const usernamesDB = [];
+    const users = store.allUsers;
+    users.forEach(user => { 
+        usernamesDB.push(user.username);
+    });
+
+    const ids = [];
+    for (const member of members_id) {
+        for (const user of users) {
+            if (member.username == user.username) {
+                ids.push(user.id);
+                console.log("user en el for",user.id)
+            }
+        }
+    }
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        console.log("Group Name:", name); // Verifica el valor de `name`
-        console.log("Selected Members:", members_id); // Verifica el valor de `members_id`
-        console.log("Members ID Length:", members_id.length); // Verifica la longitud de `members_id`
         if (name && members_id.length > 0) {
-            await actions.createGroup(name, members_id);
-            navigate("/group"); // Redirige a la vista de grupos
+            await actions.createGroup(name, ids);
+            navigate("/group");
         } else {
             alert("Please provide a group name and select at least one member.");
         }
     };
 
-    const handleCancel=()=>{
-        navigate("/group") 
+    const handleCancel = () => {
+        navigate("/group")
     };
 
     return (
@@ -48,38 +66,24 @@ const CreateGroup = () => {
                     />
                 </div>
                 <div className="mb-3">
-                    <p>Add yours contacts:</p>
-                    {/* <Select
+                    <p>select your contacts:</p>
+                    <Select
                         name="select"
                         options={store.contacts}
-                        labelField={store.contacts.fullname}
-                        valueField={store.contacts.id}
+                        labelField="fullname"
+                        valueField="id"
                         multi
                         onChange={value => setMembers_id(value)}
-                        color="blue"
+                        color="green"
                         dropdownPosition="bottom"
                         searchable="true"
                     >
-                    </Select> */}
-                    
-                    <select className="form-select" aria-label="Default select example" multiple onChange={value => setMembers_id(value)}>
-                        <option defaultValue>Open this select menu</option>
-                        {store.contacts.map((contact, index) => (
-                            <option key={index} value={contact.id}>{contact.fullname}</option>
-                        ))}
-                    </select>
-                
-                    {members_id.length > 0 ? (
-                            members_id.map(member => (
-                                <p>Id: {member.id} Value: {member.value}</p>
-                            ))
-                        ):(
-                            <p>no miembros</p>
-                        )
-                    }
+                    </Select>
                 </div>
-                <button className="btn btn-primary">create group</button>
-                <button className="btn btn-outline-secundary" onClick={handleCancel}>Cancel</button>
+                <div className="containerBtn">
+                    <button type="submit" className="btn btn-success" id="btn-successCreateGroup">Create a group</button>
+                    <button className="btn btn-danger" onClick={handleCancel} id="btn-dangerCreateGroup">Cancel</button>
+                </div>
             </form>
         </div>
     );
