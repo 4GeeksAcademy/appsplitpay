@@ -43,13 +43,11 @@ const SignUp = () => {
       setErrorMessage("Passwords do not match");
       return;
     }
-
-    console.log("antes del fetch")
     // Llamar a la acción signup
     const success = await actions.signup(username, email, password, first_name, last_name, age, address, paypal_username);
 
     if (success) {
-      navigate("/login"); // Redirigir a la página de inicio o a otra página después del registro exitoso
+      navigate("/login");
     } else {
       setErrorMessage(store.errorMessage || "An error occurred during signup.");
     }
@@ -59,6 +57,11 @@ const SignUp = () => {
     <div className="card d-flex justify-content-center my-5 p-5 mx-auto" style={{ maxWidth: '600px', width: '100%' }}>
       <form onSubmit={handleSubmit}>
         {errorMessage && <div className="alert alert-danger">{errorMessage}</div>}
+
+        <div className="form-outline mb-4">
+          <h1>Register</h1>
+          <h3>It's easy and fast!</h3>
+        </div>
 
         {/* FirstName input */}
         <div className="form-outline mb-4">
@@ -95,11 +98,11 @@ const SignUp = () => {
             required
           />
         </div>
-        
-        <label  htmlFor= "paypal_user" className="form-label">Your vanity URL</label>
+
+        <label htmlFor="paypal_user" className="form-label">Your vanity URL</label>
         <div className="input-group mb-3">
           <span className="input-group-text" id="basic-addon3">https://www.paypal.com/paypalme/</span>
-          <input onChange={(e) => setPaypal_Username(e.target.value)} type="text" className="form-control" id="basic-url" aria-describedby="basic-addon3"/>
+          <input onChange={(e) => setPaypal_Username(e.target.value)} type="text" className="form-control" id="basic-url" aria-describedby="basic-addon3" />
         </div>
 
         {/* Email input */}
@@ -181,10 +184,10 @@ const SignUp = () => {
 
         {/* Submit button */}
         <div className="d-grid gap-2 col-6 mx-auto">
-          <button type="submit" className="btn btn-primary btn-block mb-3">
+          <button type="submit" className="btn btn-success btn-block mb-3">
             {store.loading ? "Signing up..." : "Sign up"}
           </button>
-          <button type="submit" className="btn btn-outline-secondary" onClick={handleCancelButton}>
+          <button type="submit" className="btn btn-outline-danger" onClick={handleCancelButton}>
             Cancel
           </button>
         </div>

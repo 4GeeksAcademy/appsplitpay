@@ -52,7 +52,7 @@ class TokenBlockedList(db.Model):
 class Contact(db.Model):
     __tablename__ = 'contacts'
     id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String(180), unique=True, nullable=False)
+    username = db.Column(db.String(180), unique=False, nullable=False)
     fullname = db.Column(db.String(180), unique=False, nullable=False)
     email = db.Column(db.String(180), unique=False, nullable=False)
     paypal_username = db.Column(db.String(180), unique=True, nullable=False)
@@ -82,11 +82,12 @@ class Group(db.Model):
         return f'<Group {self.id} - {self.name}>'
 
     def serialize(self):
+        members = [member.serialize() for member in self.members]
         return {
             "id": self.id,
             "name": self.name,
             "creator_id": self.creator_id,
-            "members": [member.serialize() for member in self.members],
+            "members": members,  
         }
 
 class GroupMember(db.Model):
@@ -113,7 +114,6 @@ class Payment(db.Model):
 
     def __repr__(self):
         return f'<Payment {self.id} - {self.amount}>'
-
     def serialize(self):
         return {
             "id": self.id,
@@ -124,7 +124,6 @@ class Payment(db.Model):
             "contact_id": self.contact_id,
             "paypal_username": self.paypal_username
         }
-
 
 # el evento es el producto
 class Event(db.Model):
@@ -137,8 +136,10 @@ class Event(db.Model):
     user = db.relationship('User', backref='events')
     group_id = db.Column(db.Integer, db.ForeignKey('groups.id'))
     group = db.relationship('Group', backref='events')
+
     def __repr__(self):
         return f'<Event {self.id} - {self.amount} - {self.description}>'
+    
     def serialize(self):
         return {
             "id": self.id,

@@ -1,10 +1,15 @@
-import React, { useContext, useState, useEffect } from "react";
-import { Context } from "../store/appContext.js";
+import React, { useState, useEffect, useContext } from "react";
 import { useNavigate } from "react-router-dom";
+import Select from "react-dropdown-select";
+import { Context } from "../store/appContext";
+import "../../styles/createGroup.css";
 
-const CreateGroup = () => {
-    const { store, actions } = useContext(Context)
-    const navigate = useNavigate("")
+
+export const CreateGroup = () => {
+
+    const { store, actions } = useContext(Context);
+    const navigate = useNavigate();
+
     const [name, setname] = useState("");
     const [members_id, setMembers_id] = useState([]);
 
@@ -12,29 +17,28 @@ const CreateGroup = () => {
         actions.getContacts();
     }, []);
 
+    const ids = [];
+    members_id.forEach((member) => ids.push(member.id));
+
     const handleSubmit = async (e) => {
         e.preventDefault();
-        console.log("Group Name:", name); // Verifica el valor de `name`
-        console.log("Selected Members:", members_id); // Verifica el valor de `members_id`
-        console.log("Members ID Length:", members_id.length); // Verifica la longitud de `members_id`
         if (name && members_id.length > 0) {
-            await actions.createGroup(name, members_id);
-            navigate("/group"); // Redirige a la vista de grupos
+            await actions.createGroup(name, ids);
+            navigate("/group");
         } else {
             alert("Please provide a group name and select at least one member.");
         }
     };
 
-    const handleSelectChange = (contact) => {
-        setMembers_id([...members_id, contact]);
-
+    const handleCancel = () => {
+        navigate("/group")
     };
 
     return (
         <div className="card d-flex justify-content-center my-5 p-5 mx-auto" style={{ maxWidth: '600px', fontFamily: 'Trebuchet MS', width: '100%' }}>
             <form onSubmit={handleSubmit}>
                 <div className="mb-3">
-                    <label className="form-label" />
+                    <label className="form-label">Name:</label>
                     <input
                         type="text"
                         className="form-control"
@@ -45,35 +49,24 @@ const CreateGroup = () => {
                     />
                 </div>
                 <div className="mb-3">
-                    <table className="table">
-                        <thead>
-                            <tr>
-                                <th scope="col">Username</th>
-                                <th scope="col">Paypal User</th>
-                                <th scope="col">Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {store.contacts.length > 0 ? (
-                                store.contacts.map((contact, index) => (
-                                    <tr key={index}>
-                                        <td>{contact.username}</td>
-                                        <td>{contact.fullname}</td>
-                                        <td><button onClick={()=>handleSelectChange(contact.id)}>Add</button></td>
-                                    </tr>
-                                ))
-                            ) : (
-                                <tr>
-                                    <td>.............</td>
-                                    <td>.............</td>
-                                    <td>.............</td>
-                                    <td>.............</td>
-                                </tr>
-                            )}
-                        </tbody>
-                    </table> 
+                    <p>select your contacts:</p>
+                    <Select
+                        name="select"
+                        options={store.contacts}
+                        labelField="fullname"
+                        valueField="id"
+                        multi
+                        onChange={value => setMembers_id(value)}
+                        color="green"
+                        dropdownPosition="bottom"
+                        searchable="true"
+                    >
+                    </Select>
                 </div>
-                <button type="submit" className="btn btn-primary">create group</button>
+                <div className="containerBtn">
+                    <button type="submit" className="btn btn-success" id="btn-successCreateGroup">Create a group</button>
+                    <button className="btn btn-danger" onClick={handleCancel} id="btn-dangerCreateGroup">Cancel</button>
+                </div>
             </form>
         </div>
     );

@@ -1,0 +1,146 @@
+/*
+    home.css: This website contains selectors only used in home.css
+
+    All pages share the styles on index.css but you should create 
+    one more css for each page that will contain the selected used 
+    on that page only (the ones not reused in other pages).
+*/
+
+body {
+  font-family: "Trebuchet MS", sans-serif;
+}
+
+.hero-section {
+  text-align: center;
+}
+
+.hero-title {
+  font-size: 102px;
+  margin-bottom: 40px;
+}
+
+.hero-subtitle {
+  font-size: 32px;
+  margin-bottom: 30px;
+}
+
+.signup-button {
+  background-color: #0c1b38;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  text-decoration: none;
+  margin-bottom: 50px;
+}
+
+
+.signup-button:hover {
+  background-color: #1a3571;
+}
+
+.hero-image-container {
+  height: 380px;
+  margin-bottom: 50px;
+}
+
+.hero-image {
+  width: 100%;
+  object-fit: cover;
+}
+
+.features-section {
+}
+
+.features-title {
+  font-size: 60px;
+  color: black;
+  margin-bottom: 40px;
+}
+
+.features-subtitle {
+  font-size: 40px;
+  color: black;
+  margin-bottom: 30px;
+}
+
+.features-image-container {
+  max-width: 50%;
+}
+
+.features-image {
+  width: 100%;
+  height: auto;
+  object-fit: cover;
+}
+
+.features-text {
+  width: 1000px;
+  color: black;
+}
+
+.formulary {
+  margin-top: 50px;
+  border: 2px solid black;
+  padding: 20px;
+  border-radius: 5px;
+}
+
+@media (max-width: 768px) {
+  .features-section {
+    flex-direction: column;
+  }
+
+  .features-image-container {
+    max-width: 100%;
+    margin-top: 20px;
+  }
+
+  .hero-subtitle,
+  .features-subtitle {
+    font-size: 16px;
+  }
+}
+
+.btn.text-white.signup-button {
+  background-color: #274d95;
+  background-color: #447de6;
+  color: rgb(0, 0, 0);
+  border-radius: 30px;
+  padding: 10px 30px;
+  min-width: 100px;
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+  box-shadow: 0 4px 3px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+
+.btn.text-white.signup-button:hover {
+  background-color: #274d95;
+  box-shadow: 0 8px 12px rgba(0, 0, 0, 0.2);
+}
+
+.h2 {
+  margin-top: 10px;
+  color: black;
+}
+
+.h3 {
+  margin-top: 10px;
+  color: black;
+}
+
+.btn.signup-button {
+  background-color: #274d95;
+  background-color: #447de6;
+  color: rgb(0, 0, 0);
+  border-radius: 30px;
+  padding: 10px 30px;
+  min-width: 100px;
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+  box-shadow: 0 4px 3px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+
+.btn.signup-button:hover {
+  background-color: #274d95;
+  box-shadow: 0 8px 12px rgba(0, 0, 0, 0.2);
+}

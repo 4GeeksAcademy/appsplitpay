@@ -24,7 +24,7 @@ function Home() {
           <button
             className="btn text-white signup-button mb-5"
             onClick={handleSignUp}>
-            Crear cuenta
+            Crea una cuenta!
           </button>
         </div>
         <div className="hero-image-container w-100 mb-5">
@@ -52,7 +52,7 @@ function Home() {
             <button
               className="btn text-white signup-button mb-5"
               onClick={handleSignUp}>
-              Crear cuenta
+              Crea una cuenta!
             </button>
           </div>
           <div className="features-image-container p-3">

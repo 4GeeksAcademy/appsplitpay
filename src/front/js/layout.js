@@ -17,6 +17,7 @@ import CreateGroup from "./component/createGroup.js";
 import Records from "./component/records.js";
 import IndividualPayment from "./component/individualPayment.js";
 import GroupPayment from "./component/groupPayment.js";
+import DetailsGroup from "./component/detailsGroup.js";
 
 
 const Layout = () => {
@@ -58,6 +59,7 @@ const Content = () => {
           <Route path="/groupPayment" element={<GroupPayment />} />
           <Route path="/contacts" element={<Contacts />} />
           <Route path="/group" element={<Groups />} />
+          <Route path="/group/:id" element={<DetailsGroup />} />
           <Route path="/createGroup" element={<CreateGroup />} />
           <Route path="/records" element={<Records />} />
           <Route path="/changepassword" element={<PasswordRecovery />} />

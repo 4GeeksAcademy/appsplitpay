@@ -1,0 +1,50 @@
+#tableHomeUser{
+  padding: 40px 40px;
+  color: black;
+  border: solid 1px black;
+  margin: 40px;
+  border-radius: 5px;
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.2);
+}
+#tableRecordHomeUserr{
+  
+    
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.2);
+    margin-bottom: 40px;
+    background-color: white;
+    color: black;
+    
+}
+.tittleHomeUser{
+  margin-bottom: 40px;
+  align-content: center;
+  color: black;
+}
+.thHomeUser{
+  width: 190px;
+  height: 45px;
+  padding-left: 10px;
+  color: black;
+}
+.tdHomeUser{
+  width: 190px;
+  height: 45px;
+  padding-left: 10px;
+  color: black;
+}
+.imageContainerHomeUser{
+  display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 200px; 
+    margin-bottom: 20px; 
+}
+.centeredImageHomeUserS {
+  width: 250px;
+  height: 250px;
+  margin: 40px;
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.2);
+  border-radius: 10px;
+  
+  
+}

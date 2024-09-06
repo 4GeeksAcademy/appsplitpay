@@ -4,10 +4,10 @@ import '../../styles/footer.css'
 
 const Footer = () => {
     return (
-        <footer className="text-center text-lg-start bg-body-tertiary text-muted">
+        <footer className="text-center text-lg-start bg-body-tertiary text-muted" id='footerContainer'>
             <section className="d-flex justify-content-center justify-content-lg-between p-4 border-bottom">
                 <div className="me-5 d-none d-lg-block">
-                    <span>Acercate a nosotros en nuestras redes sociales:</span>
+                    <span><h2>Acercate a nosotros en nuestras redes sociales:</h2></span>
                 </div>
                 <div>
                     <a href="#" className="me-4 text-reset text-decoration-none">
@@ -108,19 +108,19 @@ const Footer = () => {
                                 <svg className="social-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
                                     <path
                                         d="M64 112c-8.8 0-16 7.2-16 16l0 22.1L220.5 291.7c20.7 17 50.4 17 71.1 0L464 150.1l0-22.1c0-8.8-7.2-16-16-16L64 112zM48 212.2L48 384c0 8.8 7.2 16 16 16l384 0c8.8 0 16-7.2 16-16l0-171.8L322 328.8c-38.4 31.5-93.7 31.5-132 0L48 212.2zM0 128C0 92.7 28.7 64 64 64l384 0c35.3 0 64 28.7 64 64l0 256c0 35.3-28.7 64-64 64L64 448c-35.3 0-64-28.7-64-64L0 128z" />
-                                </svg> info@example.com
+                                </svg> info@AppSplitPay.com
                             </p>
                             <p>
                                 <svg className="social-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
                                     <path
                                         d="M164.9 24.6c-7.7-18.6-28-28.5-47.4-23.2l-88 24C12.1 30.2 0 46 0 64C0 311.4 200.6 512 448 512c18 0 33.8-12.1 38.6-29.5l24-88c5.3-19.4-4.6-39.7-23.2-47.4l-96-40c-16.3-6.8-35.2-2.1-46.3 11.6L304.7 368C234.3 334.7 177.3 277.7 144 207.3L193.3 167c13.7-11.2 18.4-30 11.6-46.3l-40-96z" />
-                                </svg> +(nose) 123 456
+                                </svg> +(58) 4245861200
                             </p>
                             <p>
                                 <svg className="social-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
                                     <path
                                         d="M128 0C92.7 0 64 28.7 64 64l0 96 64 0 0-96 226.7 0L384 93.3l0 66.7 64 0 0-66.7c0-17-6.7-33.3-18.7-45.3L400 18.7C388 6.7 371.7 0 354.7 0L128 0zM384 352l0 32 0 64-256 0 0-64 0-16 0-16 256 0zm64 32l32 0c17.7 0 32-14.3 32-32l0-96c0-35.3-28.7-64-64-64L64 192c-35.3 0-64 28.7-64 64l0 96c0 17.7 14.3 32 32 32l32 0 0 64c0 35.3 28.7 64 64 64l256 0c35.3 0 64-28.7 64-64l0-64zM432 248a24 24 0 1 1 0 48 24 24 0 1 1 0-48z" />
-                                </svg> +(nose) 987 654
+                                </svg> +(58)251-237-58-35
                             </p>
                         </div>
                     </div>
@@ -128,7 +128,7 @@ const Footer = () => {
             </section>
             <div className="text-center p-4" style={{ backgroundColor: 'rgba(0, 0, 0, 0.05)' }}>
                 © 2024 Copyright:
-                <a className="text-reset fw-bold" href="#">holaequisde.com</a>
+                <a className="text-reset fw-bold" href="#">Made with <i className="fa fa-heart text-danger" /> by {"Sebastian, Maikel, Samir, Jhonny "}</a>
             </div>
         </footer >
     );
