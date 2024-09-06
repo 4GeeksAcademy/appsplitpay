@@ -55,7 +55,7 @@ const Records = () => {
   // }, [store.events])
   
     return (
-      <div className="container border">
+      <div className="container conteinerRecords border mb-5 mt-5">
       <h1>Estas en el componente Records</h1>
       <table className="table">
         <thead>
