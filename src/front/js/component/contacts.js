@@ -27,13 +27,9 @@ export const Contacts = () => {
         if (success) { window.location.reload(false); }
     }
 
-    const handleButton = () => {
-        navigate('/newcomponent')
-    }
-
     useEffect(() => {
         actions.getContacts()
-    }, [])
+    }, []);
 
     return (
         <div className="table-responsive" id="table-general">
@@ -43,6 +39,13 @@ export const Contacts = () => {
                 In this area you can search for your best friends and add them to your contacts so that you can use their information to make fast and secure payments.
                 Remember that our account is the only one that allows you to make group payments.
                 Add your friends, create your groups, make group payments and let the fun continue.
+            </div>
+            <div className="imageContainerContact">
+                <img
+                    src="https://www.wilko.marketing/wp-content/uploads/sites/116/2021/05/networking.jpg"
+                    alt="Groups illustration"
+                    className="centeredImageContact"
+                />
             </div>
             <form className="d-flex " role="search" onSubmit={handleSearchSubmit} id="userSearch">
 
@@ -54,7 +57,7 @@ export const Contacts = () => {
                 </div>
                 <button className="btn btn-success" type="submit" id="searchBtn">Search</button>
             </form>
-            <table id="contactInfo" className="table rounded-3">
+            <table id="contactInfo" className="table rounded-3 table-responsive">
                 <thead className="table">
                     <tr>
                         <th className="thConstacts" scope="col">Username</th>
@@ -122,8 +125,6 @@ export const Contacts = () => {
                     )}
                 </tbody>
             </table>
-
-            <button onClick={handleButton}>llevar a new component</button>
         </div>
     );
 };

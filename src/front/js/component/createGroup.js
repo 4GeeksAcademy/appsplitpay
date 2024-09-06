@@ -27,7 +27,15 @@ export const CreateGroup = () => {
         usernamesDB.push(user.username);
     });
 
-    
+    const ids = [];
+    for (const member of members_id) {
+        for (const user of users) {
+            if (member.username == user.username) {
+                ids.push(user.id);
+                console.log("user en el for",user.id)
+            }
+        }
+    }
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -58,7 +66,7 @@ export const CreateGroup = () => {
                     />
                 </div>
                 <div className="mb-3">
-                    <p>Add yours contacts:</p>
+                    <p>select your contacts:</p>
                     <Select
                         name="select"
                         options={store.contacts}
@@ -66,14 +74,16 @@ export const CreateGroup = () => {
                         valueField="id"
                         multi
                         onChange={value => setMembers_id(value)}
-                        color="blue"
+                        color="green"
                         dropdownPosition="bottom"
                         searchable="true"
                     >
                     </Select>
                 </div>
-                <button type="submit" className="btn btn-primary">create group</button>
-                <button className="btn btn-outline-secundary" onClick={handleCancel}>Cancel</button>
+                <div className="containerBtn">
+                    <button type="submit" className="btn btn-success" id="btn-successCreateGroup">Create a group</button>
+                    <button className="btn btn-danger" onClick={handleCancel} id="btn-dangerCreateGroup">Cancel</button>
+                </div>
             </form>
         </div>
     );

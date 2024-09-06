@@ -150,6 +150,12 @@ def get_all_users():
 @jwt_required()
 def edit_user():
     user_id = get_jwt_identity()
+    user_body = request.get_json()
+
+    required_fields = ['first_name', 'last_name', 'username', 'paypal_username', 'email', 'address']
+    for field in required_fields:
+        if field not in user_body:
+            return jsonify({"error": f"{field.capitalize()} is required"}), 400
     
     try:
         user_db = User.query.filter_by(id=user_id).first()
@@ -162,15 +168,17 @@ def edit_user():
             user_db.first_name = user_body["first_name"]
         if "last_name" in user_body:
             user_db.last_name = user_body["last_name"]
+        if "username" in user_body:
+            user_db.username = user_body["username"]
+        if "paypal_username" in user_body:
+            user_db.paypal_username = user_body["paypal_username"]
         if "email" in user_body:
             user_db.email = user_body["email"]
-        if "age" in user_body:
-            user_db.age = user_body["age"]
         if "address" in user_body:
             user_db.address = user_body["address"]
 
         db.session.commit()
-        return jsonify(user_db.serialize()), 200
+        return jsonify({"user":user_db.serialize()}), 200
     except Exception as e:
         db.session.rollback()
         return jsonify({"error": "An unexpected error occurred while updating user", "details": str(e)}), 500
