@@ -1,9 +1,11 @@
 import React, { useContext, useEffect, useState } from "react";
 import { Context } from "../store/appContext.js";
 import "../../styles/contacts.css";
+import { Navigate, useNavigate } from "react-router-dom";
 
 export const Contacts = () => {
     const { store, actions } = useContext(Context);
+    const navigate = useNavigate();
 
     const [username, setUsername] = useState("");
 
@@ -27,7 +29,7 @@ export const Contacts = () => {
 
     useEffect(() => {
         actions.getContacts()
-    }, [])
+    }, []);
 
     return (
         <div className="table-responsive" id="table-general">
@@ -55,7 +57,7 @@ export const Contacts = () => {
                 </div>
                 <button className="btn btn-success" type="submit" id="searchBtn">Search</button>
             </form>
-            <table id="contactInfo" className="table rounded-3">
+            <table id="contactInfo" className="table rounded-3 table-responsive">
                 <thead className="table">
                     <tr>
                         <th className="thConstacts" scope="col">Username</th>

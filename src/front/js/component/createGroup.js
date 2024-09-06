@@ -15,10 +15,27 @@ export const CreateGroup = () => {
 
     useEffect(() => {
         actions.getContacts();
+        actions.getAllUsers();
     }, []);
 
+    const usernames = [];
+    members_id.forEach((member) => usernames.push(member.username));
+
+    const usernamesDB = [];
+    const users = store.allUsers;
+    users.forEach(user => { 
+        usernamesDB.push(user.username);
+    });
+
     const ids = [];
-    members_id.forEach((member) => ids.push(member.id));
+    for (const member of members_id) {
+        for (const user of users) {
+            if (member.username == user.username) {
+                ids.push(user.id);
+                console.log("user en el for",user.id)
+            }
+        }
+    }
 
     const handleSubmit = async (e) => {
         e.preventDefault();

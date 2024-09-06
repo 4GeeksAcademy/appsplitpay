@@ -1,3 +1,5 @@
+import { array } from "prop-types";
+
 const apiUrl = process.env.BACKEND_URL + "/api";
 
 const getState = ({ getStore, getActions, setStore }) => {
@@ -16,6 +18,8 @@ const getState = ({ getStore, getActions, setStore }) => {
 			groupDetails: null,
 			userContact: null,
 			corsEnabled: { "Access-Control-Allow-Origin": "*" },
+			allUsers: [],
+			dataUserDb: null,
 		},
 		actions: {
 			login: async (email, password) => {
@@ -207,6 +211,76 @@ const getState = ({ getStore, getActions, setStore }) => {
 					// Maneja cualquier error que pueda ocurrir durante la solicitud
 					console.error("Error:", error);
 					throw error;
+				}
+			},
+
+			getUserInfo: async () => {
+				const store = getStore()
+				try {
+					const response = await fetch(`${apiUrl}/user`, {
+						method: 'GET',
+						headers: {
+							'Authorization': `Bearer ${store.token}`,
+							'Content-Type': 'application/json'
+						}
+					})
+					if (!response.ok) {
+						const errorData = await response.json();
+						throw new Error(errorData.error || 'Error al obtener los datos del usuario');
+					}
+					const data = await response.json();
+					setStore({ dataUserDb: data.user });
+					return data;
+				} catch (error) {
+					console.error("Error fetching single usuario:", error);
+					setStore({ errorMessage: error.message || "Error en el fetching al obtener los datos del usuario" });
+				}
+			},
+
+			updateUser: async (first_name, last_name, username, paypal_username, email, address) => {
+				const store = getStore()
+				try {
+					const response = await fetch(`${apiUrl}/user`, {
+						method: 'PATCH',
+						headers: {
+							'Authorization': `Bearer ${store.token}`,
+							'Content-Type': 'application/json'
+						},
+						body: JSON.stringify({first_name, last_name, username, paypal_username, email, address}),
+					})
+					if (!response.ok) {
+						const errorData = await response.json();
+						throw new Error(errorData.error || 'Error al obtener los usuarios');
+					}
+					const data = await response.json();
+					setStore({ dataUserDb: data.user });
+					return data;
+				} catch (error) {
+					console.error("Error fetching single usuario:", error);
+					setStore({ errorMessage: error.message || "Error al obtener los usuarios" });
+				}
+			},
+
+			getAllUsers: async () => {
+				const store = getStore()
+				try {
+					const response = await fetch(`${apiUrl}/users`, {
+						method: 'GET',
+						headers: {
+							'Authorization': `Bearer ${store.token}`,
+							'Content-Type': 'application/json'
+						}
+					})
+					if (!response.ok) {
+						const errorData = await response.json();
+						throw new Error(errorData.error || 'Error al obtener los usuarios');
+					}
+					const data = await response.json();
+					setStore({ allUsers: data.users });
+					return data;
+				} catch (error) {
+					console.error("Error fetching single usuario:", error);
+					setStore({ errorMessage: error.message || "Error al obtener los usuarios" });
 				}
 			},
 
