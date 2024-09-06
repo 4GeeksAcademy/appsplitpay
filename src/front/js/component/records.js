@@ -7,17 +7,13 @@ const Records = () => {
     const { store, actions } = useContext(Context);
   
     const [payments, setPayments] = useState([]);
+    // const [groups, setGroups] = useState({});
+    // const [events, setEvents] = useState({});
   
     useEffect(() => {
       actions.getPayments()
         .then((payments) => {
-           setPayments(payments) //.map((payment) => {
-          //   return {
-          //     ...payment,
-          //     group_name: payment.group ? payment.group.name : '',
-          //     event_name: payment.event ? payment.event.name : ''
-          //   };
-          // }));
+           setPayments(payments)
         })
         .catch((error) => {
           console.error(error);
@@ -25,40 +21,38 @@ const Records = () => {
     }, []);
 
 
-    // useEffect(() => { UNA VEZ QUE FUNCIONE GROUP Y EVENT ESTE USEEFFECT PUEDE SERVIR PARA QUE LA LISTA MUESTRE EL NOMBRE DE GRUPO Y EVENTO Y NO SU ID
-    //   actions.getPayments()
-    //     .then((payments) => {
-    //       const promises = payments.map((payment) => {
-    //         return Promise.all([
-    //           actions.getGroup(payment.group_id),
-    //           actions.getEvent(payment.event_id)
-    //         ]).then(([group, event]) => {
-    //           return {
-    //             ...payment,
-    //             group_name: group.name,
-    //             event_name: event.name
-    //           };
-    //         });
-    //       });
-    //       Promise.all(promises).then((paymentsWithNames) => {
-    //         setPayments(paymentsWithNames);
-    //       });
-    //     })
-    //     .catch((error) => {
-    //       console.error(error);
-    //     });
-    // }, []);
+    // useEffect(() => {
+  //   if (store.users.length != 0) {
+  //     let users = store.users.map(user => {
+  //       return {
+  //         value: user.id, label: user.name
+  //       }
+  //     })
+  //     setUserAllUser(users)
+  //   }
+  // }, [store.users])
 
-  
-    // const handleGetPayment = async (paymentId) => { SE MANTIENE EL HANDLE EN CASO DE QUERER AGREGAR UN BOTON VER DETALLES
-    //   try {
-    //     const payment = await actions.getPayment(paymentId);
-        
-    //     console.log(payment);
-    //   } catch (error) {
-    //     console.error(error);
-    //   }
-    // };
+  // useEffect(() => {
+  //   if (store.groups.length != 0) {
+  //     let groups = store.groups.map(group => {
+  //       return {
+  //         value: group.id, label: group.name
+  //       }
+  //     })
+  //     setUserAllGroup(groups)
+  //   }
+  // }, [store.groups])
+
+  // useEffect(() => {
+  //   if (store.events.length != 0) {
+  //     let events = store.events.map(event => {
+  //       return {
+  //         value: event.id, label: event.name
+  //       }
+  //     })
+  //     setGroupAllEvents(events)
+  //   }
+  // }, [store.events])
   
     return (
       <div className="container border">
@@ -104,38 +98,4 @@ const Records = () => {
   
   export default Records;
 
-//   #-------------------------------------------------------------------------------------------------------------------
 
-// const Records = () => {
-//   return (
-//     <div className="table-responsive">
-//         <h1>Estas en el component Records</h1>
-//         <table className="table">
-//             <thead>
-//             <tr>
-//                 <th scope="col">#</th>
-//                 <th scope="col">First</th>
-//                 <th scope="col">Last</th>
-//                 <th scope="col">Handle</th>
-//             </tr>
-//             </thead>
-//             <tbody>
-//             <tr>
-//                 <th scope="row">1</th>
-//                 <td>Mark</td>
-//                 <td>Otto</td>
-//                 <td>@mdo</td>
-//             </tr>
-//             <tr>
-//                 <th scope="row">2</th>
-//                 <td>Jacob</td>
-//                 <td>Thornton</td>
-//                 <td>@fat</td>
-//             </tr>
-//             </tbody>
-//         </table>
-//     </div>
-//   );
-// };
-
-// export default Records;

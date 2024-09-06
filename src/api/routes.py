@@ -638,9 +638,9 @@ def delete_event(event_id):
 
 @api.route('/group/<int:group_id>/events', methods=['GET'])
 @jwt_required()
-def get_all_events():
+def get_all_events(group_id):
     try:
-        events = Event.query.all()
+        events = Event.query.filter_by(group_id=group_id)
         return jsonify([event.serialize() for event in events]), 200
     except Exception as e:
         return jsonify({"error": "An unexpected error occurred", "details": str(e)}), 500
