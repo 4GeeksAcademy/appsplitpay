@@ -4,24 +4,24 @@ import { useNavigate } from "react-router-dom";
 import "../../styles/records.css";
 
 const Records = () => {
-    const { store, actions } = useContext(Context);
-  
-    const [payments, setPayments] = useState([]);
-    // const [groups, setGroups] = useState({});
-    // const [events, setEvents] = useState({});
-  
-    useEffect(() => {
-      actions.getPayments()
-        .then((payments) => {
-           setPayments(payments)
-        })
-        .catch((error) => {
-          console.error(error);
-        });
-    }, []);
+  const { store, actions } = useContext(Context);
+
+  const [payments, setPayments] = useState([]);
+  // const [groups, setGroups] = useState({});
+  // const [events, setEvents] = useState({});
+
+  useEffect(() => {
+    actions.getPayments()
+      .then((payments) => {
+        setPayments(payments)
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  }, []);
 
 
-    // useEffect(() => {
+  // useEffect(() => {
   //   if (store.users.length != 0) {
   //     let users = store.users.map(user => {
   //       return {
@@ -53,49 +53,52 @@ const Records = () => {
   //     setGroupAllEvents(events)
   //   }
   // }, [store.events])
-  
-    return (
-      <div className="container conteinerRecords border mb-5 mt-5">
-      <h1>Estas en el componente Records</h1>
-      <table className="table">
+
+  return (
+    <div className="container conteinerRecords border mb-5 mt-5" id="conteinerRecords">
+      <div className="alert alert-dark" role="alert" id="text">
+        here you can get a list with your most recent movements
+      </div>
+      <h1 className="tittleRecords">Your latest activities</h1>
+      <table className="table" id="recordsTable">
         <thead>
           <tr>
-            <th>ID</th>
-            <th>Monto</th>
-            <th>Usuario</th>
-            <th>Grupo</th>
-            <th>Event</th>
-            <th>Paypal</th>
+            <th className="thRecords">ID</th>
+            <th className="thRecords">Monto</th>
+            <th className="thRecords">Usuario</th>
+            <th className="thRecords">Grupo</th>
+            <th className="thRecords">Event</th>
+            <th className="thRecords">Paypal</th>
           </tr>
         </thead>
         <tbody>
           {payments.length > 0 ? (
             payments.map((payment, index) => (
               <tr key={index}>
-                <td><strong>{payment.id}</strong></td>
-                <td><strong>{payment.amount}</strong></td>
-                <td><strong>{payment.user_id}</strong></td>
-                <td><strong>{payment.group_name}</strong></td>
-                <td><strong>{payment.event_name}</strong></td>
-                <td><strong>{payment.paypal_username}</strong></td>
+                <td className="tdRecords"><strong>{payment.id}</strong></td>
+                <td className="tdRecords"><strong>{payment.amount}</strong></td>
+                <td className="tdRecords"><strong>{payment.user_id}</strong></td>
+                <td className="tdRecords"><strong>{payment.group_name}</strong></td>
+                <td className="tdRecords"><strong>{payment.event_name}</strong></td>
+                <td className="tdRecords"><strong>{payment.paypal_username}</strong></td>
               </tr>
             ))
           ) : (
             <tr>
-              <td><strong>.............</strong></td>
-              <td><strong>.............</strong></td>
-              <td><strong>.............</strong></td>
-              <td><strong>.............</strong></td>
-              <td><strong>.............</strong></td>
-              <td><strong>.............</strong></td>
+              <td className="tdRecords"><strong>.............</strong></td>
+              <td className="tdRecords"><strong>.............</strong></td>
+              <td className="tdRecords"><strong>.............</strong></td>
+              <td className="tdRecords"><strong>.............</strong></td>
+              <td className="tdRecords"><strong>.............</strong></td>
+              <td className="tdRecords"><strong>.............</strong></td>
             </tr>
           )}
         </tbody>
       </table>
     </div>
-    );
-  };
-  
-  export default Records;
+  );
+};
+
+export default Records;
 
 
