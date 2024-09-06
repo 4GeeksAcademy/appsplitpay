@@ -76,7 +76,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 
 			signup: async (username, email, password, first_name, last_name, age, address, paypal_username) => {
 				setStore({ loading: true });
-				console.log(username)	
+				console.log(username)
 				try {
 					const response = await fetch(apiUrl + "/signup", {
 						method: "POST",
@@ -313,6 +313,83 @@ const getState = ({ getStore, getActions, setStore }) => {
 				}
 			},
 
+
+
+			getPayments: async () => {
+				try {
+					const response = await fetch(`${apiUrl}/payments`, {
+						method: 'GET',
+						headers: {
+							'Content-Type': 'application/json',
+							'Authorization': `Bearer ${getStore().token}`,
+						},
+					});
+					return response.json();
+				} catch (error) {
+					console.error(error);
+					return [];
+				}
+			},
+
+			getPayment: async (paymentId) => {
+				try {
+					const response = await fetch(`${apiUrl}/payments/${paymentId}`, {
+						method: 'GET',
+						headers: {
+							'Content-Type': 'application/json',
+							'Authorization': `Bearer ${getStore().token}`,
+						},
+					});
+					return response.json();
+				} catch (error) {
+					console.error(error);
+					return null;
+				}
+			},
+
+			createPayment: async (data) => {
+				setStore({ loading: true });
+				try {
+					const response = await fetch(`${apiUrl}/payments/`, {
+						method: "POST",
+						headers: {
+							"Content-Type": "application/json",
+							Authorization: `Bearer ${getStore().token}`,
+						},
+						body: JSON.stringify(data),
+					});
+					if (response.ok) {
+						const data = await response.json();
+						setStore({
+							loading: false,
+							errorMessage: null,
+						});
+						return true;
+					} else {
+						const errorData = await response.json();
+						if (errorData.error === "Contact not found") {
+							setStore({
+								errorMessage: "El contacto no existe",
+								loading: false,
+							});
+						} else {
+							setStore({
+								errorMessage: errorData.error || "Error creating payment",
+								loading: false,
+							});
+						}
+						return false;
+					}
+				} catch (error) {
+					console.error("Error creating payment:", error);
+					setStore({
+						errorMessage: "An error occurred while creating payment.",
+						loading: false,
+					});
+					return false;
+				}
+			},
+
 			deleteContact: async (contactId) => {
 				const { token } = getStore();
 				setStore({ loading: true });
@@ -430,7 +507,6 @@ const getState = ({ getStore, getActions, setStore }) => {
 			getUserGroups: async () => {
 				const { token } = getStore();
 				setStore({ loading: true });
-
 				try {
 					const response = await fetch(`${apiUrl}/groups`, {
 						method: "GET",
@@ -439,7 +515,6 @@ const getState = ({ getStore, getActions, setStore }) => {
 							"Content-Type": "application/json",
 						},
 					});
-
 					if (!response.ok) {
 						const errorData = await response.json();
 						setStore({
@@ -448,14 +523,12 @@ const getState = ({ getStore, getActions, setStore }) => {
 						});
 						return [];
 					}
-
 					const data = await response.json();
 					setStore({
 						groups: data.groups,
 						loading: false,
 						errorMessage: null,
 					});
-
 					return data.groups;
 				} catch (error) {
 					console.error("Error fetching user groups:", error);
@@ -728,7 +801,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 					});
 					if (resp.ok) {
 						const data = await resp.json();
-						setStore({ events: data.events });
+						setStore({ events: data });
 						return data;
 					} else {
 						const error = await resp.json();
