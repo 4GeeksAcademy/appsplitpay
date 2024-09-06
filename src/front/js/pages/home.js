@@ -6,6 +6,8 @@ import "../../styles/home.css"
 function Home() {
   const navigate = useNavigate();
 
+  
+
   const handleSignUp = () => {
     navigate('/signup');
   };

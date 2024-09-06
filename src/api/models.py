@@ -108,11 +108,12 @@ class Payment(db.Model):
     group = db.relationship('Group', backref='payments')
     event_id = db.Column(db.Integer, db.ForeignKey('events.id'))
     event = db.relationship('Event', backref='payments')
+    contact_id = db.Column(db.Integer, db.ForeignKey('contacts.id'))  # <--- Agrega esta columna
+    contact = db.relationship('Contact', backref='payments')  # <--- Modifica la relación
     paypal_username = db.Column(db.String)
 
     def __repr__(self):
         return f'<Payment {self.id} - {self.amount}>'
-    
     def serialize(self):
         return {
             "id": self.id,
@@ -120,6 +121,7 @@ class Payment(db.Model):
             "user_id": self.user_id,
             "group_id": self.group_id,
             "event_id": self.event_id,
+            "contact_id": self.contact_id,
             "paypal_username": self.paypal_username
         }
 

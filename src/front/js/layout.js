@@ -15,6 +15,8 @@ import Contacts from "./component/contacts.js";
 import Groups from "./component/groups.js";
 import CreateGroup from "./component/createGroup.js";
 import Records from "./component/records.js";
+import IndividualPayment from "./component/individualPayment.js";
+import GroupPayment from "./component/groupPayment.js";
 import DetailsGroup from "./component/detailsGroup.js";
 import Profile from "./component/profile.js";
 
@@ -54,6 +56,8 @@ const Content = () => {
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<SignUp />} />
           <Route path="/homeUser" element={<HomeUser />} />
+          <Route path="/individualPayment" element={<IndividualPayment />} />
+          <Route path="/groupPayment" element={<GroupPayment />} />
           <Route path="/contacts" element={<Contacts />} />
           <Route path="/group" element={<Groups />} />
           <Route path="/group/:id" element={<DetailsGroup />} />
