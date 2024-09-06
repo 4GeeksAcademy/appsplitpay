@@ -1,10 +1,12 @@
 #conteinerRecords{
-    padding: 40px 40px;
+    padding: 50px 50px;
     color: black;
     border: solid 1px black;
     margin: 40px;
     border-radius: 5px;
     box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.2);
+    margin-left: 14%;
+    
 }
 .tittleRecords{
     margin-bottom: 40px;
