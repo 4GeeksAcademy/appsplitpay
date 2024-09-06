@@ -16,6 +16,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 			groupDetails: null,
 			userContact: null,
 			corsEnabled: { "Access-Control-Allow-Origin": "*" },
+			allUsers: [],
 		},
 		actions: {
 			login: async (email, password) => {
@@ -207,6 +208,29 @@ const getState = ({ getStore, getActions, setStore }) => {
 					// Maneja cualquier error que pueda ocurrir durante la solicitud
 					console.error("Error:", error);
 					throw error;
+				}
+			},
+
+			getAllUsers: async () => {
+				const store = getStore()
+				try {
+					const response = await fetch(`${apiUrl}/users`, {
+						method: 'GET',
+						headers: {
+							'Authorization': `Bearer ${store.token}`,
+							'Content-Type': 'application/json'
+						}
+					})
+					if (!response.ok) {
+						const errorData = await response.json();
+						throw new Error(errorData.error || 'Error al obtener los usuarios');
+					}
+					const data = await response.json();
+					setStore({ allUsers: data.users });
+					return data;
+				} catch (error) {
+					console.error("Error fetching single usuario:", error);
+					setStore({ errorMessage: error.message || "Error al obtener los usuarios" });
 				}
 			},
 

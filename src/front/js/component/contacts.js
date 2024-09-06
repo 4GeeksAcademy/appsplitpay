@@ -1,9 +1,11 @@
 import React, { useContext, useEffect, useState } from "react";
 import { Context } from "../store/appContext.js";
 import "../../styles/contacts.css";
+import { Navigate, useNavigate } from "react-router-dom";
 
 export const Contacts = () => {
     const { store, actions } = useContext(Context);
+    const navigate = useNavigate();
 
     const [username, setUsername] = useState("");
 
@@ -25,6 +27,10 @@ export const Contacts = () => {
         if (success) { window.location.reload(false); }
     }
 
+    const handleButton = () => {
+        navigate('/newcomponent')
+    }
+
     useEffect(() => {
         actions.getContacts()
     }, [])
@@ -40,10 +46,10 @@ export const Contacts = () => {
             </div>
             <form className="d-flex " role="search" onSubmit={handleSearchSubmit} id="userSearch">
 
-                <label for="inputPassword5" id="form-label">Search a Friend</label>
-                <input type="search" class="form-control me-2" aria-label="Username" onChange={(e) => setUsername(e.target.value)}
+                <label htmlFor="inputPassword5" id="form-label">Search a Friend</label>
+                <input type="search" className="form-control me-2" aria-label="Username" onChange={(e) => setUsername(e.target.value)}
                     placeholder="Username" />
-                <div id="searchHelpBlock" class="form-text">
+                <div id="searchHelpBlock" className="form-text">
                     remember to search for your friends with their Username.
                 </div>
                 <button className="btn btn-success" type="submit" id="searchBtn">Search</button>
@@ -116,6 +122,8 @@ export const Contacts = () => {
                     )}
                 </tbody>
             </table>
+
+            <button onClick={handleButton}>llevar a new component</button>
         </div>
     );
 };

@@ -135,7 +135,8 @@ def get_all_users():
                 'first_name': user.first_name,
                 'last_name': user.last_name,
                 'age': user.age,
-                'address': user.address
+                'address': user.address,
+                'paypal_username':user.paypal_username
             }
             output.append(user_data)
         return jsonify({'users': output}), 200

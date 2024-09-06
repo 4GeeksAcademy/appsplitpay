@@ -15,10 +15,19 @@ export const CreateGroup = () => {
 
     useEffect(() => {
         actions.getContacts();
+        actions.getAllUsers();
     }, []);
 
-    const ids = [];
-    members_id.forEach((member) => ids.push(member.id));
+    const usernames = [];
+    members_id.forEach((member) => usernames.push(member.username));
+
+    const usernamesDB = [];
+    const users = store.allUsers;
+    users.forEach(user => { 
+        usernamesDB.push(user.username);
+    });
+
+    
 
     const handleSubmit = async (e) => {
         e.preventDefault();

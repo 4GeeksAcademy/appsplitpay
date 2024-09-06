@@ -61,7 +61,6 @@ const Navbar = () => {
                 </li>
               </ul>
               <div className="d-flex flex-column flex-lg-row justify-content-center align-items-center gap-3" id="UserLogout">
-                <p style={{ color: "white", margin: "2px 2px" }}>{store.userInfo.first_name} {store.userInfo.last_name}</p>
                 <button className="text-white text-decoration-none px-3 py-1 bg-primary rounded-4" onClick={handleLogout}>
                   Logout
                 </button>
