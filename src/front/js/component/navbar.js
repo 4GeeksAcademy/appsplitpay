@@ -2,6 +2,7 @@ import React, { useContext, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import "../../styles/navbar.css";
 import { Context } from '../store/appContext.js';
+import logo from "../../img/logoSplit.png";
 
 const Navbar = () => {
   const { store, actions } = useContext(Context);
@@ -32,7 +33,7 @@ const Navbar = () => {
       <div className="container-fluid bg-dark">
         {/* Logo */}
         <div onClick={handleLogoClick} className="navbar-brand d-flex align-items-center me-auto" style={{ cursor: "pointer", width: "300px" }}>
-          <h1 style={{ color: "white" }}>AppSplitPay</h1>
+          <img src={ logo } alt="imagen logo" className="logoSplit"/> 
         </div>
         {/* Toggle Buttom */}
         <button className="navbar-toggler shadow-none border-0" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar" aria-controls="offcanvasNavbar" aria-label="Toggle navigation">
