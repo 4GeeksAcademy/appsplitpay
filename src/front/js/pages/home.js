@@ -5,7 +5,7 @@ import "../../styles/home.css"
 
 function Home() {
   const navigate = useNavigate();
-
+  const imagen = "../../img/amigos.jpg"
   
 
   const handleSignUp = () => {
@@ -29,7 +29,7 @@ function Home() {
         </div>
         <div className="hero-image-container w-100 mb-5">
           <img className="rounded-5 img-fluid h-100 hero-image"
-            src="https://www.santander.com/content/dam/santander-com/es/stories/contenido-stories/2021/educacionfinanciera/im-storie-guia-para-saber-que-son-las-criptomonedas-3.jpg"
+            src={imagen}
             alt="Imagen supermega arrechisima" />
         </div>
       </section>
