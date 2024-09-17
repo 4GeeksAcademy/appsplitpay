@@ -43,7 +43,7 @@ const RequestPasswordRecovery = () => {
             onChange={(e) => setEmail(e.target.value)}
           />
         </div>
-        <button type="submit" className="btn btn-primary btn-block mb-4 mt-4">Solicitar recuperación de contraseña</button>
+        <button type="submit" className="btn btn-primary btn-block mb-4 mt-4">Send confirmation email</button>
       </form>
     </div>
   );

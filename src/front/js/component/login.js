@@ -88,7 +88,7 @@ const Login = () => {
           </div>
 
           <div className="col">
-            <Link to="/requestpasswordrecovery">recupera tu contraseña</Link>
+            <Link to="/requestpasswordrecovery">Forgot your password?</Link>
           </div>
         </div>
 

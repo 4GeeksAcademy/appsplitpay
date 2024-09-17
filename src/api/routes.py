@@ -771,7 +771,6 @@ def request_password_recovery():
                 "url": url,
             }
         }
-        print(data)
 
         headers = {"Content-Type": "application/json"}
         response = requests.post(send_mail_url, headers=headers, data=json.dumps(data))
