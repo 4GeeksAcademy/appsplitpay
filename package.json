@@ -73,10 +73,16 @@
 		]
 	},
 	"dependencies": {
+		"bootstrap": "^5.3.3",
+		"date-fns": "^3.6.0",
 		"prop-types": "^15.6.1",
 		"react": "^16.8.4",
+		"react-bootstrap": "^2.10.4",
+		"react-datepicker": "^7.3.0",
 		"react-dom": "^16.8.4",
+		"react-dropdown-select": "^4.11.3",
 		"react-polyfills": "0.0.1",
-		"react-router-dom": "^6.3.0"
+		"react-router-dom": "^6.26.1",
+		"react-select": "^5.8.0"
 	}
 }

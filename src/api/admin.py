@@ -1,7 +1,7 @@
   
 import os
 from flask_admin import Admin
-from .models import db, User, Payment, Group, GroupUser, Account, Transactions, PaymentStatus, Notification, Event, Comment, Tag
+from .models import db, User, TokenBlockedList, Contact, Payment, Group, GroupMember, Event
 from flask_admin.contrib.sqla import ModelView
 
 def setup_admin(app):
@@ -14,14 +14,10 @@ def setup_admin(app):
     admin.add_view(ModelView(User, db.session))
     admin.add_view(ModelView(Payment, db.session))
     admin.add_view(ModelView(Group, db.session))
-    admin.add_view(ModelView(GroupUser, db.session))
-    admin.add_view(ModelView(Account, db.session))
-    admin.add_view(ModelView(Transactions, db.session))
-    admin.add_view(ModelView(PaymentStatus, db.session))
-    admin.add_view(ModelView(Notification, db.session))
+    admin.add_view(ModelView(GroupMember, db.session))
     admin.add_view(ModelView(Event, db.session))
-    admin.add_view(ModelView(Comment, db.session))
-    admin.add_view(ModelView(Tag, db.session))
+    admin.add_view(ModelView(TokenBlockedList, db.session))
+    admin.add_view(ModelView(Contact, db.session))
 
     # You can duplicate that line to add mew models
     # admin.add_view(ModelView(YourModelName, db.session))

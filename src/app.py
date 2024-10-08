@@ -3,13 +3,15 @@ This module takes care of starting the API Server, Loading the DB and Adding the
 """
 import os
 from flask import Flask, request, jsonify, url_for, send_from_directory
+from flask_jwt_extended import JWTManager
 from flask_migrate import Migrate
 from flask_swagger import swagger
 from api.utils import APIException, generate_sitemap
-from api.models import db
+from api.models import db, TokenBlockedList
 from api.routes import api
 from api.admin import setup_admin
 from api.commands import setup_commands
+
 
 # from models import Person
 
@@ -17,15 +19,40 @@ ENV = "development" if os.getenv("FLASK_DEBUG") == "1" else "production"
 static_file_dir = os.path.join(os.path.dirname(
     os.path.realpath(__file__)), '../public/')
 app = Flask(__name__)
+app.config['TIMEZONE'] = 'UTC'
 app.url_map.strict_slashes = False
 
-# database condiguration
+app.config["JWT_SECRET_KEY"] = os.getenv("JWT_SECRET")  # ¡Cambia las palabras "super-secret" por otra cosa!
+jwt = JWTManager(app)
+
+@jwt.token_in_blocklist_loader
+def check_if_token_revoked(jwt_header, jwt_payload: dict) -> bool:
+
+    is_password = jwt_payload["type"] == "password" and request.path != "/api/changepassword" 
+    jti = jwt_payload["jti"]
+    token = TokenBlockedList.query.filter_by(jti=jti).first()
+    is_blocked=token is not None
+    print(is_password)
+    print(is_blocked)
+    print(request.path)
+
+    if jwt_payload["type"] == "password":
+        return is_blocked and not is_password
+    else:
+        return is_blocked 
+
+
+# database configuration
 db_url = os.getenv("DATABASE_URL")
 if db_url is not None:
     app.config['SQLALCHEMY_DATABASE_URI'] = db_url.replace(
         "postgres://", "postgresql://")
 else:
     app.config['SQLALCHEMY_DATABASE_URI'] = "sqlite:////tmp/test.db"
+
+# acceso clave stripe
+PAYPAL_SECRET_KEY=os.getenv("PAYPAL_SECRET_KEY")
+
 
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 MIGRATE = Migrate(app, db, compare_type=True)
